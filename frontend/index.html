@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件共享系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-share-alt"></i>
+                <h2>QuickShare</h2>
+            </div>
+
+            <div class="storage-info">
+                <h3><i class="fas fa-database"></i> 存储信息</h3>
+                <div class="storage-details">
+                    <div class="storage-item">
+                        <span class="label">已用空间:</span>
+                        <span class="value" id="used-space">0.00 GB</span>
+                    </div>
+                    <div class="storage-item">
+                        <span class="label">剩余空间:</span>
+                        <span class="value" id="free-space">100.00 GB</span>
+                    </div>
+                    <div class="storage-item">
+                        <span class="label">总计空间:</span>
+                        <span class="value" id="total-space">100.00 GB</span>
+                    </div>
+                </div>
+                <div class="storage-bar-container">
+                    <div class="storage-bar">
+                        <div class="storage-used" style="width: 0%"></div>
+                    </div>
+                    <div class="storage-percentage" id="storage-percentage">0.0%</div>
+                </div>
+            </div>
+
+<!--            <div class="settings">-->
+<!--                <h3><i class="fas fa-cog"></i> 设置</h3>-->
+<!--                <div class="setting-item">-->
+<!--                    <label>存储位置:</label>-->
+<!--                    <div class="path-display" id="storage-path" title="当前存储路径">/uploads</div>-->
+<!--                    <button id="change-path-btn" class="btn-icon" title="修改存储路径">-->
+<!--                        <i class="fas fa-folder-open"></i>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="actions">
+                <button id="new-folder-btn" class="btn-primary">
+                    <i class="fas fa-folder-plus"></i> 新建文件夹
+                </button>
+                <button id="upload-btn" class="btn-primary">
+                    <i class="fas fa-upload"></i> 上传文件
+                </button>
+                <button id="upload-folder-btn" class="btn-primary">
+                    <i class="fas fa-folder-open"></i> 上传文件夹
+                </button>
+                <button id="refresh-btn" class="btn-secondary">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <div class="breadcrumb" id="breadcrumb">
+                    <span class="breadcrumb-item" data-path="">根目录</span>
+                </div>
+                <div class="selection-actions">
+                    <span id="selected-count">已选择 0 项</span>
+                    <button id="delete-selected-btn" class="btn-danger" disabled>
+                        <i class="fas fa-trash"></i> 删除选中
+                    </button>
+                </div>
+            </div>
+
+            <!-- 拖拽上传区域 -->
+            <div class="drop-zone" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>拖拽文件或文件夹到此处上传</p>
+            </div>
+
+            <!-- 文件列表 -->
+            <div class="file-list-header">
+                <div class="checkbox-col">
+                    <input type="checkbox" id="select-all">
+                </div>
+                <div class="name-col">名称</div>
+                <div class="size-col">大小</div>
+                <div class="modified-col">修改时间</div>
+                <div class="actions-col">操作</div>
+            </div>
+
+            <div class="file-list" id="fileList">
+                <div class="loading">加载中...</div>
+            </div>
+
+            <!-- 上传队列 -->
+            <div class="upload-queue" id="uploadQueue" style="display: none;">
+                <div class="queue-header">
+                    <h4><i class="fas fa-cloud-upload-alt"></i> 上传队列</h4>
+                    <button id="minimize-queue"><i class="fas fa-minus"></i></button>
+                </div>
+                <div class="queue-items" id="queueItems"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="newFolderModal" class="modal">
+    <div class="modal-content" style="min-width: 400px; max-width: 500px;">
+        <span class="close">&times;</span>
+        <h3 style="margin-bottom: 20px;">新建文件夹</h3>
+        <input type="text" id="folderName" placeholder="文件夹名称"
+               style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button id="createFolderBtn" class="btn-primary" style="padding: 12px 24px; min-width: 120px;">创建</button>
+            <button class="btn-secondary" onclick="document.getElementById('newFolderModal').style.display='none'" style="padding: 12px 24px; min-width: 120px;">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 修改路径模态框 -->
+<div id="pathModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>修改存储路径</h3>
+        <p class="modal-info">请输入新的存储路径（必须存在且有写入权限）</p>
+        <div class="path-input-group">
+            <input type="text" id="newPath"
+                   placeholder="例如: D:\shared_files 或 /home/user/shared">
+        </div>
+        <div class="path-suggestions" style="margin: 10px 0; font-size: 0.9rem;">
+            <p><strong>常用路径示例：</strong></p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='D:\\shared_files'">D:\shared_files</button>
+                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='E:\\files'">E:\files</button>
+                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='C:\\Users\\Public\\Documents'">C:\Users\Public\Documents</button>
+                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='/home/user/shared'">/home/user/shared</button>
+            </div>
+        </div>
+        <div class="path-preview" id="pathPreview"></div>
+        <div class="modal-actions">
+            <button id="updatePathBtn" class="btn-primary">更新路径</button>
+            <button id="cancelPathBtn" class="btn-secondary">取消</button>
+        </div>
+    </div>
+</div>
+
+    <!-- 文件预览模态框 -->
+    <div id="previewModal" class="modal preview-modal">
+        <div class="modal-content preview-content">
+            <span class="close">&times;</span>
+            <div id="previewContainer"></div>
+        </div>
+    </div>
+
+    <!-- 隐藏的文件输入框，用于浏览文件夹 -->
+    <input type="file" id="folderBrowser" webkitdirectory directory style="display: none;">
+
+    <script src="js/app.js"></script>
+</body>
+</html>

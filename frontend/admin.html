@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理 - 文件共享系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .admin-header i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        .admin-header h1 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+        }
+        
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+        
+        .admin-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-section h2 i {
+            color: var(--primary-color);
+        }
+        
+        .current-path {
+            padding: 15px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-family: monospace;
+        }
+        
+        .path-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .path-input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: monospace;
+        }
+        
+        .path-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .path-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .suggest-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .suggest-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .drive-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .drive-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .drive-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .storage-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-card {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .info-card i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .info-card .label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .info-card .value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .btn-update {
+            padding: 14px 28px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn-update:hover {
+            background: #3046c0;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .btn-back:hover {
+            background: var(--border-color);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <a href="/" class="btn-back">
+            <i class="fas fa-arrow-left"></i> 返回文件管理
+        </a>
+        
+        <div class="admin-header">
+            <i class="fas fa-cog"></i>
+            <h1>系统管理</h1>
+        </div>
+        
+        <div id="alert" class="alert"></div>
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-folder"></i> 当前存储路径</h2>
+            <div class="current-path" id="currentPath">加载中...</div>
+        </div>
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-edit"></i> 修改存储路径</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                请输入完整的绝对路径，例如：<code>D:\shared_files</code> 或 <code>/home/user/shared</code>
+            </p>
+            
+            <!-- Windows 盘符快速选择 -->
+            <div class="drive-list" id="windowsDrives" style="display: none;">
+                <button class="drive-btn" onclick="setPath('C:\\')">C:\</button>
+                <button class="drive-btn" onclick="setPath('D:\\')">D:\</button>
+                <button class="drive-btn" onclick="setPath('E:\\')">E:\</button>
+                <button class="drive-btn" onclick="setPath('F:\\')">F:\</button>
+            </div>
+            
+            <!-- 常用路径建议 -->
+            <div class="path-suggestions">
+                <button class="suggest-btn" onclick="setPath('D:\\shared_files')">D:\shared_files</button>
+                <button class="suggest-btn" onclick="setPath('E:\\files')">E:\files</button>
+                <button class="suggest-btn" onclick="setPath('C:\\Users\\Public\\Documents')">C:\Users\Public\Documents</button>
+                <button class="suggest-btn" onclick="setPath('/home/user/shared')">/home/user/shared</button>
+                <button class="suggest-btn" onclick="setPath('/mnt/data')">/mnt/data</button>
+            </div>
+            
+            <div class="path-input-group">
+                <input type="text" id="newPath" placeholder="输入完整路径...">
+            </div>
+            
+            <button class="btn-update" onclick="updateStoragePath()">
+                <i class="fas fa-save"></i> 更新存储路径
+            </button>
+        </div>
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-chart-pie"></i> 存储空间信息</h2>
+            <div class="storage-info" id="storageInfo">
+                <div class="info-card">
+                    <i class="fas fa-database"></i>
+                    <div class="label">总空间</div>
+                    <div class="value" id="totalSpace">0 GB</div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <div class="label">已用空间</div>
+                    <div class="value" id="usedSpace">0 GB</div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="label">剩余空间</div>
+                    <div class="value" id="freeSpace">0 GB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 检测操作系统
+        const isWindows = navigator.platform.indexOf('Win') > -1;
+        
+        // 显示 Windows 盘符选择
+        if (isWindows) {
+            document.getElementById('windowsDrives').style.display = 'flex';
+        }
+        
+        // 加载当前配置
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/storage');
+                if (!response.ok) throw new Error('Failed to load storage info');
+                
+                const data = await response.json();
+                
+                document.getElementById('currentPath').textContent = data.storage_path || '未知';
+                document.getElementById('newPath').value = data.storage_path || '';
+                
+                // 更新存储信息
+                document.getElementById('totalSpace').textContent = (data.total_gb || 0) + ' GB';
+                document.getElementById('usedSpace').textContent = (data.used_gb || 0) + ' GB';
+                document.getElementById('freeSpace').textContent = (data.free_gb || 0) + ' GB';
+                
+            } catch (error) {
+                console.error('Error loading config:', error);
+                showAlert('加载配置失败', 'danger');
+            }
+        }
+        
+        // 设置路径到输入框
+        function setPath(path) {
+            document.getElementById('newPath').value = path;
+        }
+        
+        // 更新存储路径
+        async function updateStoragePath() {
+            const newPath = document.getElementById('newPath').value.trim();
+            
+            if (!newPath) {
+                showAlert('请输入路径', 'danger');
+                return;
+            }
+            
+            // 验证路径格式
+            if (isWindows && !newPath.match(/^[a-zA-Z]:\\/)) {
+                if (!confirm('路径格式可能不正确，Windows通常使用盘符开头如 D:\\，确定要继续吗？')) {
+                    return;
+                }
+            }
+            
+            try {
+                const response = await fetch('/api/storage/path', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ new_path: newPath })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('存储路径更新成功！', 'success');
+                    await loadConfig(); // 重新加载配置
+                } else {
+                    showAlert('更新失败，请确保路径存在且有写入权限', 'danger');
+                }
+            } catch (error) {
+                console.error('Error updating path:', error);
+                showAlert('更新失败: ' + error.message, 'danger');
+            }
+        }
+        
+        // 显示提示信息
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', loadConfig);
+    </script>
+</body>
+</html>
