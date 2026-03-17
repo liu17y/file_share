@@ -101,19 +101,68 @@ async def update_storage_path(new_path: str = Form(...)):
     return {"success": success}
 
 
-# 初始化上传（断点续传）
+# 初始化上传（断点续传）- 使用更宽松的类型
 @app.post("/api/upload/init")
 async def init_upload(
-        file_id: str = Form(...),
-        file_name: str = Form(...),
-        file_size: int = Form(...),
-        target_path: str = Form(...),
-        total_chunks: int = Form(...)
+        request: Request
 ):
-    result = await upload_manager.init_upload(
-        file_id, file_name, file_size, target_path, total_chunks
-    )
-    return result
+    """使用 Request 对象直接获取表单数据"""
+    print("=== Upload Init Request ===")
+
+    try:
+        form_data = await request.form()
+
+        # 手动提取字段
+        file_id = form_data.get('file_id')
+        file_name = form_data.get('file_name')
+        file_size = form_data.get('file_size')
+        target_path = form_data.get('target_path', '')
+        total_chunks = form_data.get('total_chunks')
+
+        print(f"Extracted data: file_id={file_id}, file_name={file_name}, file_size={file_size}, target_path='{target_path}', total_chunks={total_chunks}")
+
+        # 验证必要字段
+        if not file_id or not file_name or not file_size or not total_chunks:
+            missing = []
+            if not file_id: missing.append('file_id')
+            if not file_name: missing.append('file_name')
+            if not file_size: missing.append('file_size')
+            if not total_chunks: missing.append('total_chunks')
+
+            return JSONResponse(
+                status_code=400,
+                content={"error": f"Missing fields: {', '.join(missing)}"}
+            )
+
+        # 转换类型
+        try:
+            file_size_int = int(file_size)
+            total_chunks_int = int(total_chunks)
+        except ValueError as e:
+            return JSONResponse(
+                status_code=400,
+                content={"error": f"Invalid number format: {e}"}
+            )
+
+        # 调用上传管理器
+        result = await upload_manager.init_upload(
+            file_id,
+            file_name,
+            file_size_int,
+            target_path,
+            total_chunks_int
+        )
+
+        return result
+
+    except Exception as e:
+        print(f"Error processing upload init: {e}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e)}
+        )
 
 
 # 上传分块

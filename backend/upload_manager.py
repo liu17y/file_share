@@ -65,8 +65,11 @@ class UploadManager:
                 print(f"Upload info not found for {file_id}")
                 return
 
-            # 异步写入分块
-            async with aiofiles.open(upload_info["temp_path"], 'ab') as f:
+            # 确保临时文件存在，如果不存在则创建
+            temp_path = upload_info["temp_path"]
+
+            # 异步写入分块 - 使用'a+b'模式确保文件存在时追加，不存在时创建
+            async with aiofiles.open(temp_path, 'ab') as f:
                 await f.write(chunk_data)
 
             upload_info["uploaded_chunks"].add(chunk_index)
@@ -81,6 +84,10 @@ class UploadManager:
 
         except Exception as e:
             print(f"Error processing upload task: {e}")
+            # 如果出错，记录错误信息
+            if file_id in self.uploads:
+                self.uploads[file_id]["error"] = str(e)
+                self.uploads[file_id]["status"] = "failed"
 
     async def _save_progress(self, file_id: str):
         """保存上传进度"""
@@ -99,20 +106,51 @@ class UploadManager:
 
     async def init_upload(self, file_id: str, file_name: str, file_size: int,
                           target_path: str, total_chunks: int) -> Dict:
-        """初始化上传任务"""
+        """初始化上传任务 - 修复根目录问题"""
         # 确保处理器已启动
         await self.start_processor()
 
-        # 确保目标路径正确
-        if target_path == '/' or target_path == '\\' or target_path == '':
+        # 处理目标路径 - 修复根目录问题
+        print(f"Initializing upload: target_path='{target_path}', file_name='{file_name}'")
+
+        # 规范化目标路径
+        # 如果 target_path 是 None、空字符串、'/' 或 '\'，表示根目录
+        if target_path is None or target_path == '' or target_path == '/' or target_path == '\\':
+            # 根目录
             target_dir = settings.base_dir
+            clean_path = ''
+            print(f"Root directory detected, target_dir = {target_dir}")
         else:
-            # 清理路径
-            clean_path = target_path.replace('\\', '/')
-            target_dir = os.path.join(settings.base_dir, clean_path)
+            # 非根目录，清理路径
+            clean_path = target_path.replace('\\', '/').strip('/')
+            if clean_path:
+                target_dir = os.path.join(settings.base_dir, clean_path)
+            else:
+                target_dir = settings.base_dir
+            print(f"Subdirectory detected: {clean_path}, target_dir = {target_dir}")
 
         # 确保目标目录存在
-        os.makedirs(target_dir, exist_ok=True)
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+            print(f"Ensured target directory exists: {target_dir}")
+        except Exception as e:
+            print(f"Error creating target directory: {e}")
+            return {"error": f"Failed to create target directory: {str(e)}"}
+
+        # 临时文件路径
+        temp_path = self._get_temp_path(file_id)
+        print(f"Temp file path: {temp_path}")
+
+        # 预先创建空的临时文件（如果不存在）
+        if not os.path.exists(temp_path):
+            try:
+                # 创建空文件
+                with open(temp_path, 'wb') as f:
+                    pass  # 创建空文件
+                print(f"Created temporary file: {temp_path}")
+            except Exception as e:
+                print(f"Error creating temp file: {e}")
+                return {"error": f"Failed to create temp file: {str(e)}"}
 
         upload_info = {
             "file_id": file_id,
@@ -123,20 +161,22 @@ class UploadManager:
             "total_chunks": total_chunks,
             "uploaded_chunks": set(),
             "status": "initialized",
-            "temp_path": self._get_temp_path(file_id),
+            "temp_path": temp_path,
             "created_at": time.time()
         }
 
         self.uploads[file_id] = upload_info
 
         # 检查是否已有部分上传
-        if os.path.exists(upload_info["temp_path"]):
+        uploaded_chunks = set()
+        if os.path.exists(temp_path) and os.path.getsize(temp_path) > 0:
             info_path = self._get_upload_info_path(file_id)
             if os.path.exists(info_path):
                 try:
                     async with aiofiles.open(info_path, 'r') as f:
                         saved_info = json.loads(await f.read())
-                        upload_info["uploaded_chunks"] = set(saved_info.get("uploaded_chunks", []))
+                        uploaded_chunks = set(saved_info.get("uploaded_chunks", []))
+                        upload_info["uploaded_chunks"] = uploaded_chunks
                         upload_info["status"] = "resumed"
                         print(f"Resuming upload for {file_name}, {len(upload_info['uploaded_chunks'])} chunks already uploaded")
                 except Exception as e:
@@ -145,25 +185,29 @@ class UploadManager:
         # 清理旧的未完成上传
         await self._cleanup_old_uploads()
 
-        return {
+        result = {
             "file_id": file_id,
-            "uploaded_chunks": list(upload_info["uploaded_chunks"]),
+            "uploaded_chunks": list(uploaded_chunks),
             "status": upload_info["status"]
         }
+        print(f"Init upload result: {result}")
+        return result
 
     async def save_chunk(self, file_id: str, chunk_index: int, chunk_data: bytes) -> Dict:
         """保存分块数据"""
         if file_id not in self.uploads:
+            print(f"Upload not found for file_id: {file_id}")
             return {"error": "Upload not found"}
 
         upload_info = self.uploads[file_id]
 
         # 如果块已经上传，跳过
         if chunk_index in upload_info["uploaded_chunks"]:
+            print(f"Chunk {chunk_index} already uploaded for {file_id}")
             return {
                 "file_id": file_id,
                 "chunk_index": chunk_index,
-                "uploaded_chunks": len(upload_info["uploaded_chunks"]),
+                "uploaded_chunks": list(upload_info["uploaded_chunks"]),
                 "total_chunks": upload_info["total_chunks"],
                 "completed": len(upload_info["uploaded_chunks"]) == upload_info["total_chunks"]
             }
@@ -178,7 +222,7 @@ class UploadManager:
         return {
             "file_id": file_id,
             "chunk_index": chunk_index,
-            "uploaded_chunks": len(upload_info["uploaded_chunks"]),
+            "uploaded_chunks": list(upload_info["uploaded_chunks"]),
             "total_chunks": upload_info["total_chunks"],
             "completed": len(upload_info["uploaded_chunks"]) == upload_info["total_chunks"]
         }
@@ -189,26 +233,41 @@ class UploadManager:
         target_full_path = os.path.join(upload_info["target_dir"], upload_info["file_name"])
 
         try:
+            print(f"Finalizing upload: {target_full_path}")
+
             # 确保目标目录存在
             os.makedirs(os.path.dirname(target_full_path), exist_ok=True)
+
+            # 检查临时文件是否存在
+            if not os.path.exists(upload_info["temp_path"]):
+                raise FileNotFoundError(f"Temporary file not found: {upload_info['temp_path']}")
+
+            # 检查文件大小是否匹配
+            temp_size = os.path.getsize(upload_info["temp_path"])
+            if temp_size != upload_info["file_size"]:
+                print(f"Warning: File size mismatch. Expected {upload_info['file_size']}, got {temp_size}")
 
             # 移动临时文件到目标位置
             if os.path.exists(target_full_path):
                 os.remove(target_full_path)
-            os.rename(upload_info["temp_path"], target_full_path)
+                print(f"Removed existing file: {target_full_path}")
 
-            # 清理临时文件
+            os.rename(upload_info["temp_path"], target_full_path)
+            print(f"Moved temp file to: {target_full_path}")
+
+            # 清理临时信息文件
             info_path = self._get_upload_info_path(file_id)
             if os.path.exists(info_path):
                 os.remove(info_path)
+                print(f"Removed info file: {info_path}")
 
             upload_info["status"] = "completed"
+            print(f"Upload completed: {target_full_path}")
 
             # 从活跃上传中移除
             if file_id in self.uploads:
                 del self.uploads[file_id]
-
-            print(f"Upload completed: {target_full_path}")
+                print(f"Removed upload info for {file_id}")
 
         except Exception as e:
             upload_info["status"] = "failed"
@@ -248,12 +307,15 @@ class UploadManager:
             try:
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
+                    print(f"Removed temp file: {temp_path}")
                 if os.path.exists(info_path):
                     os.remove(info_path)
+                    print(f"Removed info file: {info_path}")
             except Exception as e:
                 print(f"Error cleaning up files: {e}")
 
             del self.uploads[file_id]
+            print(f"Cancelled upload for {file_id}")
             return True
         return False
 

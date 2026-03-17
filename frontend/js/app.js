@@ -4,7 +4,7 @@ class FileShareSystem {
         this.selectedFiles = new Set();
         this.uploads = new Map();
         this.eventSource = null;
-        this.pendingUploads = 0; // 添加这一行 - 跟踪进行中的上传数量
+        this.pendingUploads = 0;
         this.init();
     }
 
@@ -16,6 +16,9 @@ class FileShareSystem {
                 throw new Error('Backend service unavailable');
             }
 
+            const healthData = await healthResponse.json();
+            console.log('Connected to backend, base_dir:', healthData.base_dir);
+
             await this.loadFiles();
             this.initEventListeners();
             this.initDragAndDrop();
@@ -23,6 +26,8 @@ class FileShareSystem {
 
             // 加载存储信息
             this.loadStorageInfo();
+
+            console.log('FileShareSystem initialized successfully');
         } catch (error) {
             console.error('Initialization error:', error);
             const fileList = document.getElementById('fileList');
@@ -501,15 +506,13 @@ class FileShareSystem {
         }
 
         try {
+            const formData = new FormData();
+            formData.append('path', this.currentPath);
+            formData.append('name', name);
+
             const response = await fetch('/api/folders', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    path: this.currentPath,
-                    name: name
-                })
+                body: formData
             });
 
             const data = await response.json();
@@ -521,7 +524,7 @@ class FileShareSystem {
                 }
                 await this.loadFiles();
             } else {
-                alert('创建失败');
+                alert('创建失败: ' + (data.error || '未知错误'));
             }
         } catch (error) {
             console.error('Error creating folder:', error);
@@ -545,150 +548,123 @@ class FileShareSystem {
     }
 
     browseFolder() {
-    // 创建一个隐藏的 file input 用于选择文件夹
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.webkitdirectory = true;  // 允许选择文件夹
-    input.directory = true;
-    input.multiple = false;
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.webkitdirectory = true;
+        input.directory = true;
+        input.multiple = false;
 
-    input.onchange = (e) => {
-        if (e.target.files.length > 0) {
-            // 获取第一个文件的路径
-            const file = e.target.files[0];
+        input.onchange = (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                let folderPath = '';
 
-            // 尝试获取文件夹路径
-            let folderPath = '';
+                if (file.path) {
+                    folderPath = file.path.substring(0, file.path.lastIndexOf('\\'));
+                } else if (file.webkitRelativePath) {
+                    const parts = file.webkitRelativePath.split('/');
+                    if (parts.length > 0) {
+                        alert('您的浏览器不支持获取完整文件夹路径。\n请手动输入完整路径，例如: D:\\shared_files');
+                        return;
+                    }
+                }
 
-            // Chrome/Edge 等浏览器支持 file.path 属性
-            if (file.path) {
-                // Windows 路径: D:\folder\subfolder\file.txt
-                // 提取文件夹路径
-                folderPath = file.path.substring(0, file.path.lastIndexOf('\\'));
+                const newPathInput = document.getElementById('newPath');
+                const pathPreview = document.getElementById('pathPreview');
+
+                if (newPathInput && folderPath) {
+                    newPathInput.value = folderPath;
+                    if (pathPreview) {
+                        pathPreview.textContent = `预览: ${folderPath}`;
+                    }
+                } else {
+                    alert('请手动输入完整的文件夹路径');
+                }
             }
-            // 对于不支持 file.path 的浏览器，使用 webkitRelativePath
-            else if (file.webkitRelativePath) {
-                // webkitRelativePath: folder/subfolder/file.txt
-                // 提取根文件夹名称
-                const parts = file.webkitRelativePath.split('/');
-                if (parts.length > 0) {
-                    // 在 Windows 上，我们需要让用户手动输入完整路径
-                    alert('您的浏览器不支持获取完整文件夹路径。\n请手动输入完整路径，例如: D:\\shared_files');
+        };
+
+        input.click();
+    }
+
+    async updateStoragePath() {
+        const newPathInput = document.getElementById('newPath');
+        if (!newPathInput) return;
+
+        let newPath = newPathInput.value.trim();
+        if (!newPath) {
+            alert('请输入路径');
+            return;
+        }
+
+        newPath = newPath.replace(/^['"]|['"]$/g, '');
+
+        if (navigator.platform.indexOf('Win') > -1) {
+            newPath = newPath.replace(/\//g, '\\');
+        } else {
+            newPath = newPath.replace(/\\/g, '/');
+        }
+
+        if (navigator.platform.indexOf('Win') > -1) {
+            if (!/^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$/.test(newPath) &&
+                !/^[a-zA-Z]:\\$/.test(newPath) &&
+                !/^[a-zA-Z]:$/.test(newPath)) {
+                if (!confirm('路径格式可能不正确，确定要继续吗？\n正确的格式例如: D:\\shared_files')) {
                     return;
                 }
             }
+        }
 
-            // 更新输入框
-            const newPathInput = document.getElementById('newPath');
-            const pathPreview = document.getElementById('pathPreview');
+        const updateBtn = document.getElementById('updatePathBtn');
+        const originalText = updateBtn.textContent;
+        updateBtn.textContent = '更新中...';
+        updateBtn.disabled = true;
 
-            if (newPathInput && folderPath) {
-                newPathInput.value = folderPath;
-                if (pathPreview) {
-                    pathPreview.textContent = `预览: ${folderPath}`;
+        try {
+            console.log('Updating storage path to:', newPath);
+
+            const formData = new FormData();
+            formData.append('new_path', newPath);
+
+            const response = await fetch('/api/storage/path', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            console.log('Update path response:', data);
+
+            if (data.success) {
+                const storagePath = document.getElementById('storage-path');
+                if (storagePath) {
+                    storagePath.textContent = newPath;
+                    storagePath.title = newPath;
                 }
+
+                const modal = document.getElementById('pathModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+
+                await this.loadFiles('');
+
+                const storageResponse = await fetch('/api/storage');
+                if (storageResponse.ok) {
+                    const storageInfo = await storageResponse.json();
+                    this.updateStorageDisplay(storageInfo);
+                }
+
+                alert('存储路径更新成功！');
             } else {
-                // 如果无法获取路径，提示用户手动输入
-                alert('请手动输入完整的文件夹路径');
+                alert('更新失败，请确保路径存在且有写入权限：' + (data.error || '未知错误'));
             }
-        }
-    };
-
-    input.click();
-}
-
-    async updateStoragePath() {
-    const newPathInput = document.getElementById('newPath');
-    if (!newPathInput) return;
-
-    let newPath = newPathInput.value.trim();
-    if (!newPath) {
-        alert('请输入路径');
-        return;
-    }
-
-    // 规范化路径
-    // 移除多余的引号和空格
-    newPath = newPath.replace(/^['"]|['"]$/g, '');
-
-    // 确保 Windows 路径使用反斜杠
-    if (navigator.platform.indexOf('Win') > -1) {
-        // 如果是 Windows，确保使用反斜杠
-        newPath = newPath.replace(/\//g, '\\');
-    } else {
-        // 如果是 Linux/Mac，确保使用正斜杠
-        newPath = newPath.replace(/\\/g, '/');
-    }
-
-    // 验证路径格式
-    if (navigator.platform.indexOf('Win') > -1) {
-        // Windows 路径验证：必须是 X:\ 或 X:\folder 格式
-        if (!/^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$/.test(newPath) &&
-            !/^[a-zA-Z]:\\$/.test(newPath) &&
-            !/^[a-zA-Z]:$/.test(newPath)) {
-            if (!confirm('路径格式可能不正确，确定要继续吗？\n正确的格式例如: D:\\shared_files')) {
-                return;
-            }
+        } catch (error) {
+            console.error('Error updating path:', error);
+            alert('更新失败: ' + error.message);
+        } finally {
+            updateBtn.textContent = originalText;
+            updateBtn.disabled = false;
         }
     }
-
-    // 显示加载状态
-    const updateBtn = document.getElementById('updatePathBtn');
-    const originalText = updateBtn.textContent;
-    updateBtn.textContent = '更新中...';
-    updateBtn.disabled = true;
-
-    try {
-        console.log('Updating storage path to:', newPath);
-
-        const formData = new FormData();
-        formData.append('new_path', newPath);
-
-        const response = await fetch('/api/storage/path', {
-            method: 'POST',
-            body: formData  // 不要设置 Content-Type
-        });
-
-        const data = await response.json();
-        console.log('Update path response:', data);
-
-        if (data.success) {
-            // 更新显示的路径
-            const storagePath = document.getElementById('storage-path');
-            if (storagePath) {
-                storagePath.textContent = newPath;
-                storagePath.title = newPath;
-            }
-
-            // 关闭模态框
-            const modal = document.getElementById('pathModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-
-            // 重新加载根目录文件
-            await this.loadFiles('');
-
-            // 重新加载存储信息
-            const storageResponse = await fetch('/api/storage');
-            if (storageResponse.ok) {
-                const storageInfo = await storageResponse.json();
-                this.updateStorageDisplay(storageInfo);
-            }
-
-            alert('存储路径更新成功！');
-        } else {
-            alert('更新失败，请确保路径存在且有写入权限：' + (data.error || '未知错误'));
-        }
-    } catch (error) {
-        console.error('Error updating path:', error);
-        alert('更新失败: ' + error.message);
-    } finally {
-        // 恢复按钮状态
-        updateBtn.textContent = originalText;
-        updateBtn.disabled = false;
-    }
-}
 
     uploadFiles() {
         const input = document.createElement('input');
@@ -720,141 +696,120 @@ class FileShareSystem {
         input.multiple = true;
         input.onchange = (e) => {
             const files = Array.from(e.target.files);
-            const folderStructure = this.buildFolderStructure(files);
+
+            if (files.length === 0) return;
+
+            // 获取根文件夹名称
+            const firstFile = files[0];
+            let rootFolderName = '';
+
+            if (firstFile.webkitRelativePath) {
+                rootFolderName = firstFile.webkitRelativePath.split('/')[0];
+            }
 
             const queue = document.getElementById('uploadQueue');
             if (queue) {
                 queue.style.display = 'block';
             }
 
-            // 上传文件夹结构
-            this.uploadFolderStructure(folderStructure, this.currentPath).then(() => {
-                this.loadFiles(); // 所有文件夹上传完成后刷新
+            console.log(`开始上传文件夹: ${rootFolderName}, 包含 ${files.length} 个文件`);
+
+            // 上传文件夹
+            this.uploadFolderStructure(files, this.currentPath).then(() => {
+                console.log('文件夹上传完成');
+                this.loadFiles();
+            }).catch(error => {
+                console.error('文件夹上传失败:', error);
+                alert('文件夹上传失败: ' + error.message);
             });
         };
         input.click();
     }
 
-    buildFolderStructure(files) {
-        const structure = {};
+    async uploadFolderStructure(files, basePath) {
+        // 按路径分组文件
+        const fileGroups = {};
 
-        files.forEach(file => {
-            const path = file.webkitRelativePath.split('/');
-            let current = structure;
+        for (const file of files) {
+            const relativePath = file.webkitRelativePath;
+            const pathParts = relativePath.split('/');
+            const fileName = pathParts.pop();
+            const folderPath = pathParts.join('/');
 
-            for (let i = 0; i < path.length; i++) {
-                const part = path[i];
-                if (i === path.length - 1) {
-                    if (!current.files) current.files = [];
-                    current.files.push(file);
-                } else {
-                    if (!current[part]) {
-                        current[part] = {};
-                    }
-                    current = current[part];
+            if (!fileGroups[folderPath]) {
+                fileGroups[folderPath] = [];
+            }
+            fileGroups[folderPath].push({
+                file: file,
+                name: fileName,
+                path: folderPath
+            });
+        }
+
+        // 首先创建所有必要的文件夹
+        const folderPaths = Object.keys(fileGroups);
+        for (const folderPath of folderPaths) {
+            if (folderPath) {
+                const targetFolderPath = basePath ? `${basePath}/${folderPath}` : folderPath;
+                try {
+                    await this.createFolderAtPath(targetFolderPath);
+                } catch (error) {
+                    console.warn(`创建文件夹失败 ${targetFolderPath}:`, error);
                 }
             }
-        });
+        }
 
-        return structure;
-    }
-
-    async uploadFolderStructure(structure, basePath) {
+        // 然后上传所有文件
         const uploadPromises = [];
+        for (const folderPath of folderPaths) {
+            const filesInFolder = fileGroups[folderPath];
+            for (const fileInfo of filesInFolder) {
+                const targetPath = basePath ?
+                    (folderPath ? `${basePath}/${folderPath}` : basePath) :
+                    folderPath;
 
-        for (const [key, value] of Object.entries(structure)) {
-            if (key === 'files') {
-                for (const file of value) {
-                    uploadPromises.push(this.uploadFile(file, basePath));
-                }
-            } else if (typeof value === 'object') {
-                const folderPath = basePath ? `${basePath}/${key}` : key;
-                await this.createFolderAtPath(folderPath);
-                const subPromises = await this.uploadFolderStructure(value, folderPath);
-                uploadPromises.push(...subPromises);
+                uploadPromises.push(
+                    this.uploadFile(fileInfo.file, targetPath)
+                );
             }
         }
 
         return Promise.all(uploadPromises);
     }
 
-    async createFolder() {
-    const input = document.getElementById('folderName');
-    if (!input) return;
+    async createFolderAtPath(folderPath) {
+        if (!folderPath) return true;
 
-    const name = input.value.trim();
-    if (!name) {
-        alert('请输入文件夹名称');
-        return;
-    }
+        const parts = folderPath.split('/');
+        let currentPath = '';
 
-    // 验证文件夹名称
-    if (!/^[^\\/:*?"<>|]+$/.test(name)) {
-        alert('文件夹名称包含非法字符');
-        return;
-    }
+        for (const part of parts) {
+            if (!part) continue;
 
-    try {
-        const formData = new FormData();
-        formData.append('path', this.currentPath);
-        formData.append('name', name);
+            currentPath = currentPath ? `${currentPath}/${part}` : part;
 
-        const response = await fetch('/api/folders', {
-            method: 'POST',
-            body: formData  // 使用 FormData 而不是 URLSearchParams
-        });
+            try {
+                const formData = new FormData();
+                const parentPath = currentPath.includes('/') ?
+                    currentPath.substring(0, currentPath.lastIndexOf('/')) : '';
+                formData.append('path', parentPath);
+                formData.append('name', part);
 
-        const data = await response.json();
-
-        if (data.success) {
-            const modal = document.getElementById('newFolderModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-            await this.loadFiles();
-        } else {
-            alert('创建失败: ' + (data.error || '未知错误'));
-        }
-    } catch (error) {
-        console.error('Error creating folder:', error);
-        alert('创建失败: ' + error.message);
-    }
-}
-
-    async handleDroppedItem(entry, path) {
-        return new Promise((resolve) => {
-            if (entry.isFile) {
-                entry.file(file => {
-                    this.uploadFile(file, path).then(() => resolve());
+                const response = await fetch('/api/folders', {
+                    method: 'POST',
+                    body: formData
                 });
-            } else if (entry.isDirectory) {
-                const reader = entry.createReader();
-                const entries = [];
 
-                const readEntries = () => {
-                    reader.readEntries(results => {
-                        if (results.length) {
-                            entries.push(...results);
-                            readEntries();
-                        } else {
-                            const folderName = entry.name;
-                            const folderPath = path ? `${path}/${folderName}` : folderName;
-
-                            this.createFolderAtPath(folderPath).then(() => {
-                                const promises = entries.map(childEntry =>
-                                    this.handleDroppedItem(childEntry, folderPath)
-                                );
-                                Promise.all(promises).then(() => resolve());
-                            });
-                        }
-                    });
-                };
-
-                readEntries();
-            } else {
-                resolve();
+                const data = await response.json();
+                if (!data.success) {
+                    console.warn(`创建文件夹 ${currentPath} 可能已存在`);
+                }
+            } catch (error) {
+                console.warn(`创建文件夹 ${currentPath} 出错:`, error);
             }
-        });
+        }
+
+        return true;
     }
 
     async uploadFile(file, targetPath) {
@@ -862,33 +817,72 @@ class FileShareSystem {
     const chunkSize = 8 * 1024 * 1024; // 8MB
     const totalChunks = Math.ceil(file.size / chunkSize);
 
+    console.log(`Uploading file: ${file.name}, targetPath: '${targetPath}', totalChunks: ${totalChunks}`);
+
     // 添加到队列 UI
     this.addToQueue(fileId, file.name, file.size, totalChunks);
 
     try {
-        // 1. 初始化上传
+        // 1. 初始化上传 - 使用 FormData 而不是 URLSearchParams
+        const formData = new FormData();
+        formData.append('file_id', fileId);
+        formData.append('file_name', file.name);
+        formData.append('file_size', file.size.toString());
+
+        // 关键修复：确保 target_path 总是被发送，但正确处理空值
+        // 如果 targetPath 是空字符串、null、undefined、'/' 或 '\'，发送空字符串
+        let finalTargetPath = '';
+        if (targetPath && targetPath !== '/' && targetPath !== '\\') {
+            finalTargetPath = targetPath;
+        }
+        formData.append('target_path', finalTargetPath);
+        formData.append('total_chunks', totalChunks.toString());
+
+        console.log('Init upload FormData contents:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
         const initResponse = await fetch('/api/upload/init', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                file_id: fileId,
-                file_name: file.name,
-                file_size: file.size,
-                target_path: targetPath,
-                total_chunks: totalChunks
-            })
+            // 不要手动设置 Content-Type，让浏览器自动设置带有 boundary 的 multipart/form-data
+            // headers: {
+            //     'Content-Type': 'application/x-www-form-urlencoded',
+            // },
+            body: formData
         });
 
-        if (!initResponse.ok) throw new Error('Failed to initialize upload');
-        const initData = await initResponse.json();
+        if (!initResponse.ok) {
+            const errorText = await initResponse.text();
+            console.error('Init upload failed:', initResponse.status, errorText);
 
-        // 【修复点 1】这里 initData.uploaded_chunks 通常是数组，要取 .length
-        this.updateQueueProgress(fileId, initData.uploaded_chunks.length, totalChunks);
+            // 尝试解析错误响应
+            try {
+                const errorJson = JSON.parse(errorText);
+                throw new Error(`Failed to initialize upload: ${errorJson.detail || errorText}`);
+            } catch (e) {
+                throw new Error(`Failed to initialize upload: ${initResponse.status} ${errorText}`);
+            }
+        }
+
+        const initData = await initResponse.json();
+        console.log('Init upload response:', initData);
+
+        if (initData.error) {
+            throw new Error(initData.error);
+        }
+
+        // 确保 uploaded_chunks 是数组
+        const uploadedChunks = Array.isArray(initData.uploaded_chunks) ?
+            initData.uploaded_chunks : [];
+
+        this.updateQueueProgress(fileId, uploadedChunks.length, totalChunks);
 
         // 2. 分片上传循环
         for (let i = 0; i < totalChunks; i++) {
             // 跳过已上传的分片
-            if (initData.uploaded_chunks.includes(i)) {
+            if (uploadedChunks.includes(i)) {
+                console.log(`Chunk ${i} already uploaded, skipping`);
                 continue;
             }
 
@@ -896,58 +890,61 @@ class FileShareSystem {
             const end = Math.min(start + chunkSize, file.size);
             const chunk = file.slice(start, end);
 
-            const formData = new FormData();
-            formData.append('file_id', fileId);
-            formData.append('chunk_index', i);
-            formData.append('chunk_data', chunk);
+            const chunkFormData = new FormData();
+            chunkFormData.append('file_id', fileId);
+            chunkFormData.append('chunk_index', i.toString());
+            chunkFormData.append('chunk_data', chunk);
+
+            console.log(`Uploading chunk ${i}/${totalChunks-1}, size: ${chunk.size}`);
 
             const response = await fetch('/api/upload/chunk', {
                 method: 'POST',
-                body: formData
+                body: chunkFormData
             });
 
-            if (!response.ok) throw new Error(`Failed to upload chunk ${i}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to upload chunk ${i}: ${response.status} ${errorText}`);
+            }
 
             const data = await response.json();
+            console.log(`Chunk ${i} response:`, data);
 
-            // 【修复点 2】同样，后端返回的 uploaded_chunks 如果是数组，需取长度
-            const currentUploadedCount = Array.isArray(data.uploaded_chunks)
-                ? data.uploaded_chunks.length
-                : data.uploaded_chunks; // 兼容后端直接返回数字的情况
+            if (data.error) {
+                throw new Error(data.error);
+            }
 
+            // 更新进度
+            const currentUploadedCount = Array.isArray(data.uploaded_chunks) ?
+                data.uploaded_chunks.length :
+                (data.uploaded_chunks || i + 1);
+
+            this.updateQueueProgress(fileId, currentUploadedCount, data.total_chunks || totalChunks);
+
+            // 如果完成，跳出循环
             if (data.completed) {
-                // 上传完全完成
-                this.updateQueueProgress(fileId, totalChunks, totalChunks); // 强制设为 100%
-
-                // 稍微延迟一点移除，让用户看到"已完成"状态，或者直接移除
-                // 这里选择直接移除并触发检查
-                this.removeFromQueue(fileId);
-            } else {
-                // 更新中间进度
-                this.updateQueueProgress(fileId, currentUploadedCount, data.total_chunks || totalChunks);
+                console.log('Upload completed from server response');
+                break;
             }
         }
 
-        // 3. 单个文件处理完毕后的操作
-        // 注意：如果上面 data.completed 为真，我们已经调用了 removeFromQueue。
-        // 如果循环结束但没有触发 completed 标志（比如最后一个分片返回没带 completed 但实际完了），需要兜底
-        if (this.uploads.has(fileId)) {
-             this.removeFromQueue(fileId);
-        }
+        // 3. 标记上传完成
+        this.updateQueueProgress(fileId, totalChunks, totalChunks);
+
+        // 延迟移除，让用户看到100%状态
+        setTimeout(() => {
+            this.removeFromQueue(fileId);
+            this.checkAndCloseQueue();
+        }, 1000);
 
         // 刷新文件列表
         await this.loadFiles();
-
-        // 【修复点 3】每次移除任务后都检查是否要关闭队列
-        this.checkAndCloseQueue();
 
     } catch (error) {
         console.error('Upload error:', error);
         this.updateQueueError(fileId, error.message);
 
-        // 出错时也移除队列项（或者保留显示错误，根据你的需求，原代码是移除）
-        // 如果想保留错误信息给用户看几秒，可以像 updateQueueError 里那样 setTimeout
-        // 但为了计数器准确，这里先逻辑上认为该任务结束
+        // 出错时延迟移除
         setTimeout(() => {
             this.removeFromQueue(fileId);
             this.checkAndCloseQueue();
@@ -964,158 +961,143 @@ class FileShareSystem {
     }
 
     addToQueue(fileId, fileName, fileSize, totalChunks) {
-    const queue = document.getElementById('queueItems');
-    if (!queue) return;
+        const queue = document.getElementById('queueItems');
+        if (!queue) return;
 
-    // 增加上传计数
-    this.pendingUploads++;
+        this.pendingUploads++;
 
-    const size = this.formatFileSize(fileSize);
+        const size = this.formatFileSize(fileSize);
 
-    const itemHtml = `
-        <div class="queue-item" id="queue-${fileId}">
-            <div class="item-info">
-                <div class="file-info">
-                    <i class="fas fa-file"></i>
-                    <span class="file-name" title="${fileName}">${this.escapeHtml(fileName)}</span>
+        const itemHtml = `
+            <div class="queue-item" id="queue-${fileId}">
+                <div class="item-info">
+                    <div class="file-info">
+                        <i class="fas fa-file"></i>
+                        <span class="file-name" title="${fileName}">${this.escapeHtml(fileName)}</span>
+                    </div>
+                    <span class="file-size">${size}</span>
                 </div>
-                <span class="file-size">${size}</span>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="item-status">
+                    <span class="status-text">准备上传...</span>
+                    <span class="progress-text">0/${totalChunks}</span>
+                </div>
+                <button class="cancel-upload" onclick="window.fileSystem.cancelUpload('${fileId}')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: 0%"></div>
-            </div>
-            <div class="item-status">
-                <span class="status-text">准备上传...</span>
-                <span class="progress-text">0/${totalChunks}</span>
-            </div>
-            <button class="cancel-upload" onclick="window.fileSystem.cancelUpload('${fileId}')">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
+        `;
 
-    queue.insertAdjacentHTML('beforeend', itemHtml);
-    this.uploads.set(fileId, {
-        fileName,
-        totalChunks,
-        uploadedChunks: 0,
-        status: 'uploading'
-    });
-}
-
-    updateQueueProgress(fileId, uploadedChunks, totalChunks) {
-    const item = document.getElementById(`queue-${fileId}`);
-    if (!item) return;
-
-    // 【修复点】确保参与计算的是数字
-    const uploadedCount = typeof uploadedChunks === 'number' ? uploadedChunks : 0;
-    const totalCount = typeof totalChunks === 'number' ? totalChunks : 1;
-
-    // 防止除以 0
-    const safeTotal = totalCount === 0 ? 1 : totalCount;
-
-    const percentage = Math.min(100, Math.round((uploadedCount / safeTotal) * 100));
-
-    const progressBar = item.querySelector('.progress-bar');
-    const statusText = item.querySelector('.status-text');
-    const progressText = item.querySelector('.progress-text');
-
-    if (progressBar) {
-        progressBar.style.width = `${percentage}%`;
+        queue.insertAdjacentHTML('beforeend', itemHtml);
+        this.uploads.set(fileId, {
+            fileName,
+            totalChunks,
+            uploadedChunks: 0,
+            status: 'uploading'
+        });
     }
 
-    if (statusText) {
-        if (percentage >= 100) {
-            statusText.textContent = '已完成';
-            statusText.style.color = 'var(--success-color)';
-        } else {
-            statusText.textContent = '上传中...';
-            statusText.style.color = ''; // 重置颜色
+    updateQueueProgress(fileId, uploadedChunks, totalChunks) {
+        const item = document.getElementById(`queue-${fileId}`);
+        if (!item) return;
+
+        const uploadedCount = typeof uploadedChunks === 'number' ? uploadedChunks : 0;
+        const totalCount = typeof totalChunks === 'number' ? totalChunks : 1;
+        const safeTotal = totalCount === 0 ? 1 : totalCount;
+
+        const percentage = Math.min(100, Math.round((uploadedCount / safeTotal) * 100));
+
+        const progressBar = item.querySelector('.progress-bar');
+        const statusText = item.querySelector('.status-text');
+        const progressText = item.querySelector('.progress-text');
+
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        if (statusText) {
+            if (percentage >= 100) {
+                statusText.textContent = '已完成';
+                statusText.style.color = 'var(--success-color)';
+            } else {
+                statusText.textContent = '上传中...';
+                statusText.style.color = '';
+            }
+        }
+
+        if (progressText) {
+            progressText.textContent = `${uploadedCount}/${totalCount}`;
         }
     }
 
-    if (progressText) {
-        progressText.textContent = `${uploadedCount}/${totalCount}`;
-    }
-}
-
     updateQueueError(fileId, error) {
-    const item = document.getElementById(`queue-${fileId}`);
-    if (!item) return;
+        const item = document.getElementById(`queue-${fileId}`);
+        if (!item) return;
 
-    const statusText = item.querySelector('.status-text');
-    const progressBar = item.querySelector('.progress-bar');
+        const statusText = item.querySelector('.status-text');
+        const progressBar = item.querySelector('.progress-bar');
 
-    if (statusText) {
-        statusText.textContent = '失败';
-        statusText.style.color = 'var(--danger-color)';
+        if (statusText) {
+            statusText.textContent = '失败';
+            statusText.style.color = 'var(--danger-color)';
+        }
+
+        if (progressBar) {
+            progressBar.style.background = 'var(--danger-color)';
+        }
+
+        item.setAttribute('title', error);
+
+        setTimeout(() => {
+            this.removeFromQueue(fileId);
+            this.checkAndCloseQueue();
+        }, 3000);
     }
-
-    if (progressBar) {
-        progressBar.style.background = 'var(--danger-color)';
-    }
-
-    item.setAttribute('title', error);
-
-    // 3秒后自动移除失败的项
-    setTimeout(() => {
-        this.removeFromQueue(fileId);
-        this.checkAndCloseQueue();
-    }, 3000);
-}
 
     removeFromQueue(fileId) {
-    const item = document.getElementById(`queue-${fileId}`);
-    if (item) {
-        item.remove();
+        const item = document.getElementById(`queue-${fileId}`);
+        if (item) {
+            item.remove();
+        }
+        this.uploads.delete(fileId);
+        this.pendingUploads--;
+        this.checkAndCloseQueue();
     }
-    this.uploads.delete(fileId);
 
-    // 减少上传计数
-    this.pendingUploads--;
+    checkAndCloseQueue() {
+        const queueItemsContainer = document.getElementById('queueItems');
+        const uploadQueueWindow = document.getElementById('uploadQueue');
 
-    // 检查是否所有上传都完成了
-    this.checkAndCloseQueue();
-}
+        if (!queueItemsContainer || !uploadQueueWindow) return;
 
-// 新增方法：检查并关闭队列
-checkAndCloseQueue() {
-    const queueItemsContainer = document.getElementById('queueItems');
-    const uploadQueueWindow = document.getElementById('uploadQueue');
+        const hasNoPendingTasks = this.pendingUploads <= 0;
+        const isDomEmpty = queueItemsContainer.children.length === 0;
 
-    if (!queueItemsContainer || !uploadQueueWindow) return;
-
-    // 条件 1: 内部计数器为 0 (表示没有正在进行的上传任务)
-    // 条件 2: DOM 中确实没有子元素了 (防止 UI 不同步)
-    const hasNoPendingTasks = this.pendingUploads <= 0;
-    const isDomEmpty = queueItemsContainer.children.length === 0;
-
-    if (hasNoPendingTasks && isDomEmpty) {
-        // 添加一个小延迟，避免闪烁，让用户看清最后一个任务消失
-        setTimeout(() => {
-            // 再次检查，防止在延迟期间有新任务加入
-            if (this.pendingUploads <= 0 && queueItemsContainer.children.length === 0) {
-                uploadQueueWindow.style.display = 'none';
-                // 可选：最小化图标复位
-                const icon = document.querySelector('#minimize-queue i');
-                if(icon) icon.className = 'fas fa-minus';
-            }
-        }, 500);
+        if (hasNoPendingTasks && isDomEmpty) {
+            setTimeout(() => {
+                if (this.pendingUploads <= 0 && queueItemsContainer.children.length === 0) {
+                    uploadQueueWindow.style.display = 'none';
+                    const icon = document.querySelector('#minimize-queue i');
+                    if(icon) icon.className = 'fas fa-minus';
+                }
+            }, 500);
+        }
     }
-}
 
     cancelUpload(fileId) {
-    if (confirm('确定要取消上传吗？')) {
-        fetch(`/api/upload/${fileId}`, {
-            method: 'DELETE'
-        }).then(() => {
-            this.removeFromQueue(fileId);
-            this.checkAndCloseQueue(); // 检查是否需要关闭队列
-        }).catch(error => {
-            console.error('Error cancelling upload:', error);
-        });
+        if (confirm('确定要取消上传吗？')) {
+            fetch(`/api/upload/${fileId}`, {
+                method: 'DELETE'
+            }).then(() => {
+                this.removeFromQueue(fileId);
+                this.checkAndCloseQueue();
+            }).catch(error => {
+                console.error('Error cancelling upload:', error);
+            });
+        }
     }
-}
 
     updateStorageDisplay(info) {
         const usedGB = info.used_gb || 0;
