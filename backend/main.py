@@ -1,7 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 import json
@@ -16,15 +15,18 @@ from file_manager import file_manager
 from upload_manager import upload_manager
 from config import settings
 
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="File Share System")
+
+# ... (app 初始化后)
 
 # 配置CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],          # 允许所有来源
+    allow_credentials=True,       # 允许携带凭证（如 Cookies）
+    allow_methods=["*"],          # 允许所有 HTTP 方法 (GET, POST, PUT, DELETE 等)
+    allow_headers=["*"],          # 允许所有请求头
 )
 
 # 确保上传目录存在

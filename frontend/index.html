@@ -3,168 +3,1122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhooshShare</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>AuroraShare · 极光共享</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f3f4f6;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+        #app {
+            width: 100%; height: 100%;
+            /*max-width: 1600px;*/
+            background-color: #ffffff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+        .dark-mode #app {
+            background-color: #1f2937;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        /* 导航栏 */
+        .navbar {
+            padding: 14px 32px; background: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .dark-mode .navbar {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+        }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            background: linear-gradient(145deg, #3b82f6, #8b5cf6);
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 22px;
+            box-shadow: 0 4px 10px rgba(59,130,246,0.3);
+        }
+        .app-title { font-weight: 600; font-size: 18px; color: #1e293b; transition: color 0.3s; }
+        .dark-mode .app-title { color: #f3f4f6; }
+        .navbar-actions { display: flex; align-items: center; gap: 16px; }
+        .theme-toggle {
+            background: #f3f4f6; border: none; width: 36px; height: 36px;
+            border-radius: 50%; cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            color: #4b5563; font-size: 18px; transition: all 0.2s;
+        }
+        .dark-mode .theme-toggle {
+            background: #374151;
+            color: #f3f4f6;
+        }
+        .theme-toggle:hover {
+            background: #e5e7eb;
+        }
+        .dark-mode .theme-toggle:hover {
+            background: #4b5563;
+        }
+        /* 路径栏 */
+        .path-bar {
+            background: #f9fafb; padding: 10px 32px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: center; gap: 8px; font-size: 14px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .dark-mode .path-bar {
+            background: #111827;
+            border-bottom: 1px solid #374151;
+        }
+        .path-segment {
+            cursor: pointer; color: #3b82f6;
+            padding: 4px 10px; border-radius: 6px; transition: all 0.2s;
+            background: transparent;
+        }
+        .dark-mode .path-segment {
+            color: #60a5fa;
+        }
+        .path-segment:hover { background: #eef2ff; }
+        .dark-mode .path-segment:hover { background: #1e3a8a; color: white; }
+        .current-path-display {
+            margin-left: auto; font-size: 12px; color: #94a3b8;
+            background: rgba(0,0,0,0.02); padding: 4px 12px; border-radius: 20px;
+        }
+        .dark-mode .current-path-display {
+            background: rgba(255,255,255,0.05);
+            color: #9ca3af;
+        }
+        /* 主容器 */
+        .main-container { flex: 1; display: flex; overflow: hidden; }
+        /* 侧边栏 */
+        .sidebar {
+            width: 280px; background: #fbfdff;
+            border-right: 1px solid #eef2f6;
+            padding: 24px 20px; display: flex; flex-direction: column;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .dark-mode .sidebar {
+            background: #111827;
+            border-right: 1px solid #374151;
+        }
+        .storage-card {
+            background: linear-gradient(135deg, #eff6ff, #e6f0ff);
+            border-radius: 16px; padding: 20px; margin-bottom: 24px;
+            transition: background 0.3s;
+        }
+        .dark-mode .storage-card {
+            background: linear-gradient(135deg, #1e3a8a, #1e293b);
+        }
+        .storage-label { font-size: 13px; color: #4b5563; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .dark-mode .storage-label { color: #9ca3af; }
+        .storage-value {
+            font-weight: 600; font-size: 14px; color: #0f172a;
+            background: white; padding: 10px 14px; border-radius: 12px;
+            border: 1px solid #dbeafe; width: 100%; margin-bottom: 16px;
+            word-break: break-all;
+        }
+        .dark-mode .storage-value {
+            background: #1f2937;
+            color: #f3f4f6;
+            border: 1px solid #374151;
+        }
+        .action-btn {
+            justify-content: flex-start !important; border: none !important;
+            background: transparent !important; color: #374151 !important;
+            padding: 10px 14px !important; border-radius: 10px !important;
+            font-size: 14px; margin-bottom: 4px !important;
+        }
+        .dark-mode .action-btn {
+            color: #d1d5db !important;
+        }
+        .action-btn:hover { background: #eef2ff !important; color: #2563eb !important; }
+        .dark-mode .action-btn:hover { background: #1e293b !important; color: #60a5fa !important; }
+        .action-grid { display: flex; flex-direction: column; gap: 2px; }
+        /* 文件区域 */
+        .file-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .batch-bar {
+            background: #f8fafc; padding: 8px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .dark-mode .batch-bar {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+        }
+        .toolbar {
+            padding: 14px 24px; display: flex;
+            align-items: center; gap: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px; color: #6b7280;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .dark-mode .toolbar {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+            color: #9ca3af;
+        }
+        .file-table {
+            flex: 1; overflow-y: auto; padding: 0 20px 20px 20px;
+            transition: background-color 0.3s;
+        }
+        .file-item {
+            display: flex; align-items: center;
+            padding: 12px 16px; border-radius: 10px;
+            background: white; transition: all 0.2s;
+            border: 1px solid transparent; margin-bottom: 4px;
+            font-size: 14px;
+        }
+        .dark-mode .file-item {
+            background: #1f2937;
+            border-color: transparent;
+        }
+        .file-item:hover {
+            background: #f9fafb;
+            border-color: #e2e8f0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .dark-mode .file-item:hover {
+            background: #2d3748;
+            border-color: #4b5563;
+        }
+        .file-checkbox { margin-right: 16px; }
+        .file-icon { font-size: 22px; margin-right: 16px; width: 24px; text-align: center; }
+        .folder-icon { color: #f59e0b; }
+        .file-icon .fa-folder { color: #f59e0b; }
+        .file-icon .fa-file { color: #6b7280; }
+        .dark-mode .file-icon .fa-file { color: #9ca3af; }
+        .file-name { flex: 3; font-weight: 500; color: #0f172a; cursor: pointer; }
+        .dark-mode .file-name { color: #f3f4f6; }
+        .file-size { flex: 1; color: #6b7280; font-size: 13px; }
+        .dark-mode .file-size { color: #9ca3af; }
+        .file-modified { flex: 1; color: #6b7280; font-size: 13px; }
+        .dark-mode .file-modified { color: #9ca3af; }
+        .file-actions { display: flex; gap: 8px; }
+        /* 上传对话框美化 */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .dark-mode .upload-area {
+            border-color: #4b5563;
+            background: #1f2937;
+        }
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .dark-mode .upload-area:hover {
+            border-color: #60a5fa;
+            background: #1e3a8a;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #3b82f6;
+            margin-bottom: 16px;
+        }
+        /* 进度条美化 */
+        .upload-progress-item {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+        .dark-mode .upload-progress-item {
+            background: #2d3748;
+        }
+        /* 加载状态 */
+        .loading-container {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 80px 0; color: #94a3b8;
+        }
+        .loading-icon {
+            font-size: 40px; color: #3b82f6;
+            animation: rotating 1.5s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes rotating {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .sse-status {
+            background: #10b981; color: white;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 500;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .empty-state {
+            text-align:center; padding: 60px; color:#94a3b8;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .empty-icon {
+            font-size: 64px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        /* 上传列表 */
+        .upload-file-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .dark-mode .upload-file-list {
+            border-color: #374151;
+        }
+        /* 文件操作按钮 */
+        .action-icon-btn {
+            background: transparent;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+        .action-icon-btn:hover {
+            background: #eef2ff;
+            color: #3b82f6;
+        }
+        .dark-mode .action-icon-btn:hover {
+            background: #374151;
+            color: #60a5fa;
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- 侧边栏 -->
-        <aside class="sidebar">
-            <div class="logo">
-                <i class="fas fa-share-alt"></i>
-                <h2>WhooshShare</h2>
+    <div id="app">
+        <!-- 顶部导航 -->
+        <div class="navbar">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fas fa-cloud-sun"></i></div>
+                <span class="app-title">AuroraShare · 极光共享</span>
+                <span class="sse-status" v-if="sseConnected">
+                    <i class="fas fa-sync-alt fa-spin"></i> 实时
+                </span>
             </div>
-
-            <div class="storage-info">
-                <h3><i class="fas fa-database"></i> 存储信息</h3>
-                <div class="storage-details">
-                    <div class="storage-item">
-                        <span class="label">已用空间:</span>
-                        <span class="value" id="used-space">0.00 GB</span>
-                    </div>
-                    <div class="storage-item">
-                        <span class="label">剩余空间:</span>
-                        <span class="value" id="free-space">100.00 GB</span>
-                    </div>
-                    <div class="storage-item">
-                        <span class="label">总计空间:</span>
-                        <span class="value" id="total-space">100.00 GB</span>
-                    </div>
-                </div>
-                <div class="storage-bar-container">
-                    <div class="storage-bar">
-                        <div class="storage-used" style="width: 0%"></div>
-                    </div>
-                    <div class="storage-percentage" id="storage-percentage">0.0%</div>
-                </div>
+            <div class="navbar-actions">
+<!--                <button class="theme-toggle" @click="toggleTheme">-->
+<!--                    <i :class="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>-->
+<!--                </button>-->
+                <el-button type="text" icon="el-icon-refresh" @click="refreshList">刷新</el-button>
+<!--                <el-button type="text" icon="el-icon-s-operation" @click="openStorageDialog">存储</el-button>-->
             </div>
+        </div>
 
-<!--            <div class="settings">-->
-<!--                <h3><i class="fas fa-cog"></i> 设置</h3>-->
-<!--                <div class="setting-item">-->
-<!--                    <label>存储位置:</label>-->
-<!--                    <div class="path-display" id="storage-path" title="当前存储路径">/uploads</div>-->
-<!--                    <button id="change-path-btn" class="btn-icon" title="修改存储路径">-->
-<!--                        <i class="fas fa-folder-open"></i>-->
-<!--                    </button>-->
+        <!-- 路径导航 -->
+        <div class="path-bar">
+            <span style="color:#94a3b8; margin-right:8px;"><i class="fas fa-folder-open"></i></span>
+            <span class="path-segment" v-for="(seg, idx) in pathSegments" :key="idx" @click="navigateTo(idx)">
+                {{ seg }}
+                <span v-if="idx < pathSegments.length - 1" style="margin: 0 4px; color:#cbd5e1;">/</span>
+            </span>
+            <div class="current-path-display">
+                <i class="fas fa-location-dot"></i> {{ currentPath || '根目录' }}
+            </div>
+        </div>
+
+        <!-- 主体 -->
+        <div class="main-container">
+            <!-- 左侧快捷操作 -->
+            <div class="sidebar">
+<!--                <div class="storage-card">-->
+<!--                    <div class="storage-label"><i class="fas fa-database"></i> 存储根目录</div>-->
+<!--                    <div class="storage-value">{{ storageInfo.storage_path || '未设置' }}</div>-->
+<!--                    <el-button size="small" plain icon="el-icon-edit" @click="openStorageDialog" style="width:100%;">更改位置</el-button>-->
 <!--                </div>-->
-<!--            </div>-->
 
-            <div class="actions">
-                <button id="new-folder-btn" class="btn-primary">
-                    <i class="fas fa-folder-plus"></i> 新建文件夹
-                </button>
-                <button id="upload-btn" class="btn-primary">
-                    <i class="fas fa-upload"></i> 上传文件
-                </button>
-                <button id="upload-folder-btn" class="btn-primary">
-                    <i class="fas fa-folder-open"></i> 上传文件夹
-                </button>
-                <button id="refresh-btn" class="btn-secondary">
-                    <i class="fas fa-sync-alt"></i> 刷新
-                </button>
-            </div>
-        </aside>
+<!--                <div class="storage-card" style="background: linear-gradient(135deg, #f0f9ff, #e6f7ff);">-->
+<!--                    <div class="storage-label"><i class="fas fa-chart-pie"></i> 空间使用</div>-->
+<!--                    <el-progress :percentage="storageInfo.percentage || 0" :color="storagePercentageColor"></el-progress>-->
+<!--                    <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px;">-->
+<!--                        <span><i class="fas fa-circle" style="color:#3b82f6; font-size: 8px;"></i> 已用 {{ storageInfo.used_gb }} GB</span>-->
+<!--                        <span><i class="fas fa-circle" style="color:#e5e7eb; font-size: 8px;"></i> 剩余 {{ storageInfo.free_gb }} GB</span>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-        <!-- 主内容区 -->
-        <main class="main-content">
-            <!-- 工具栏 -->
-            <div class="toolbar">
-                <div class="breadcrumb" id="breadcrumb">
-                    <span class="breadcrumb-item" data-path="">根目录</span>
+                <div class="action-grid">
+                    <!-- 修改：上传文件 - 只能选单个文件 -->
+                    <el-button class="action-btn" icon="el-icon-upload2" @click="openSingleFileUpload">
+                        <i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>↑上传文件
+                    </el-button>
+                    <!-- 上传文件夹 - 保留文件夹结构 -->
+                    <el-button class="action-btn" icon="el-icon-folder-add" @click="createFolderDialog">
+                        <i class="fas fa-folder-plus" style="margin-right: 8px;"></i>新建文件夹
+                    </el-button>
+                    <el-button class="action-btn" icon="el-icon-folder-upload" @click="openFolderUpload">
+                        <i class="fas fa-folder-open" style="margin-right: 8px;"></i>上传文件夹
+                    </el-button>
+                    <el-divider style="margin: 8px 0;"></el-divider>
+                    <el-button class="action-btn" icon="el-icon-delete" @click="batchDelete" :disabled="!selectedFiles.length">
+                        <i class="fas fa-trash-alt" style="margin-right: 8px;"></i>批量删除 ({{ selectedFiles.length }})
+                    </el-button>
                 </div>
-                <div class="selection-actions">
-                    <span id="selected-count">已选择 0 项</span>
-                    <button id="delete-selected-btn" class="btn-danger" disabled>
-                        <i class="fas fa-trash"></i> 删除选中
-                    </button>
+
+                <div style="margin-top: auto; padding-top: 20px; font-size: 12px; color: #9ca3af;">
+                    <div style="margin-bottom: 8px;"><i class="fas fa-info-circle"></i> 支持断点续传 · 大文件分片</div>
                 </div>
             </div>
 
-            <!-- 拖拽上传区域 -->
-            <div class="drop-zone" id="dropZone">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>拖拽文件或文件夹到此处上传</p>
-            </div>
-
-            <!-- 文件列表 -->
-            <div class="file-list-header">
-                <div class="checkbox-col">
-                    <input type="checkbox" id="select-all">
+            <!-- 右侧文件区域 -->
+            <div class="file-area">
+                <!-- 批量操作栏 -->
+                <div class="batch-bar" v-if="selectedFiles.length">
+                    <span><i class="fas fa-check-circle" style="color:#3b82f6; margin-right:8px;"></i> 已选择 {{ selectedFiles.length }} 项</span>
+                    <div>
+                        <el-button type="text" @click="clearSelection">取消</el-button>
+                        <el-button type="text" style="color:#ef4444;" @click="batchDelete">删除</el-button>
+                    </div>
                 </div>
-                <div class="name-col">名称</div>
-                <div class="size-col">大小</div>
-                <div class="modified-col">修改时间</div>
-                <div class="actions-col">操作</div>
-            </div>
 
-            <div class="file-list" id="fileList">
-                <div class="loading">加载中...</div>
-            </div>
-
-            <!-- 上传队列 -->
-            <div class="upload-queue" id="uploadQueue" style="display: none;">
-                <div class="queue-header">
-                    <h4><i class="fas fa-cloud-upload-alt"></i> 上传队列</h4>
-                    <button id="minimize-queue"><i class="fas fa-minus"></i></button>
+                <!-- 文件列表头部 -->
+                <div class="toolbar">
+                    <el-checkbox v-model="selectAll" @change="handleSelectAll" style="margin-right: 16px;"></el-checkbox>
+                    <span style="flex:3;">名称</span>
+                    <span style="flex:1;">大小</span>
+                    <span style="flex:1;">修改时间</span>
+                    <span style="width: 110px; text-align: center;">操作</span>
                 </div>
-                <div class="queue-items" id="queueItems"></div>
+
+                <!-- 文件列表 -->
+                <div class="file-table">
+                    <div v-if="loading" class="loading-container">
+                        <i class="fas fa-spinner fa-spin loading-icon"></i>
+                        <p>加载中...</p>
+                    </div>
+
+                    <div v-else-if="!files.length" class="empty-state">
+                        <i class="fas fa-folder-open empty-icon"></i>
+                        <p>文件夹为空</p>
+                    </div>
+
+                    <div v-else>
+                        <div v-for="file in files" :key="file.path" class="file-item">
+                            <div class="file-checkbox">
+                                <el-checkbox v-model="file.checked" @change="updateSelection"></el-checkbox>
+                            </div>
+                            <div class="file-icon">
+                                <i :class="file.is_dir ? 'fas fa-folder folder-icon' : 'fas fa-file'"></i>
+                            </div>
+                            <div class="file-name" @click="previewOrEnter(file)" :title="file.name">
+                                {{ file.name }}
+                            </div>
+                            <div class="file-size">{{ file.is_dir ? '—' : formatSize(file.size) }}</div>
+                            <div class="file-modified">{{ formatDate(file.modified) }}</div>
+                            <div class="file-actions">
+                                <button class="action-icon-btn" @click="previewFile(file)" :disabled="file.is_dir" title="预览">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-icon-btn" @click="downloadFile(file)" :disabled="file.is_dir" title="下载">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-icon-btn" @click="deleteFile(file)" title="删除">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
+        </div>
+
+        <!-- 上传对话框 -->
+        <el-dialog title="上传文件" :visible.sync="uploadDialog" width="550px" append-to-body :close-on-click-modal="false">
+            <div>
+                <!-- 显示当前上传类型 -->
+                <div style="margin-bottom: 15px;">
+                    <el-tag :type="uploadMode === 'single' ? 'primary' : 'success'">
+                        {{ uploadMode === 'single' ? '上传单个文件' : '上传文件夹' }}
+                    </el-tag>
+                    <span style="margin-left: 10px; color: #666;">目标路径: {{ currentPath || '根目录' }}</span>
+                </div>
+
+                <!-- 上传队列 -->
+                <div v-if="uploadQueue.length > 0" class="upload-file-list">
+                    <div v-for="(item, idx) in uploadQueue" :key="idx" class="upload-progress-item">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="font-weight: 500;">
+                                <i class="fas fa-file"></i>
+                                {{ item.displayName || item.name }}
+                                <span v-if="item.folderPath" style="font-size: 11px; color: #999; margin-left: 5px;">
+                                    ({{ item.folderPath }})
+                                </span>
+                            </span>
+                            <span style="font-size: 12px;">{{ formatSize(item.size) }}</span>
+                        </div>
+                        <el-progress :percentage="item.progress" :status="item.status === 'error' ? 'exception' : ''"></el-progress>
+                        <div style="font-size: 11px; color: #f56c6c; margin-top: 4px;" v-if="item.error">
+                            {{ item.error }}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <el-button type="primary" @click="startUpload" :disabled="uploadQueue.length === 0 || uploading" size="small">
+                            {{ uploading ? '上传中...' : '开始上传' }}
+                        </el-button>
+                        <el-button @click="pauseUpload" v-if="uploading" size="small">暂停</el-button>
+                        <el-button @click="resumeUpload" v-if="paused" size="small">继续</el-button>
+                    </div>
+                    <div>
+                        <el-button @click="closeUploadDialog" size="small">关闭</el-button>
+                    </div>
+                </div>
+            </div>
+        </el-dialog>
+
+        <!-- 隐藏的文件输入框 -->
+        <input type="file" ref="singleFileInput" style="display: none;" @change="onSingleFileSelected">
+        <input type="file" ref="folderInput" style="display: none;" @change="onFolderSelected" webkitdirectory multiple>
+
+        <!-- 新建文件夹 -->
+        <el-dialog title="新建文件夹" :visible.sync="folderDialog" width="350px">
+            <el-input v-model="newFolderName" placeholder="输入文件夹名称" @keyup.enter="createFolder" prefix-icon="el-icon-folder"></el-input>
+            <span slot="footer">
+                <el-button @click="folderDialog = false" size="small">取消</el-button>
+                <el-button type="primary" @click="createFolder" size="small">创建</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 存储根目录设置 -->
+        <el-dialog title="设置存储根目录" :visible.sync="storageDialog" width="450px">
+            <el-input v-model="storageInput" placeholder="例如: D:\shared 或 /home/shared" @keyup.enter="setStorageRoot">
+                <template slot="prepend"><i class="el-icon-folder"></i></template>
+            </el-input>
+            <p style="font-size:12px; color:#94a3b8; margin-top:8px;">修改后立即生效，文件浏览将基于新目录</p>
+            <p style="font-size:12px; color:#94a3b8; margin-top:8px;">请勿随便修改此目录</p>
+            <span slot="footer">
+                <el-button @click="storageDialog = false" size="small">取消</el-button>
+                <el-button type="primary" @click="setStorageRoot" size="small">确定并刷新</el-button>
+            </span>
+        </el-dialog>
     </div>
 
-    <div id="newFolderModal" class="modal">
-    <div class="modal-content" style="min-width: 400px; max-width: 500px;">
-        <span class="close">&times;</span>
-        <h3 style="margin-bottom: 20px;">新建文件夹</h3>
-        <input type="text" id="folderName" placeholder="文件夹名称"
-               style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem;">
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button id="createFolderBtn" class="btn-primary" style="padding: 12px 24px; min-width: 120px;">创建</button>
-            <button class="btn-secondary" onclick="document.getElementById('newFolderModal').style.display='none'" style="padding: 12px 24px; min-width: 120px;">取消</button>
-        </div>
-    </div>
-</div>
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        axios.defaults.baseURL = '';
 
-<!-- 修改路径模态框 -->
-<div id="pathModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>修改存储路径</h3>
-        <p class="modal-info">请输入新的存储路径（必须存在且有写入权限）</p>
-        <div class="path-input-group">
-            <input type="text" id="newPath"
-                   placeholder="例如: D:\shared_files 或 /home/user/shared">
-        </div>
-        <div class="path-suggestions" style="margin: 10px 0; font-size: 0.9rem;">
-            <p><strong>常用路径示例：</strong></p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='D:\\shared_files'">D:\shared_files</button>
-                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='E:\\files'">E:\files</button>
-                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='C:\\Users\\Public\\Documents'">C:\Users\Public\Documents</button>
-                <button type="button" class="suggest-path" onclick="document.getElementById('newPath').value='/home/user/shared'">/home/user/shared</button>
-            </div>
-        </div>
-        <div class="path-preview" id="pathPreview"></div>
-        <div class="modal-actions">
-            <button id="updatePathBtn" class="btn-primary">更新路径</button>
-            <button id="cancelPathBtn" class="btn-secondary">取消</button>
-        </div>
-    </div>
-</div>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    files: [],
+                    currentPath: '',
+                    pathSegments: ['根目录'],
+                    storageInfo: {},
+                    loading: true,
+                    selectedFiles: [],
+                    selectAll: false,
 
-    <!-- 文件预览模态框 -->
-    <div id="previewModal" class="modal preview-modal">
-        <div class="modal-content preview-content">
-            <span class="close">&times;</span>
-            <div id="previewContainer"></div>
-        </div>
-    </div>
+                    // 上传相关
+                    uploadDialog: false,
+                    uploadQueue: [],
+                    uploading: false,
+                    paused: false,
+                    uploadMode: 'single', // 'single' 或 'folder'
+                    chunkSize: 8 * 1024 * 1024, // 8MB
 
-    <!-- 隐藏的文件输入框，用于浏览文件夹 -->
-    <input type="file" id="folderBrowser" webkitdirectory directory style="display: none;">
+                    // SSE
+                    sseConnected: false,
+                    eventSource: null,
 
-    <script src="js/app.js"></script>
+                    // 文件夹
+                    folderDialog: false,
+                    newFolderName: '',
+
+                    // 存储设置
+                    storageDialog: false,
+                    storageInput: '',
+
+                    // 主题
+                    isDarkMode: localStorage.getItem('theme') === 'dark',
+                };
+            },
+            mounted() {
+                this.applyTheme();
+                this.refreshList();
+                this.loadStorageInfo();
+                this.initSSE();
+            },
+            beforeDestroy() {
+                if (this.eventSource) {
+                    this.eventSource.close();
+                }
+            },
+            methods: {
+                // 主题切换
+                toggleTheme() {
+                    this.isDarkMode = !this.isDarkMode;
+                    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+                    this.applyTheme();
+                },
+                applyTheme() {
+                    if (this.isDarkMode) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                },
+                storagePercentageColor(percentage) {
+                    if (percentage < 70) return '#3b82f6';
+                    if (percentage < 90) return '#f59e0b';
+                    return '#ef4444';
+                },
+
+                formatDate(isoString) {
+                    if (!isoString) return '未知';
+                    const date = new Date(isoString);
+                    return date.toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }).replace(/\//g, '-');
+                },
+
+                formatSize(bytes) {
+                    if (bytes === 0) return '0 B';
+                    if (!bytes || bytes < 0) return '?';
+                    const k = 1024;
+                    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+                    let i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + units[i];
+                },
+
+                async refreshList() {
+                    this.loading = true;
+                    try {
+                        const response = await axios.get('/api/files', {
+                            params: { path: this.currentPath }
+                        });
+                        this.files = response.data.files.map(f => ({ ...f, checked: false }));
+                        this.updatePathSegments();
+                    } catch (error) {
+                        console.error('Failed to load files:', error);
+                        this.$message.error('加载文件列表失败');
+                    } finally {
+                        this.loading = false;
+                        this.clearSelection();
+                    }
+                },
+
+                updatePathSegments() {
+                    if (!this.currentPath) {
+                        this.pathSegments = ['根目录'];
+                    } else {
+                        this.pathSegments = ['根目录', ...this.currentPath.split('/').filter(p => p)];
+                    }
+                },
+
+                async loadStorageInfo() {
+                    try {
+                        const response = await axios.get('/api/storage');
+                        this.storageInfo = response.data;
+                    } catch (error) {
+                        console.error('Failed to load storage info:', error);
+                    }
+                },
+
+                navigateTo(index) {
+                    if (index === 0) {
+                        this.currentPath = '';
+                    } else {
+                        this.currentPath = this.pathSegments.slice(1, index + 1).join('/');
+                    }
+                    this.refreshList();
+                },
+
+                previewOrEnter(file) {
+                    if (file.is_dir) {
+                        this.currentPath = file.path;
+                        this.refreshList();
+                    } else {
+                        this.previewFile(file);
+                    }
+                },
+
+                previewFile(file) {
+                    if (file.is_dir) return;
+                    const url = `/api/files/${encodeURIComponent(file.path)}?preview=true`;
+                    window.open(url, '_blank');
+                },
+
+                downloadFile(file) {
+                    if (file.is_dir) {
+                        this.$message.info('文件夹下载暂不支持');
+                        return;
+                    }
+                    const url = `/api/files/${encodeURIComponent(file.path)}`;
+                    window.open(url, '_blank');
+                },
+
+                async deleteFile(file) {
+                    try {
+                        await this.$confirm(`确定删除 ${file.name}?`, '提示', { type: 'warning' });
+                        const response = await axios.delete('/api/items', {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            data: `paths=${encodeURIComponent(JSON.stringify([file.path]))}`
+                        });
+
+                        if (response.data.success && response.data.success.length > 0) {
+                            this.$message.success('删除成功');
+                            this.refreshList();
+                        } else {
+                            this.$message.error('删除失败');
+                        }
+                    } catch (error) {
+                        if (error !== 'cancel') {
+                            console.error('Delete failed:', error);
+                            this.$message.error('删除失败');
+                        }
+                    }
+                },
+
+                async batchDelete() {
+                    const selectedPaths = this.selectedFiles.map(s => s.path);
+                    if (!selectedPaths.length) return;
+
+                    try {
+                        await this.$confirm(`批量删除 ${selectedPaths.length} 项?`, '警告', { type: 'warning' });
+                        const response = await axios.delete('/api/items', {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            data: `paths=${encodeURIComponent(JSON.stringify(selectedPaths))}`
+                        });
+
+                        if (response.data.success && response.data.success.length > 0) {
+                            this.$message.success(`成功删除 ${response.data.success.length} 项`);
+                            this.refreshList();
+                        } else {
+                            this.$message.error('删除失败');
+                        }
+                    } catch (error) {
+                        if (error !== 'cancel') {
+                            console.error('Batch delete failed:', error);
+                            this.$message.error('删除失败');
+                        }
+                    }
+                },
+
+                updateSelection() {
+                    this.selectedFiles = this.files.filter(f => f.checked);
+                    this.selectAll = this.files.length > 0 && this.files.every(f => f.checked);
+                },
+                clearSelection() {
+                    this.files.forEach(f => f.checked = false);
+                    this.selectedFiles = [];
+                    this.selectAll = false;
+                },
+                handleSelectAll(val) {
+                    this.files.forEach(f => f.checked = val);
+                    this.selectedFiles = val ? [...this.files] : [];
+                },
+
+                openStorageDialog() {
+                    this.storageInput = this.storageInfo.storage_path || '';
+                    this.storageDialog = true;
+                },
+                async setStorageRoot() {
+                    if (!this.storageInput.trim()) {
+                        this.$message.warning('请输入有效的路径');
+                        return;
+                    }
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('new_path', this.storageInput.trim());
+
+                        const response = await axios.post('/api/storage/path', formData);
+
+                        if (response.data.success) {
+                            this.$message.success('存储路径已更新');
+                            this.currentPath = '';
+                            this.loadStorageInfo();
+                            this.refreshList();
+                        } else {
+                            this.$message.error('更新存储路径失败');
+                        }
+                    } catch (error) {
+                        console.error('Update storage path failed:', error);
+                        this.$message.error('更新存储路径失败');
+                    } finally {
+                        this.storageDialog = false;
+                    }
+                },
+
+                createFolderDialog() {
+                    this.folderDialog = true;
+                    this.newFolderName = '';
+                },
+                async createFolder() {
+                    if (!this.newFolderName.trim()) {
+                        this.$message.warning('请输入文件夹名称');
+                        return;
+                    }
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('path', this.currentPath);
+                        formData.append('name', this.newFolderName.trim());
+
+                        const response = await axios.post('/api/folders', formData);
+
+                        if (response.data.success) {
+                            this.$message.success('文件夹创建成功');
+                            this.folderDialog = false;
+                            this.refreshList();
+                        } else {
+                            this.$message.error('创建文件夹失败');
+                        }
+                    } catch (error) {
+                        console.error('Create folder failed:', error);
+                        this.$message.error('创建文件夹失败');
+                    }
+                },
+
+                initSSE() {
+                    if (this.eventSource) {
+                        this.eventSource.close();
+                    }
+
+                    this.eventSource = new EventSource('/api/storage/stream');
+
+                    this.eventSource.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            this.storageInfo = data;
+                            this.sseConnected = true;
+                        } catch (e) {
+                            console.error('SSE parse error:', e);
+                        }
+                    };
+
+                    this.eventSource.onerror = () => {
+                        this.sseConnected = false;
+                    };
+                },
+
+                // 替换 openSingleFileUpload 方法
+openSingleFileUpload() {
+    this.uploadMode = 'single';
+    // 添加 multiple 属性支持多选
+    this.$refs.singleFileInput.multiple = true;
+    this.$refs.singleFileInput.click();
+},
+
+// 替换 onSingleFileSelected 方法
+onSingleFileSelected(e) {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+        this.uploadQueue = []; // 清空之前的队列
+
+        // 添加所有选中的文件
+        files.forEach(file => {
+            this.uploadQueue.push({
+                file: file,
+                name: file.name,
+                displayName: file.name,
+                size: file.size,
+                folderPath: '',
+                progress: 0,
+                status: 'waiting',
+                error: null,
+                fileId: null,
+                uploadedChunks: new Set(),
+                totalChunks: Math.ceil(file.size / this.chunkSize)
+            });
+        });
+
+        this.uploadDialog = true;
+        this.$message.success(`已添加 ${files.length} 个文件`);
+    }
+    this.$refs.singleFileInput.value = '';
+},
+
+                // 上传文件夹
+                openFolderUpload() {
+                    this.uploadMode = 'folder';
+                    this.$refs.folderInput.click();
+                },
+
+                // 替换 onFolderSelected 方法
+onFolderSelected(e) {
+    const files = Array.from(e.target.files);
+    this.uploadQueue = [];
+
+    // 处理文件夹结构
+    files.forEach(file => {
+        if (file.webkitRelativePath) {
+            const pathParts = file.webkitRelativePath.split('/');
+            const rootFolder = pathParts[0]; // 最外层文件夹名
+            const relativePath = pathParts.slice(1).join('/'); // 相对路径
+
+            // 构建显示用的路径
+            const displayPath = relativePath ?
+                relativePath.substring(0, relativePath.lastIndexOf('/') + 1) : '';
+
+            this.uploadQueue.push({
+                file: file,
+                name: pathParts[pathParts.length - 1], // 文件名
+                displayName: pathParts[pathParts.length - 1],
+                size: file.size,
+                folderPath: displayPath, // 保存相对路径
+                rootFolder: rootFolder,   // 保存根文件夹名
+                fullPath: file.webkitRelativePath,
+                progress: 0,
+                status: 'waiting',
+                error: null,
+                fileId: null,
+                uploadedChunks: new Set(),
+                totalChunks: Math.ceil(file.size / this.chunkSize)
+            });
+        }
+    });
+
+    if (this.uploadQueue.length > 0) {
+        this.uploadDialog = true;
+        this.$message.success(`已添加 ${this.uploadQueue.length} 个文件`);
+    }
+
+    this.$refs.folderInput.value = '';
+},
+
+                closeUploadDialog() {
+                    if (this.uploading) {
+                        this.$confirm('上传尚未完成，确定关闭？', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.uploadDialog = false;
+                            this.uploadQueue = [];
+                        }).catch(() => {});
+                    } else {
+                        this.uploadDialog = false;
+                        this.uploadQueue = [];
+                    }
+                },
+
+                // 开始上传
+                async startUpload() {
+                    if (this.uploadQueue.length === 0) return;
+
+                    this.uploading = true;
+                    this.paused = false;
+
+                    const pendingFiles = this.uploadQueue.filter(f => f.status === 'waiting' || f.status === 'error');
+
+                    for (let fileItem of pendingFiles) {
+                        if (this.paused) {
+                            fileItem.status = 'paused';
+                            break;
+                        }
+
+                        if (fileItem.status === 'error') {
+                            fileItem.status = 'waiting';
+                            fileItem.error = null;
+                        }
+
+                        try {
+                            await this.uploadFile(fileItem);
+                        } catch (error) {
+                            console.error('Upload failed:', error);
+                            fileItem.status = 'error';
+                            fileItem.error = error.message || '上传失败';
+                        }
+                    }
+
+                    this.uploading = false;
+
+                    const allCompleted = this.uploadQueue.every(f => f.status === 'completed');
+                    if (allCompleted) {
+                        this.$message.success('所有文件上传完成');
+                        this.refreshList();
+                        setTimeout(() => {
+                            if (this.uploadDialog) {
+                                this.uploadDialog = false;
+                                this.uploadQueue = [];
+                            }
+                        }, 2000);
+                    }
+                },
+
+                // 替换 uploadFile 方法，添加并发控制
+async uploadFile(fileItem) {
+    const file = fileItem.file;
+    const fileId = `upload_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    fileItem.fileId = fileId;
+
+    try {
+        // 确定目标路径 - 关键修复
+        let targetPath = this.currentPath;
+
+        if (this.uploadMode === 'folder') {
+            // 对于文件夹上传，保留完整的文件夹结构
+            if (fileItem.folderPath) {
+                // 如果当前在子文件夹中，需要拼接路径
+                if (this.currentPath) {
+                    targetPath = `${this.currentPath}/${fileItem.rootFolder}/${fileItem.folderPath}`;
+                } else {
+                    targetPath = `${fileItem.rootFolder}/${fileItem.folderPath}`;
+                }
+            } else {
+                // 根目录下的文件
+                if (this.currentPath) {
+                    targetPath = `${this.currentPath}/${fileItem.rootFolder}`;
+                } else {
+                    targetPath = fileItem.rootFolder;
+                }
+            }
+
+            // 清理路径中的重复斜杠
+            targetPath = targetPath.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+        }
+
+        console.log(`Uploading file: ${fileItem.name} to path: ${targetPath}`);
+
+        // 初始化上传
+        const initFormData = new FormData();
+        initFormData.append('file_id', fileId);
+        initFormData.append('file_name', fileItem.name);
+        initFormData.append('file_size', file.size.toString());
+        initFormData.append('target_path', targetPath);
+        initFormData.append('total_chunks', fileItem.totalChunks.toString());
+
+        const initResponse = await axios.post('/api/upload/init', initFormData);
+
+        if (initResponse.data.error) {
+            throw new Error(initResponse.data.error);
+        }
+
+        // 获取已上传的分片
+        const uploadedChunks = new Set(initResponse.data.uploaded_chunks || []);
+        fileItem.uploadedChunks = uploadedChunks;
+
+        // 并发上传分片 - 提高速度
+        const CONCURRENT_UPLOADS = 3; // 同时上传3个分片
+        const chunks = [];
+
+        for (let chunkIndex = 0; chunkIndex < fileItem.totalChunks; chunkIndex++) {
+            if (!uploadedChunks.has(chunkIndex)) {
+                chunks.push(chunkIndex);
+            }
+        }
+
+        // 并发控制
+        for (let i = 0; i < chunks.length; i += CONCURRENT_UPLOADS) {
+            // 检查是否暂停
+            while (this.paused) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                if (!this.uploading) return;
+            }
+
+            const batch = chunks.slice(i, i + CONCURRENT_UPLOADS);
+            const uploadPromises = batch.map(async (chunkIndex) => {
+                const start = chunkIndex * this.chunkSize;
+                const end = Math.min(start + this.chunkSize, file.size);
+                const chunk = file.slice(start, end);
+
+                const chunkFormData = new FormData();
+                chunkFormData.append('file_id', fileId);
+                chunkFormData.append('chunk_index', chunkIndex.toString());
+                chunkFormData.append('chunk_data', chunk);
+
+                let retryCount = 0;
+                let uploaded = false;
+
+                while (!uploaded && retryCount < 3) {
+                    try {
+                        await axios.post('/api/upload/chunk', chunkFormData, {
+                            timeout: 30000,
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        uploaded = true;
+                    } catch (chunkError) {
+                        retryCount++;
+                        if (retryCount === 3) throw chunkError;
+                        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                    }
+                }
+            });
+
+            await Promise.all(uploadPromises);
+
+            // 更新进度
+            const uploadedCount = uploadedChunks.size + (i + batch.length);
+            fileItem.progress = Math.round((uploadedCount / fileItem.totalChunks) * 100);
+        }
+
+        // 等待后端处理完成
+        let statusCompleted = false;
+        for (let i = 0; i < 5; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            try {
+                const statusResponse = await axios.get(`/api/upload/status/${fileId}`);
+                if (statusResponse.data && statusResponse.data.status === 'completed') {
+                    statusCompleted = true;
+                    break;
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 404) {
+                    statusCompleted = true;
+                    break;
+                }
+            }
+        }
+
+        fileItem.status = 'completed';
+        fileItem.progress = 100;
+
+    } catch (error) {
+        console.error('File upload error:', error);
+        fileItem.status = 'error';
+        fileItem.error = error.response?.data?.error || error.message;
+        throw error;
+    }
+},
+
+                pauseUpload() {
+                    this.paused = true;
+                    this.$message.info('上传已暂停');
+                },
+
+                resumeUpload() {
+                    this.paused = false;
+                    this.$message.info('恢复上传');
+                    this.startUpload();
+                },
+            }
+        });
+    </script>
 </body>
 </html>
