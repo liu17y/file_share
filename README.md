@@ -253,7 +253,7 @@ Font Awesome 图标库
 
 <img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_3.png">
 
-![]("https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_4.png")
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_4.png">
 
 <img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_5.png">
 
