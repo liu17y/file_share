@@ -247,3 +247,14 @@ Font Awesome 图标库
 
 嗖嗖传 - 让文件传输像"嗖"一样快！🚀
 
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_1.png">
+
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_2.png">
+
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_3.png">
+
+![]("https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_4.png")
+
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_5.png">
+
+<img src="https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_6.png">
