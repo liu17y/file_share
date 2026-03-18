@@ -68,9 +68,16 @@ class UploadManager:
             # 确保临时文件存在，如果不存在则创建
             temp_path = upload_info["temp_path"]
 
-            # 异步写入分块 - 使用'a+b'模式确保文件存在时追加，不存在时创建
-            async with aiofiles.open(temp_path, 'ab') as f:
+            # 确保临时文件的目录存在
+            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+
+            # 修复：使用 'a+b' 模式确保文件存在时追加，不存在时创建
+            # 同时确保文件以二进制模式打开
+            async with aiofiles.open(temp_path, 'a+b') as f:
+                # 移动文件指针到末尾（a+b模式已经这样做）
                 await f.write(chunk_data)
+                # 确保数据写入磁盘
+                await f.flush()
 
             upload_info["uploaded_chunks"].add(chunk_index)
 
@@ -207,6 +214,8 @@ class UploadManager:
             'chunk_data': chunk_data
         })
 
+        # 注意：这里返回的uploaded_chunks还没有包含当前chunk，
+        # 因为它是异步处理的。前端应该轮询状态来获取最新进度
         return {
             "file_id": file_id,
             "chunk_index": chunk_index,

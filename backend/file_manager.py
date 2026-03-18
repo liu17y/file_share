@@ -95,17 +95,90 @@ class FileManager:
 
         return items
 
+    async def search_files(self, query: str, start_path: str = "") -> List[Dict[str, Any]]:
+        """
+        递归搜索文件
+        - query: 搜索关键词
+        - start_path: 起始路径
+        """
+        full_path = self._get_full_path(start_path)
+
+        if not os.path.exists(full_path) or not os.path.isdir(full_path):
+            return []
+
+        results = []
+        query_lower = query.lower()
+
+        try:
+            # 使用 os.walk 遍历目录
+            for root, dirs, files in os.walk(full_path):
+                # 跳过临时目录
+                if '.temp_uploads' in root:
+                    continue
+
+                # 检查当前目录名是否匹配
+                dir_name = os.path.basename(root)
+                if query_lower in dir_name.lower():
+                    try:
+                        rel_path = self._get_relative_path(root)
+                        stat = os.stat(root)
+                        results.append({
+                            "name": dir_name,
+                            "path": rel_path.replace('\\', '/'),
+                            "is_dir": True,
+                            "size": 0,
+                            "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                            "created": datetime.fromtimestamp(stat.st_ctime).isoformat(),
+                            "match_type": "folder",
+                            "match_path": rel_path.replace('\\', '/')
+                        })
+                    except:
+                        pass
+
+                # 检查文件
+                for file in files:
+                    if query_lower in file.lower():
+                        file_path = os.path.join(root, file)
+                        try:
+                            rel_path = self._get_relative_path(file_path)
+                            stat = os.stat(file_path)
+                            mime_type, _ = mimetypes.guess_type(file_path)
+
+                            results.append({
+                                "name": file,
+                                "path": rel_path.replace('\\', '/'),
+                                "is_dir": False,
+                                "size": stat.st_size,
+                                "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                                "created": datetime.fromtimestamp(stat.st_ctime).isoformat(),
+                                "mime_type": mime_type or "application/octet-stream",
+                                "match_type": "file",
+                                "match_path": rel_path.replace('\\', '/')
+                            })
+                        except:
+                            pass
+
+                # 限制结果数量，避免太多
+                if len(results) >= 200:
+                    break
+
+        except Exception as e:
+            print(f"Search error: {e}")
+
+        # 排序：文件夹优先，然后按名称
+        results.sort(key=lambda x: (not x["is_dir"], x["name"].lower()))
+
+        return results
+
     async def create_folder(self, path: str, folder_name: str) -> bool:
         """创建文件夹"""
         try:
             print(f"Creating folder - path: '{path}', name: '{folder_name}'")
 
             # 处理路径
-            # 如果 path 为空字符串、None、'/' 或 '\'，表示在根目录
             if not path or path in ['/', '\\']:
                 full_path = os.path.join(settings.base_dir, folder_name)
             else:
-                # 移除开头的 / 或 \
                 clean_path = path.lstrip('/\\')
                 full_path = os.path.join(settings.base_dir, clean_path, folder_name)
 
@@ -262,6 +335,98 @@ class FileManager:
         except Exception as e:
             print(f"Error updating storage path: {e}")
             return False
+
+    async def move_items(self, items: List[Dict[str, str]], destination: str) -> Dict[str, Any]:
+        """
+        移动或重命名文件/文件夹
+        items: [{"source": "相对路径", "target": "目标路径或新名称"}]
+        destination: 目标文件夹路径（如果是移动到文件夹）
+        """
+        results = {"success": [], "failed": []}
+
+        for item in items:
+            try:
+                source_path = item.get('source')
+                target_name = item.get('target')
+
+                if not source_path:
+                    results["failed"].append({"path": "未知", "reason": "缺少源路径"})
+                    continue
+
+                full_source = self._get_full_path(source_path)
+
+                if not os.path.exists(full_source):
+                    results["failed"].append({"path": source_path, "reason": "源文件不存在"})
+                    continue
+
+                # 确定目标路径
+                if target_name:
+                    # 重命名：target 是新名称
+                    target_dir = os.path.dirname(full_source)
+                    full_target = os.path.join(target_dir, target_name)
+                else:
+                    # 移动到文件夹：destination 是目标文件夹
+                    if destination is None:
+                        results["failed"].append({"path": source_path, "reason": "目标路径为空"})
+                        continue
+
+                    # 处理目标路径（允许空字符串表示根目录）
+                    if destination == '':
+                        # 目标为根目录
+                        dest_full = settings.base_dir
+                    else:
+                        dest_full = self._get_full_path(destination)
+
+                    # 确保目标目录存在
+                    if not os.path.exists(dest_full):
+                        os.makedirs(dest_full, exist_ok=True)
+
+                    base_name = os.path.basename(full_source)
+                    full_target = os.path.join(dest_full, base_name)
+
+                # 安全检查：不能移动到自身或子文件夹
+                if os.path.exists(full_target):
+                    if os.path.samefile(full_source, full_target):
+                        results["failed"].append({"path": source_path, "reason": "源和目标相同"})
+                        continue
+
+                    # 检查是否将父文件夹移动到子文件夹
+                    if os.path.isdir(full_source) and full_target.startswith(full_source + os.sep):
+                        results["failed"].append({"path": source_path, "reason": "不能将文件夹移动到其子文件夹中"})
+                        continue
+
+                # 如果目标已存在，添加数字后缀
+                if os.path.exists(full_target):
+                    base, ext = os.path.splitext(os.path.basename(full_target))
+                    counter = 1
+                    target_dir = os.path.dirname(full_target)
+                    while os.path.exists(os.path.join(target_dir, f"{base} ({counter}){ext}")):
+                        counter += 1
+                    full_target = os.path.join(target_dir, f"{base} ({counter}){ext}")
+
+                # 执行移动/重命名
+                shutil.move(full_source, full_target)
+
+                rel_target = self._get_relative_path(full_target)
+                results["success"].append({
+                    "source": source_path,
+                    "target": rel_target.replace('\\', '/'),
+                    "is_dir": os.path.isdir(full_target)
+                })
+                print(f"Moved: {full_source} -> {full_target}")
+
+            except Exception as e:
+                print(f"Error moving {item.get('source')}: {e}")
+                results["failed"].append({
+                    "path": item.get('source'),
+                    "reason": str(e)
+                })
+
+        return results
+
+    async def rename_item(self, path: str, new_name: str) -> Dict[str, Any]:
+        """重命名文件或文件夹（单个）"""
+        return await self.move_items([{"source": path, "target": new_name}], "")
 
 
 file_manager = FileManager()

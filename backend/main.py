@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Body
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import os
@@ -16,24 +16,23 @@ from upload_manager import upload_manager
 from config import settings
 
 from fastapi.middleware.cors import CORSMiddleware
-app = FastAPI(title="File Share System")
 
-# ... (app 初始化后)
+app = FastAPI(title="File Share System")
 
 # 配置CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # 允许所有来源
-    allow_credentials=True,       # 允许携带凭证（如 Cookies）
-    allow_methods=["*"],          # 允许所有 HTTP 方法 (GET, POST, PUT, DELETE 等)
-    allow_headers=["*"],          # 允许所有请求头
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 确保上传目录存在
 os.makedirs(settings.base_dir, exist_ok=True)
 
 
-# 启动事件 - 在应用启动时启动上传处理器
+# 启动事件
 @app.on_event("startup")
 async def startup_event():
     """应用启动时执行"""
@@ -80,7 +79,7 @@ async def create_folder(
 # 批量删除
 @app.delete("/api/items")
 async def delete_items(paths: str = Form(...)):
-    # 解析paths，因为Form数据可能是JSON字符串
+    # 解析paths
     try:
         paths_list = json.loads(paths)
     except json.JSONDecodeError:
@@ -103,7 +102,7 @@ async def update_storage_path(new_path: str = Form(...)):
     return {"success": success}
 
 
-# 初始化上传（断点续传）- 使用更宽松的类型
+# 初始化上传
 @app.post("/api/upload/init")
 async def init_upload(
         request: Request
@@ -198,7 +197,7 @@ async def cancel_upload(file_id: str):
 # 下载/预览文件
 @app.get("/api/files/{file_path:path}")
 async def get_file(file_path: str, preview: bool = False):
-    # 如果file_path是绝对路径（其他盘符），直接使用
+    # 如果file_path是绝对路径，直接使用
     if os.path.isabs(file_path):
         full_path = file_path
     else:
@@ -207,8 +206,7 @@ async def get_file(file_path: str, preview: bool = False):
     # 规范化路径
     full_path = os.path.normpath(full_path)
 
-    # 安全检查：确保文件在允许的范围内
-    # 如果是绝对路径且不在基础目录下，检查是否在允许的盘符
+    # 安全检查
     if os.path.isabs(file_path) and not file_path.startswith(settings.base_dir):
         # 允许访问其他盘符
         pass
@@ -274,16 +272,117 @@ async def storage_stream(request: Request):
     )
 
 
-# 添加管理页面路由
-@app.get("/admin", response_class=HTMLResponse)
-async def admin_page():
-    frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
-    admin_path = os.path.join(frontend_path, "admin.html")
-    if os.path.exists(admin_path):
-        with open(admin_path, 'r', encoding='utf-8') as f:
-            return HTMLResponse(content=f.read())
-    return HTMLResponse(content="<h1>Admin page not found</h1><p>Please create admin.html in frontend directory</p>")
+# 搜索接口
+@app.get("/api/search")
+async def search_files(query: str = "", path: str = ""):
+    """
+    搜索文件
+    - query: 搜索关键词
+    - path: 搜索的起始路径（可选）
+    """
+    if not query or len(query.strip()) < 1:
+        return {"files": [], "query": query, "path": path}
 
+    results = await file_manager.search_files(query, path)
+    return {"files": results, "query": query, "path": path}
+
+
+# 移动/重命名接口
+@app.post("/api/items/move")
+async def move_items(request: Request):
+    """
+    移动或重命名项目
+    支持两种模式：
+    1. 重命名：提供 source 和 target（新名称）
+    2. 移动到文件夹：提供 sources 和 destination
+    """
+    try:
+        data = await request.json()
+
+        # 模式1: 重命名单个文件
+        if 'source' in data and 'target' in data:
+            result = await file_manager.move_items(
+                [{"source": data['source'], "target": data['target']}],
+                ""
+            )
+            return result
+
+        # 模式2: 批量移动到文件夹
+        elif 'sources' in data and 'destination' in data:
+            items = [{"source": s} for s in data['sources']]
+            result = await file_manager.move_items(items, data['destination'])
+            return result
+
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={"error": "Invalid request format. Expected {'source': path, 'target': name} or {'sources': [paths], 'destination': folder_path}"}
+            )
+
+    except Exception as e:
+        print(f"Error in move_items: {e}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e)}
+        )
+
+
+# 重命名接口（单独）
+@app.post("/api/items/rename")
+async def rename_item(path: str = Form(...), new_name: str = Form(...)):
+    """重命名文件或文件夹"""
+    result = await file_manager.rename_item(path, new_name)
+    return result
+
+
+# 获取文件夹树（用于移动对话框）
+@app.get("/api/folder-tree")
+async def get_folder_tree(path: str = ""):
+    """
+    获取文件夹树结构
+    """
+    try:
+        files = await file_manager.get_file_list(path)
+
+        # 递归构建树
+        async def build_tree(current_path):
+            items = await file_manager.get_file_list(current_path)
+            folders = [f for f in items if f['is_dir']]
+
+            result = []
+            for folder in folders:
+                node = {
+                    "name": folder['name'],
+                    "path": folder['path'],
+                    "is_dir": True,
+                    "children": await build_tree(folder['path'])
+                }
+                result.append(node)
+
+            return result
+
+        tree = await build_tree(path)
+        return {"tree": tree}
+
+    except Exception as e:
+        print(f"Error building folder tree: {e}")
+        return {"tree": []}
+
+
+# 添加管理页面路由
+@app.get("/docliu", response_class=HTMLResponse)
+async def admin_page():
+    import os
+    frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+    admin_path = os.path.join(frontend_path, "admin.html")
+    try:
+        with open(admin_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            return HTMLResponse(content=content)
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Error: {str(e)}</h1>")
 
 # 挂载前端静态文件
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
@@ -346,7 +445,7 @@ def start_server():
         "main:app",
         host="0.0.0.0",
         port=8000,
-        reload=False,  # 生产环境关闭热重载
+        reload=False,
         log_level="info"
     )
 

@@ -25,3 +25,10 @@
 生成项目目录
 并实现后端交换,
 完成需求代码编写
+
+
+``
+3、主题切换（主题页面以及 <!-- 上传对话框 -->
+        <el-dialog title="上传文件" :visible.sync="uploadDialog" width="550px" append-to-body :close-on-click-modal="false">
+            <div>）
+``
