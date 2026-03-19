@@ -777,6 +777,10 @@
                     <el-button class="action-btn" @click="batchDelete" :disabled="!selectedFiles.length">
                         <i class="fas fa-trash-alt" style="margin-right: 8px;"></i>批量删除 ({{ selectedFiles.length }})
                     </el-button>
+                    <!-- 在侧边栏的action-grid中添加 -->
+                    <el-button class="action-btn" @click="batchDownload" :disabled="!selectedFiles.length">
+                        <i class="fas fa-download" style="margin-right: 8px;"></i>批量下载 ({{ selectedFiles.length }})
+                    </el-button>
                     <el-button class="action-btn" @click="openMoveDialog" :disabled="!selectedFiles.length">
                         <i class="fas fa-arrows-alt" style="margin-right: 8px;"></i>移动到...
                     </el-button>
@@ -808,65 +812,68 @@
 
                 <!-- 文件列表 -->
                 <div class="file-table" @dragover.prevent @drop="onDrop">
-                    <div v-if="loading" class="loading-container">
-                        <i class="fas fa-spinner fa-spin loading-icon"></i>
-                        <p>加载中...</p>
-                    </div>
+    <div v-if="loading" class="loading-container">
+        <i class="fas fa-spinner fa-spin loading-icon"></i>
+        <p>加载中...</p>
+    </div>
 
-                    <div v-else-if="!files.length" class="empty-state">
-                        <i class="fas fa-folder-open empty-icon"></i>
-                        <p>{{ searchMode ? '没有找到匹配的文件' : '文件夹为空' }}</p>
-                        <p v-if="searchMode" style="font-size: 12px; margin-top: 8px;">试试其他关键词</p>
-                    </div>
+    <div v-else-if="!files.length" class="empty-state">
+        <i class="fas fa-folder-open empty-icon"></i>
+        <p>{{ searchMode ? '没有找到匹配的文件' : '文件夹为空' }}</p>
+        <p v-if="searchMode" style="font-size: 12px; margin-top: 8px;">试试其他关键词</p>
+    </div>
 
-                    <div v-else>
-                        <div v-for="file in files" :key="file.path"
-                             class="file-item"
-                             :class="{
-                                 'dragging': dragSource && dragSource.path === file.path,
-                                 'drag-over': dragOverTarget === file.path
-                             }"
-                             :draggable="!searchMode"
-                             @dragstart="onDragStart($event, file)"
-                             @dragend="onDragEnd"
-                             @dragover="onDragOver($event, file)"
-                             @dragleave="onDragLeave"
-                             @drop="onDropItem($event, file)"
-                             @click="onFileClick($event, file)">
+    <div v-else>
+        <div v-for="file in files" :key="file.path"
+             class="file-item"
+             :class="{
+                 'dragging': dragSource && dragSource.path === file.path,
+                 'drag-over': dragOverTarget === file.path
+             }"
+             :draggable="!searchMode"
+             @dragstart="onDragStart($event, file)"
+             @dragend="onDragEnd"
+             @dragover="onDragOver($event, file)"
+             @dragleave="onDragLeave"
+             @drop="onDropItem($event, file)"
+             @click="onFileClick($event, file)">
 
-                            <div class="file-checkbox" @click.stop>
-                                <el-checkbox v-model="file.checked" @change="updateSelection"></el-checkbox>
-                            </div>
+            <div class="file-checkbox" @click.stop>
+                <el-checkbox v-model="file.checked" @change="updateSelection"></el-checkbox>
+            </div>
 
-                            <div class="file-icon" @click.stop>
-                                <i :class="file.is_dir ? 'fas fa-folder folder-icon' : 'fas fa-file'"></i>
-                            </div>
+            <div class="file-icon" @click.stop>
+                <i :class="file.is_dir ? 'fas fa-folder folder-icon' : 'fas fa-file'"></i>
+            </div>
 
-                            <div class="file-name" @click="previewOrEnter(file)" :title="file.name">
-                                <span v-html="highlightMatch(file.name)"></span>
-                                <span v-if="searchMode && file.match_type"
-                                      :class="['match-type', file.is_dir ? 'folder' : 'file']">
-                                    {{ file.is_dir ? '文件夹' : '文件' }}
-                                </span>
-                            </div>
+            <div class="file-name" @click="previewOrEnter(file)" :title="file.name">
+                <span v-html="highlightMatch(file.name)"></span>
+                <span v-if="searchMode && file.match_type"
+                      :class="['match-type', file.is_dir ? 'folder' : 'file']">
+                    {{ file.is_dir ? '文件夹' : '文件' }}
+                </span>
+            </div>
 
-                            <div class="file-size">{{ file.is_dir ? '—' : formatSize(file.size) }}</div>
-                            <div class="file-modified">{{ formatDate(file.modified) }}</div>
+            <div class="file-size">{{ file.is_dir ? '—' : formatSize(file.size) }}</div>
+            <div class="file-modified">{{ formatDate(file.modified) }}</div>
 
-                            <div class="file-actions" @click.stop>
-                                <button class="action-icon-btn" @click="previewFile(file)" :disabled="file.is_dir" title="预览">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-icon-btn" @click="downloadFile(file)" :disabled="file.is_dir" title="下载">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                                <button class="action-icon-btn" @click="deleteFile(file)" title="删除">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="file-actions" @click.stop>
+                <!-- 只有文件才显示预览按钮 -->
+                <button v-if="!file.is_dir" class="action-icon-btn" @click="previewFile(file)" title="预览">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <!-- 只有文件才显示下载按钮 -->
+                <button v-if="!file.is_dir" class="action-icon-btn" @click="downloadFile(file)" title="下载">
+                    <i class="fas fa-download"></i>
+                </button>
+                <!-- 所有项目都显示删除按钮（文件和文件夹都显示） -->
+                <button class="action-icon-btn" @click="deleteFile(file)" title="删除">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </div>
 
@@ -1345,14 +1352,41 @@
                 },
 
                 // 下载文件
-                downloadFile(file) {
-                    if (file.is_dir) {
-                        this.$message.info('文件夹下载暂不支持');
-                        return;
-                    }
-                    const url = `/api/files/${encodeURIComponent(file.path)}`;
-                    window.open(url, '_blank');
-                },
+                // 下载文件/文件夹
+async downloadFile(file) {
+    if (file.is_dir) {
+        // 文件夹下载 - 打包为ZIP
+        try {
+            this.$message.info('正在打包文件夹，请稍候...');
+
+            const response = await axios.post('/api/download/folder', {
+                path: file.path
+            }, {
+                responseType: 'blob'  // 重要：设置为blob以接收二进制数据
+            });
+
+            // 创建下载链接
+            const blob = new Blob([response.data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${file.name}.zip`;  // 设置下载文件名
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            this.$message.success('文件夹下载完成');
+        } catch (error) {
+            console.error('Folder download failed:', error);
+            this.$message.error('文件夹下载失败: ' + (error.response?.data?.detail || error.message));
+        }
+    } else {
+        // 文件下载 - 保持原有逻辑
+        const url = `/api/files/${encodeURIComponent(file.path)}`;
+        window.open(url, '_blank');
+    }
+},
 
                 // 删除文件
                 async deleteFile(file) {
@@ -1767,6 +1801,40 @@
 
                     await this.moveToTarget(this.selectedTargetPath);
                 },
+
+                // 批量下载选中的文件/文件夹
+async batchDownload() {
+    if (this.selectedFiles.length === 0) {
+        this.$message.warning('请选择要下载的项目');
+        return;
+    }
+
+    try {
+        this.$message.info('正在打包，请稍候...');
+
+        const paths = this.selectedFiles.map(f => f.path);
+        const response = await axios.post('/api/download/batch', {
+            paths: paths
+        }, {
+            responseType: 'blob'
+        });
+
+        const blob = new Blob([response.data], { type: 'application/zip' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'download.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        this.$message.success('下载完成');
+    } catch (error) {
+        console.error('Batch download failed:', error);
+        this.$message.error('下载失败: ' + (error.response?.data?.detail || error.message));
+    }
+},
 
                 // 执行移动到目标路径
                 async moveToTarget(targetPath) {

@@ -1,3 +1,6 @@
+import tempfile
+import zipfile
+
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Body
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
@@ -369,6 +372,143 @@ async def get_folder_tree(path: str = ""):
     except Exception as e:
         print(f"Error building folder tree: {e}")
         return {"tree": []}
+
+
+# 添加文件夹下载接口
+@app.post("/api/download/folder")
+async def download_folder(request: Request):
+    """
+    下载整个文件夹（打包为ZIP）
+    """
+    try:
+        data = await request.json()
+        folder_path = data.get('path')
+
+        if not folder_path:
+            raise HTTPException(status_code=400, detail="Folder path is required")
+
+        # 获取完整路径
+        if os.path.isabs(folder_path):
+            full_path = folder_path
+        else:
+            full_path = os.path.join(settings.base_dir, folder_path)
+
+        full_path = os.path.normpath(full_path)
+
+        # 安全检查
+        if os.path.isabs(folder_path) and not folder_path.startswith(settings.base_dir):
+            pass
+        else:
+            try:
+                common_path = os.path.commonpath([full_path, settings.base_dir])
+                if common_path != settings.base_dir:
+                    raise HTTPException(status_code=403, detail="Access denied")
+            except ValueError:
+                raise HTTPException(status_code=403, detail="Access denied")
+
+        if not os.path.exists(full_path):
+            raise HTTPException(status_code=404, detail="Folder not found")
+
+        if not os.path.isdir(full_path):
+            raise HTTPException(status_code=400, detail="Path is not a directory")
+
+        # 创建临时ZIP文件
+        folder_name = os.path.basename(full_path)
+        if not folder_name:
+            folder_name = "download"
+
+        # 使用临时文件
+        temp_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
+        temp_zip.close()
+
+        try:
+            # 创建ZIP文件
+            with zipfile.ZipFile(temp_zip.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                # 遍历文件夹
+                for root, dirs, files in os.walk(full_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        # 计算相对路径
+                        rel_path = os.path.relpath(file_path, os.path.dirname(full_path))
+                        # 添加到ZIP
+                        zipf.write(file_path, rel_path)
+
+            # 返回ZIP文件
+            return FileResponse(
+                temp_zip.name,
+                media_type='application/zip',
+                filename=f"{folder_name}.zip",
+                headers={
+                    "Content-Disposition": f"attachment; filename={folder_name}.zip"
+                }
+            )
+        except Exception as e:
+            # 清理临时文件
+            if os.path.exists(temp_zip.name):
+                os.unlink(temp_zip.name)
+            raise HTTPException(status_code=500, detail=f"Failed to create zip: {str(e)}")
+
+    except Exception as e:
+        print(f"Download folder error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/download/batch")
+async def download_batch(request: Request):
+    """
+    批量下载多个文件/文件夹（打包为ZIP）
+    """
+    try:
+        data = await request.json()
+        paths = data.get('paths', [])
+
+        if not paths:
+            raise HTTPException(status_code=400, detail="No paths provided")
+
+        # 创建临时ZIP文件
+        temp_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
+        temp_zip.close()
+
+        try:
+            with zipfile.ZipFile(temp_zip.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for rel_path in paths:
+                    # 获取完整路径
+                    if os.path.isabs(rel_path):
+                        full_path = rel_path
+                    else:
+                        full_path = os.path.join(settings.base_dir, rel_path)
+
+                    full_path = os.path.normpath(full_path)
+
+                    if not os.path.exists(full_path):
+                        continue
+
+                    if os.path.isdir(full_path):
+                        # 添加文件夹
+                        for root, dirs, files in os.walk(full_path):
+                            for file in files:
+                                file_path = os.path.join(root, file)
+                                # 计算相对于基础目录的路径
+                                rel_file_path = os.path.relpath(file_path, settings.base_dir)
+                                zipf.write(file_path, rel_file_path)
+                    else:
+                        # 添加文件
+                        rel_file_path = os.path.relpath(full_path, settings.base_dir)
+                        zipf.write(full_path, rel_file_path)
+
+            return FileResponse(
+                temp_zip.name,
+                media_type='application/zip',
+                filename="download.zip"
+            )
+        except Exception as e:
+            if os.path.exists(temp_zip.name):
+                os.unlink(temp_zip.name)
+            raise HTTPException(status_code=500, detail=f"Failed to create zip: {str(e)}")
+
+    except Exception as e:
+        print(f"Batch download error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # 添加管理页面路由
