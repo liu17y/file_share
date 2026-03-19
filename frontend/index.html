@@ -687,6 +687,31 @@
     background-color: #374151;
 }
 
+/* 添加到CSS中的暗色模式样式部分 */
+
+/* 移动对话框提示区域的暗色模式 */
+.dark-mode [style*="background: #f3f4f6"] {
+    background: #1f2937 !important;
+}
+
+.dark-mode [style*="color: #4b5563"] {
+    color: #e5e7eb !important;
+}
+
+/* 或者更精确的选择器 - 添加到CSS末尾 */
+.dark-mode .el-dialog__body > div:first-child {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151;
+}
+
+.dark-mode .el-dialog__body > div:first-child span {
+    color: #e5e7eb !important;
+}
+
+.dark-mode .el-dialog__body > div:first-child i {
+    color: #60a5fa !important;
+}
+
     </style>
 </head>
 <body>
@@ -898,7 +923,8 @@
             append-to-body
             :before-close="handleMoveDialogClose">
 
-            <div style="margin-bottom: 16px; padding: 8px; background: #f3f4f6; border-radius: 8px;">
+            <!-- 将原来的div修改为 -->
+            <div class="move-info-panel" style="margin-bottom: 16px; padding: 8px; background: #f3f4f6; border-radius: 8px;">
                 <span style="font-size: 13px; color: #4b5563;">
                     <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
                     已选择 {{ selectedFiles.length }} 项，请选择目标文件夹
