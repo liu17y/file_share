@@ -854,6 +854,8 @@
                 </span>
             </div>
 
+
+
             <div class="file-size">{{ file.is_dir ? '—' : formatSize(file.size) }}</div>
             <div class="file-modified">{{ formatDate(file.modified) }}</div>
 
@@ -873,12 +875,12 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
             </div>
         </div>
 
-        <!-- 上传对话框 -->
-        <el-dialog title="上传文件" :visible.sync="uploadDialog" width="550px" append-to-body :close-on-click-modal="false">
+        <!-- 上传对话框 - 优化版 -->
+        <el-dialog title="上传文件" :visible.sync="uploadDialog" width="600px" append-to-body :close-on-click-modal="false">
             <div>
                 <div style="margin-bottom: 15px;">
                     <el-tag :type="uploadMode === 'single' ? 'primary' : 'success'">
@@ -887,21 +889,45 @@
                     <span style="margin-left: 10px; color: #666;">目标路径: {{ currentPath || '根目录' }}</span>
                 </div>
 
+                <!-- 上传速度显示 -->
+                <div v-if="uploading" style="margin-bottom: 10px; font-size: 12px; color: #3b82f6;">
+                    <i class="fas fa-tachometer-alt"></i> 上传速度: {{ uploadSpeed }}/s
+                </div>
+
                 <div v-if="uploadQueue.length > 0" class="upload-file-list">
                     <div v-for="(item, idx) in uploadQueue" :key="idx" class="upload-progress-item">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-                            <span style="font-weight: 500;">
+                            <span style="font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis;">
                                 <i class="fas fa-file"></i>
                                 {{ item.displayName || item.name }}
                                 <span v-if="item.folderPath" style="font-size: 11px; color: #999; margin-left: 5px;">
                                     ({{ item.folderPath }})
                                 </span>
                             </span>
-                            <span style="font-size: 12px;">{{ formatSize(item.size) }}</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 12px;">{{ formatSize(item.size) }}</span>
+                                <el-button
+                                    v-if="item.status !== 'completed'"
+                                    type="text"
+                                    size="mini"
+                                    @click="cancelUploadItem(item)"
+                                    style="color: #f56c6c; padding: 0;">
+                                    <i class="el-icon-close"></i>
+                                </el-button>
+                            </div>
                         </div>
-                        <el-progress :percentage="item.progress" :status="item.status === 'error' ? 'exception' : ''"></el-progress>
-                        <div style="font-size: 11px; color: #f56c6c; margin-top: 4px;" v-if="item.error">
-                            {{ item.error }}
+                        <el-progress
+                            :percentage="item.progress"
+                            :status="item.status === 'error' ? 'exception' : ''"
+                            :color="item.status === 'completed' ? '#67c23a' : '#409eff'">
+                        </el-progress>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 4px;">
+                            <span style="color: #f56c6c;" v-if="item.error">{{ item.error }}</span>
+                            <span style="color: #909399;" v-else-if="item.status === 'waiting'">等待中...</span>
+                            <span style="color: #67c23a;" v-else-if="item.status === 'completed'">已完成</span>
+                            <span style="color: #409eff;" v-else-if="item.status === 'uploading'">
+                                分片 {{ item.completedChunks || 0 }}/{{ item.totalChunks }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -1049,7 +1075,7 @@
                     searchMode: false,
                     searching: false,
                     searchTimeout: null,
-                    searchDebounceTime: 300, // 300ms 防抖
+                    searchDebounceTime: 300,
 
                     // 拖拽移动相关
                     dragSource: null,
@@ -1058,20 +1084,30 @@
                     // 移动对话框
                     moveDialogVisible: false,
                     folderTree: [],
-                    selectedTargetPath: '', // 改为空字符串表示根目录
+                    selectedTargetPath: '',
                     selectedTargetName: '',
 
                     // 在移动对话框中新建文件夹
                     subFolderDialog: false,
                     newSubFolderName: '',
 
-                    // 上传相关
+                    // 上传相关 - 优化版
                     uploadDialog: false,
                     uploadQueue: [],
                     uploading: false,
                     paused: false,
                     uploadMode: 'single',
-                    chunkSize: 8 * 1024 * 1024,
+                    chunkSize: 2 * 1024 * 1024, // 2MB per chunk for better performance
+
+                    // 原生XHR上传任务管理
+                    uploadTasks: new Map(), // 存储所有上传任务的XHR
+                    maxConcurrentChunks: 6, // 最大并发分片数，提高上传速度
+
+                    // 上传速度计算
+                    uploadSpeed: '0 B',
+                    lastUploadedBytes: 0,
+                    lastSpeedTime: Date.now(),
+                    speedInterval: null,
 
                     // SSE
                     sseConnected: false,
@@ -1121,6 +1157,9 @@
                 }
                 if (this.searchTimeout) {
                     clearTimeout(this.searchTimeout);
+                }
+                if (this.speedInterval) {
+                    clearInterval(this.speedInterval);
                 }
             },
             methods: {
@@ -1352,41 +1391,40 @@
                 },
 
                 // 下载文件
-                // 下载文件/文件夹
-async downloadFile(file) {
-    if (file.is_dir) {
-        // 文件夹下载 - 打包为ZIP
-        try {
-            this.$message.info('正在打包文件夹，请稍候...');
+                async downloadFile(file) {
+                    if (file.is_dir) {
+                        // 文件夹下载 - 打包为ZIP
+                        try {
+                            this.$message.info('正在打包文件夹，请稍候...');
 
-            const response = await axios.post('/api/download/folder', {
-                path: file.path
-            }, {
-                responseType: 'blob'  // 重要：设置为blob以接收二进制数据
-            });
+                            const response = await axios.post('/api/download/folder', {
+                                path: file.path
+                            }, {
+                                responseType: 'blob'
+                            });
 
-            // 创建下载链接
-            const blob = new Blob([response.data], { type: 'application/zip' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${file.name}.zip`;  // 设置下载文件名
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+                            // 创建下载链接
+                            const blob = new Blob([response.data], { type: 'application/zip' });
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = `${file.name}.zip`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url);
 
-            this.$message.success('文件夹下载完成');
-        } catch (error) {
-            console.error('Folder download failed:', error);
-            this.$message.error('文件夹下载失败: ' + (error.response?.data?.detail || error.message));
-        }
-    } else {
-        // 文件下载 - 保持原有逻辑
-        const url = `/api/files/${encodeURIComponent(file.path)}`;
-        window.open(url, '_blank');
-    }
-},
+                            this.$message.success('文件夹下载完成');
+                        } catch (error) {
+                            console.error('Folder download failed:', error);
+                            this.$message.error('文件夹下载失败: ' + (error.response?.data?.detail || error.message));
+                        }
+                    } else {
+                        // 文件下载
+                        const url = `/api/files/${encodeURIComponent(file.path)}`;
+                        window.open(url, '_blank');
+                    }
+                },
 
                 // 删除文件
                 async deleteFile(file) {
@@ -1495,7 +1533,7 @@ async downloadFile(file) {
                 onDragOver(event, file) {
                     if (!this.dragSource || this.searchMode) return;
 
-                    // 只允许拖拽到文件夹（包括根目录？但根目录没有对应的file对象，所以单独处理）
+                    // 只允许拖拽到文件夹
                     if (file.is_dir && file.path !== this.dragSource.path) {
                         event.preventDefault();
                         this.dragOverTarget = file.path;
@@ -1552,13 +1590,13 @@ async downloadFile(file) {
 
                     // 拖拽到空白区域 - 移动到根目录
                     this.selectedFiles = [this.dragSource];
-                    await this.moveToTarget(''); // 空字符串表示根目录
+                    await this.moveToTarget('');
 
                     this.dragSource = null;
                     this.dragOverTarget = null;
                 },
 
-                // 文件点击处理（用于移动模式）
+                // 文件点击处理
                 onFileClick(event, file) {
                     // 如果正在拖拽，不处理点击
                     if (this.dragSource) return;
@@ -1576,7 +1614,7 @@ async downloadFile(file) {
                     this.tempSelectedPaths = this.selectedFiles.map(f => f.path);
 
                     await this.loadFolderTree();
-                    this.selectedTargetPath = ''; // 默认选中根目录
+                    this.selectedTargetPath = '';
                     this.selectedTargetName = '根目录';
                     this.moveDialogVisible = true;
 
@@ -1606,7 +1644,7 @@ async downloadFile(file) {
                         // 构建树形结构 - 包含根目录
                         const root = {
                             name: '根目录',
-                            path: '', // 空字符串表示根目录
+                            path: '',
                             is_dir: true,
                             children: []
                         };
@@ -1705,7 +1743,7 @@ async downloadFile(file) {
                 handleMoveTargetSelect(data) {
                     if (!data.is_dir) return;
 
-                    this.selectedTargetPath = data.path; // 可以是空字符串（根目录）
+                    this.selectedTargetPath = data.path;
                     this.selectedTargetName = data.name;
 
                     // 高亮显示
@@ -1756,12 +1794,11 @@ async downloadFile(file) {
                             this.selectedTargetPath = newPath;
                             this.selectedTargetName = this.newSubFolderName.trim();
 
-                            // 刷新文件列表，但保持选中状态 - 使用保存的路径
-                            await this.refreshList(true); // 传入 true 表示保持选中状态
+                            // 刷新文件列表，但保持选中状态
+                            await this.refreshList(true);
 
                             // 确保选中状态正确
                             this.$nextTick(() => {
-                                // 重新高亮选中的文件夹树节点
                                 if (this.$refs.folderTree) {
                                     this.$refs.folderTree.setCurrentKey(newPath);
                                 }
@@ -1803,38 +1840,38 @@ async downloadFile(file) {
                 },
 
                 // 批量下载选中的文件/文件夹
-async batchDownload() {
-    if (this.selectedFiles.length === 0) {
-        this.$message.warning('请选择要下载的项目');
-        return;
-    }
+                async batchDownload() {
+                    if (this.selectedFiles.length === 0) {
+                        this.$message.warning('请选择要下载的项目');
+                        return;
+                    }
 
-    try {
-        this.$message.info('正在打包，请稍候...');
+                    try {
+                        this.$message.info('正在打包，请稍候...');
 
-        const paths = this.selectedFiles.map(f => f.path);
-        const response = await axios.post('/api/download/batch', {
-            paths: paths
-        }, {
-            responseType: 'blob'
-        });
+                        const paths = this.selectedFiles.map(f => f.path);
+                        const response = await axios.post('/api/download/batch', {
+                            paths: paths
+                        }, {
+                            responseType: 'blob'
+                        });
 
-        const blob = new Blob([response.data], { type: 'application/zip' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'download.zip';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+                        const blob = new Blob([response.data], { type: 'application/zip' });
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'download.zip';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(url);
 
-        this.$message.success('下载完成');
-    } catch (error) {
-        console.error('Batch download failed:', error);
-        this.$message.error('下载失败: ' + (error.response?.data?.detail || error.message));
-    }
-},
+                        this.$message.success('下载完成');
+                    } catch (error) {
+                        console.error('Batch download failed:', error);
+                        this.$message.error('下载失败: ' + (error.response?.data?.detail || error.message));
+                    }
+                },
 
                 // 执行移动到目标路径
                 async moveToTarget(targetPath) {
@@ -1845,7 +1882,7 @@ async batchDownload() {
                     try {
                         const response = await axios.post('/api/items/move', {
                             sources: sourcePaths,
-                            destination: targetPath  // 可以是空字符串（根目录）
+                            destination: targetPath
                         });
 
                         if (response.data.success && response.data.success.length > 0) {
@@ -1883,7 +1920,7 @@ async batchDownload() {
                     }
                 },
 
-                // ========== 上传相关 ==========
+                // ========== 上传相关 - 优化版 ==========
                 openSingleFileUpload() {
                     this.uploadMode = 'single';
                     this.$refs.singleFileInput.multiple = true;
@@ -1896,6 +1933,7 @@ async batchDownload() {
                         this.uploadQueue = [];
 
                         files.forEach(file => {
+                            const totalChunks = Math.ceil(file.size / this.chunkSize);
                             this.uploadQueue.push({
                                 file: file,
                                 name: file.name,
@@ -1907,7 +1945,8 @@ async batchDownload() {
                                 error: null,
                                 fileId: null,
                                 uploadedChunks: new Set(),
-                                totalChunks: Math.ceil(file.size / this.chunkSize)
+                                totalChunks: totalChunks,
+                                completedChunks: 0
                             });
                         });
 
@@ -1934,6 +1973,8 @@ async batchDownload() {
                             const displayPath = relativePath ?
                                 relativePath.substring(0, relativePath.lastIndexOf('/') + 1) : '';
 
+                            const totalChunks = Math.ceil(file.size / this.chunkSize);
+
                             this.uploadQueue.push({
                                 file: file,
                                 name: pathParts[pathParts.length - 1],
@@ -1947,7 +1988,8 @@ async batchDownload() {
                                 error: null,
                                 fileId: null,
                                 uploadedChunks: new Set(),
-                                totalChunks: Math.ceil(file.size / this.chunkSize)
+                                totalChunks: totalChunks,
+                                completedChunks: 0
                             });
                         }
                     });
@@ -1967,6 +2009,8 @@ async batchDownload() {
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
+                            // 取消所有上传任务
+                            this.cancelAllUploads();
                             this.uploadDialog = false;
                             this.uploadQueue = [];
                         }).catch(() => {});
@@ -1976,35 +2020,66 @@ async batchDownload() {
                     }
                 },
 
+                // 取消所有上传
+                cancelAllUploads() {
+                    this.uploadTasks.forEach((xhr) => {
+                        xhr.abort();
+                    });
+                    this.uploadTasks.clear();
+                    this.uploading = false;
+                    this.paused = false;
+                },
+
+                // 取消单个上传项
+                cancelUploadItem(item) {
+                    // 取消该文件的所有分片上传
+                    this.uploadTasks.forEach((xhr, key) => {
+                        if (key.startsWith(item.fileId || '')) {
+                            xhr.abort();
+                        }
+                    });
+
+                    // 从队列中移除
+                    const index = this.uploadQueue.indexOf(item);
+                    if (index > -1) {
+                        this.uploadQueue.splice(index, 1);
+                    }
+
+                    this.$message.info('已取消上传');
+
+                    if (this.uploadQueue.length === 0) {
+                        this.uploading = false;
+                        this.paused = false;
+                    }
+                },
+
+                // 开始上传
                 async startUpload() {
                     if (this.uploadQueue.length === 0) return;
 
                     this.uploading = true;
                     this.paused = false;
+                    this.uploadTasks.clear();
 
-                    const pendingFiles = this.uploadQueue.filter(f => f.status === 'waiting' || f.status === 'error');
+                    // 启动速度计算
+                    this.startSpeedCalculation();
 
-                    for (let fileItem of pendingFiles) {
-                        if (this.paused) {
-                            fileItem.status = 'paused';
-                            break;
-                        }
+                    const pendingFiles = this.uploadQueue.filter(f =>
+                        f.status === 'waiting' || f.status === 'error' || f.status === 'paused'
+                    );
 
-                        if (fileItem.status === 'error') {
-                            fileItem.status = 'waiting';
-                            fileItem.error = null;
-                        }
+                    // 限制并发文件数为2，避免过多文件同时上传影响速度
+                    const CONCURRENT_FILES = 2;
 
-                        try {
-                            await this.uploadFile(fileItem);
-                        } catch (error) {
-                            console.error('Upload failed:', error);
-                            fileItem.status = 'error';
-                            fileItem.error = error.message || '上传失败';
-                        }
+                    for (let i = 0; i < pendingFiles.length; i += CONCURRENT_FILES) {
+                        if (this.paused) break;
+
+                        const batch = pendingFiles.slice(i, i + CONCURRENT_FILES);
+                        await Promise.all(batch.map(fileItem => this.uploadFileNative(fileItem)));
                     }
 
                     this.uploading = false;
+                    this.stopSpeedCalculation();
 
                     const allCompleted = this.uploadQueue.every(f => f.status === 'completed');
                     if (allCompleted) {
@@ -2016,7 +2091,6 @@ async batchDownload() {
                             this.refreshList();
                         }
 
-                        // 刷新文件夹树
                         this.loadFolderTree();
 
                         setTimeout(() => {
@@ -2028,135 +2102,249 @@ async batchDownload() {
                     }
                 },
 
-                async uploadFile(fileItem) {
+                // 原生XHR上传文件
+                async uploadFileNative(fileItem) {
                     const file = fileItem.file;
                     const fileId = `upload_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
                     fileItem.fileId = fileId;
+                    fileItem.status = 'uploading';
 
-                    try {
-                        let targetPath = this.currentPath;
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            // 1. 计算目标路径
+                            let targetPath = this.currentPath;
 
-                        if (this.uploadMode === 'folder') {
-                            if (fileItem.folderPath) {
-                                if (this.currentPath) {
-                                    targetPath = `${this.currentPath}/${fileItem.rootFolder}/${fileItem.folderPath}`;
+                            if (this.uploadMode === 'folder') {
+                                if (fileItem.folderPath) {
+                                    targetPath = this.currentPath
+                                        ? `${this.currentPath}/${fileItem.rootFolder}/${fileItem.folderPath}`
+                                        : `${fileItem.rootFolder}/${fileItem.folderPath}`;
                                 } else {
-                                    targetPath = `${fileItem.rootFolder}/${fileItem.folderPath}`;
+                                    targetPath = this.currentPath
+                                        ? `${this.currentPath}/${fileItem.rootFolder}`
+                                        : fileItem.rootFolder;
                                 }
+                                targetPath = targetPath.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+                            }
+
+                            // 2. 初始化上传
+                            const initFormData = new FormData();
+                            initFormData.append('file_id', fileId);
+                            initFormData.append('file_name', fileItem.name);
+                            initFormData.append('file_size', file.size.toString());
+                            initFormData.append('target_path', targetPath);
+                            initFormData.append('total_chunks', fileItem.totalChunks.toString());
+
+                            const initResponse = await axios.post('/api/upload/init', initFormData);
+
+                            if (initResponse.data.error) {
+                                throw new Error(initResponse.data.error);
+                            }
+
+                            const uploadedChunks = new Set(initResponse.data.uploaded_chunks || []);
+                            fileItem.uploadedChunks = uploadedChunks;
+                            fileItem.completedChunks = uploadedChunks.size;
+
+                            // 3. 准备需要上传的分片
+                            const chunks = [];
+                            for (let chunkIndex = 0; chunkIndex < fileItem.totalChunks; chunkIndex++) {
+                                if (!uploadedChunks.has(chunkIndex)) {
+                                    chunks.push(chunkIndex);
+                                }
+                            }
+
+                            if (chunks.length === 0) {
+                                fileItem.status = 'completed';
+                                fileItem.progress = 100;
+                                resolve();
+                                return;
+                            }
+
+                            // 4. 使用队列控制并发上传分片
+                            let completedChunks = uploadedChunks.size;
+                            const queue = [...chunks];
+                            const activeUploads = new Set();
+
+                            const processQueue = () => {
+                                while (activeUploads.size < this.maxConcurrentChunks && queue.length > 0 && !this.paused) {
+                                    const chunkIndex = queue.shift();
+                                    const upload = this.uploadChunkNative(fileItem, fileId, chunkIndex);
+
+                                    const promise = upload.then(() => {
+                                        activeUploads.delete(promise);
+                                        completedChunks++;
+                                        fileItem.completedChunks = completedChunks;
+                                        fileItem.progress = Math.round((completedChunks / fileItem.totalChunks) * 100);
+                                        processQueue();
+                                    }).catch(error => {
+                                        activeUploads.delete(promise);
+                                        console.error(`Chunk ${chunkIndex} failed:`, error);
+                                        // 失败后重新加入队列，最多重试3次
+                                        if (error.retryCount === undefined) {
+                                            error.retryCount = 1;
+                                        } else {
+                                            error.retryCount++;
+                                        }
+
+                                        if (error.retryCount <= 3) {
+                                            queue.unshift(chunkIndex);
+                                        }
+                                        processQueue();
+                                    });
+
+                                    activeUploads.add(promise);
+                                }
+
+                                // 当所有任务完成时
+                                if (activeUploads.size === 0 && queue.length === 0) {
+                                    fileItem.progress = 100;
+                                    fileItem.status = 'completed';
+                                    resolve();
+                                }
+                            };
+
+                            // 开始处理队列
+                            processQueue();
+
+                        } catch (error) {
+                            console.error('Upload error:', error);
+                            fileItem.status = 'error';
+                            fileItem.error = error.response?.data?.error || error.message;
+                            reject(error);
+                        }
+                    });
+                },
+
+                // 原生XHR上传分片
+                uploadChunkNative(fileItem, fileId, chunkIndex) {
+                    return new Promise((resolve, reject) => {
+                        const file = fileItem.file;
+                        const chunkSize = this.chunkSize;
+                        const start = chunkIndex * chunkSize;
+                        const end = Math.min(start + chunkSize, file.size);
+                        const chunk = file.slice(start, end);
+
+                        const formData = new FormData();
+                        formData.append('file_id', fileId);
+                        formData.append('chunk_index', chunkIndex.toString());
+                        formData.append('chunk_data', chunk);
+
+                        const xhr = new XMLHttpRequest();
+
+                        // 存储XHR以便可以取消
+                        const taskKey = `${fileId}_${chunkIndex}`;
+                        this.uploadTasks.set(taskKey, xhr);
+
+                        // 上传进度
+                        xhr.upload.addEventListener('progress', (e) => {
+                            if (e.lengthComputable) {
+                                // 更新上传速度
+                                this.updateUploadSpeed(e.loaded);
+                            }
+                        });
+
+                        xhr.addEventListener('load', () => {
+                            this.uploadTasks.delete(taskKey);
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                resolve();
                             } else {
-                                if (this.currentPath) {
-                                    targetPath = `${this.currentPath}/${fileItem.rootFolder}`;
-                                } else {
-                                    targetPath = fileItem.rootFolder;
-                                }
+                                const error = new Error(`HTTP ${xhr.status}`);
+                                error.retryCount = xhr.retryCount || 0;
+                                reject(error);
                             }
+                        });
 
-                            targetPath = targetPath.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
-                        }
+                        xhr.addEventListener('error', () => {
+                            this.uploadTasks.delete(taskKey);
+                            const error = new Error('Network error');
+                            error.retryCount = xhr.retryCount || 0;
+                            reject(error);
+                        });
 
-                        const initFormData = new FormData();
-                        initFormData.append('file_id', fileId);
-                        initFormData.append('file_name', fileItem.name);
-                        initFormData.append('file_size', file.size.toString());
-                        initFormData.append('target_path', targetPath);
-                        initFormData.append('total_chunks', fileItem.totalChunks.toString());
+                        xhr.addEventListener('abort', () => {
+                            this.uploadTasks.delete(taskKey);
+                            reject(new Error('Upload aborted'));
+                        });
 
-                        const initResponse = await axios.post('/api/upload/init', initFormData);
+                        xhr.open('POST', '/api/upload/chunk');
+                        xhr.timeout = 60000; // 60秒超时
 
-                        if (initResponse.data.error) {
-                            throw new Error(initResponse.data.error);
-                        }
+                        // 添加重试计数
+                        xhr.retryCount = 0;
 
-                        const uploadedChunks = new Set(initResponse.data.uploaded_chunks || []);
-                        fileItem.uploadedChunks = uploadedChunks;
+                        xhr.send(formData);
+                    });
+                },
 
-                        const CONCURRENT_UPLOADS = 3;
-                        const chunks = [];
+                // 更新上传速度
+                updateUploadSpeed(bytes) {
+                    const now = Date.now();
+                    const timeDiff = now - this.lastSpeedTime;
 
-                        for (let chunkIndex = 0; chunkIndex < fileItem.totalChunks; chunkIndex++) {
-                            if (!uploadedChunks.has(chunkIndex)) {
-                                chunks.push(chunkIndex);
-                            }
-                        }
-
-                        for (let i = 0; i < chunks.length; i += CONCURRENT_UPLOADS) {
-                            while (this.paused) {
-                                await new Promise(resolve => setTimeout(resolve, 500));
-                                if (!this.uploading) return;
-                            }
-
-                            const batch = chunks.slice(i, i + CONCURRENT_UPLOADS);
-                            const uploadPromises = batch.map(async (chunkIndex) => {
-                                const start = chunkIndex * this.chunkSize;
-                                const end = Math.min(start + this.chunkSize, file.size);
-                                const chunk = file.slice(start, end);
-
-                                const chunkFormData = new FormData();
-                                chunkFormData.append('file_id', fileId);
-                                chunkFormData.append('chunk_index', chunkIndex.toString());
-                                chunkFormData.append('chunk_data', chunk);
-
-                                let retryCount = 0;
-                                let uploaded = false;
-
-                                while (!uploaded && retryCount < 3) {
-                                    try {
-                                        await axios.post('/api/upload/chunk', chunkFormData, {
-                                            timeout: 30000,
-                                            headers: { 'Content-Type': 'multipart/form-data' }
-                                        });
-                                        uploaded = true;
-                                    } catch (chunkError) {
-                                        retryCount++;
-                                        if (retryCount === 3) throw chunkError;
-                                        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
-                                    }
-                                }
-                            });
-
-                            await Promise.all(uploadPromises);
-
-                            const uploadedCount = uploadedChunks.size + (i + batch.length);
-                            fileItem.progress = Math.round((uploadedCount / fileItem.totalChunks) * 100);
-                        }
-
-                        let statusCompleted = false;
-                        for (let i = 0; i < 5; i++) {
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                            try {
-                                const statusResponse = await axios.get(`/api/upload/status/${fileId}`);
-                                if (statusResponse.data && statusResponse.data.status === 'completed') {
-                                    statusCompleted = true;
-                                    break;
-                                }
-                            } catch (e) {
-                                if (e.response && e.response.status === 404) {
-                                    statusCompleted = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        fileItem.status = 'completed';
-                        fileItem.progress = 100;
-
-                    } catch (error) {
-                        console.error('File upload error:', error);
-                        fileItem.status = 'error';
-                        fileItem.error = error.response?.data?.error || error.message;
-                        throw error;
+                    if (timeDiff > 200) { // 每200ms更新一次
+                        const bytesPerSecond = (bytes / timeDiff) * 1000;
+                        this.uploadSpeed = this.formatSize(bytesPerSecond);
+                        this.lastSpeedTime = now;
                     }
+                },
+
+                // 开始速度计算
+                startSpeedCalculation() {
+                    this.lastUploadedBytes = 0;
+                    this.lastSpeedTime = Date.now();
+                    this.uploadSpeed = '0 B';
+
+                    if (this.speedInterval) {
+                        clearInterval(this.speedInterval);
+                    }
+
+                    // 每秒更新速度显示
+                    this.speedInterval = setInterval(() => {
+                        if (!this.uploading) {
+                            this.uploadSpeed = '0 B';
+                        }
+                    }, 1000);
+                },
+
+                // 停止速度计算
+                stopSpeedCalculation() {
+                    if (this.speedInterval) {
+                        clearInterval(this.speedInterval);
+                        this.speedInterval = null;
+                    }
+                    this.uploadSpeed = '0 B';
                 },
 
                 pauseUpload() {
                     this.paused = true;
+                    // 取消所有正在上传的分片
+                    this.uploadTasks.forEach((xhr) => {
+                        xhr.abort();
+                    });
+                    this.uploadTasks.clear();
+
+                    // 标记所有上传中的文件为暂停状态
+                    this.uploadQueue.forEach(item => {
+                        if (item.status === 'uploading') {
+                            item.status = 'paused';
+                        }
+                    });
+
                     this.$message.info('上传已暂停');
                 },
 
                 resumeUpload() {
                     this.paused = false;
                     this.$message.info('恢复上传');
-                    this.startUpload();
+
+                    // 重新开始上传等待中的文件
+                    const pendingFiles = this.uploadQueue.filter(
+                        f => f.status === 'paused' || f.status === 'error' || f.status === 'waiting'
+                    );
+
+                    if (pendingFiles.length > 0) {
+                        this.startUpload();
+                    }
                 },
 
                 // ========== 文件夹操作 ==========
@@ -2189,7 +2377,7 @@ async batchDownload() {
                             if (this.searchMode) {
                                 await this.searchFiles();
                             } else {
-                                await this.refreshList(true); // 传入 true 表示保持选中状态
+                                await this.refreshList(true);
                             }
 
                             // 刷新文件夹树
