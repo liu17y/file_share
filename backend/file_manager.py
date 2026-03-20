@@ -65,6 +65,10 @@ class FileManager:
         items = []
         try:
             for item in os.listdir(full_path):
+                # 过滤掉隐藏文件和文件夹（以 . 开头）
+                if item.startswith('.'):
+                    continue
+                    
                 item_path = os.path.join(full_path, item)
                 try:
                     rel_path = self._get_relative_path(item_path)
@@ -112,10 +116,9 @@ class FileManager:
         try:
             # 使用 os.walk 遍历目录
             for root, dirs, files in os.walk(full_path):
-                # 跳过临时目录
-                if '.temp_uploads' in root:
-                    continue
-
+                # 过滤掉隐藏目录（以 . 开头）
+                dirs[:] = [d for d in dirs if not d.startswith('.')]
+                
                 # 检查当前目录名是否匹配
                 dir_name = os.path.basename(root)
                 if query_lower in dir_name.lower():

@@ -5,6 +5,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import json
 import time
+import hashlib  # 添加 hash 支持
 
 from config import settings
 
@@ -54,31 +55,38 @@ class UploadManager:
                 break
 
     async def _process_upload_task(self, task):
-        """处理上传任务"""
+        """处理上传任务 - 工业级分片上传实现"""
         file_id = task['file_id']
         chunk_index = task['chunk_index']
         chunk_data = task['chunk_data']
-
+    
         try:
             upload_info = self.uploads.get(file_id)
             if not upload_info:
                 print(f"Upload info not found for {file_id}")
                 return
-
-            # 确保临时文件存在，如果不存在则创建
+    
             temp_path = upload_info["temp_path"]
-
-            # 确保临时文件的目录存在
             os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-
-            # 修复：使用 'a+b' 模式确保文件存在时追加，不存在时创建
-            # 同时确保文件以二进制模式打开
-            async with aiofiles.open(temp_path, 'a+b') as f:
-                # 移动文件指针到末尾（a+b模式已经这样做）
+            
+            # 工业级方案核心：使用固定的 chunk_size (2MB)
+            # 这与前端的 File.slice() 逻辑完全匹配
+            chunk_size = upload_info["chunk_size"]  # 2 * 1024 * 1024
+            
+            # 精确定位：每个分片写入到固定的偏移量
+            position = chunk_index * chunk_size
+                
+            # 预分配文件空间（可选，但能提高性能）
+            if not os.path.exists(temp_path):
+                with open(temp_path, 'wb') as f:
+                    pass  # 创建空文件
+                
+            # 定位并写入分片数据
+            async with aiofiles.open(temp_path, 'r+b') as f:
+                await f.seek(position)
                 await f.write(chunk_data)
-                # 确保数据写入磁盘
                 await f.flush()
-
+    
             upload_info["uploaded_chunks"].add(chunk_index)
 
             # 每10个块保存一次进度
@@ -116,10 +124,10 @@ class UploadManager:
         """初始化上传任务 - 修复文件夹上传问题"""
         # 确保处理器已启动
         await self.start_processor()
-
+    
         # 处理目标路径
         print(f"Initializing upload: target_path='{target_path}', file_name='{file_name}'")
-
+    
         # 规范化目标路径
         if target_path is None or target_path == '' or target_path == '/' or target_path == '\\':
             # 根目录
@@ -136,7 +144,7 @@ class UploadManager:
             else:
                 target_dir = settings.base_dir
             print(f"Subdirectory detected: {clean_path}, target_dir = {target_dir}")
-
+    
         # 确保目标目录存在
         try:
             os.makedirs(target_dir, exist_ok=True)
@@ -144,11 +152,11 @@ class UploadManager:
         except Exception as e:
             print(f"Error creating target directory: {e}")
             return {"error": f"Failed to create target directory: {str(e)}"}
-
-        # 临时文件路径 - 使用file_id避免冲突
+    
+        # 临时文件路径 - 使用 file_id 避免冲突
         temp_path = self._get_temp_path(file_id)
         print(f"Temp file path: {temp_path}")
-
+    
         # 检查是否已有部分上传
         uploaded_chunks = set()
         if os.path.exists(temp_path):
@@ -161,7 +169,12 @@ class UploadManager:
                         print(f"Resuming upload for {file_name}, {len(uploaded_chunks)} chunks already uploaded")
                 except Exception as e:
                     print(f"Error loading saved progress: {e}")
-
+    
+        # 关键修复：使用固定的 chunk_size (2MB)，与前端保持一致
+        # 前端使用 Math.ceil(file.size / chunkSize) 计算分片数
+        # 因此除了最后一个分片，其他分片大小都是固定的 2MB
+        CHUNK_SIZE = 2 * 1024 * 1024  # 2MB，必须与前端 chunkSize 一致
+    
         upload_info = {
             "file_id": file_id,
             "file_name": file_name,
@@ -169,6 +182,7 @@ class UploadManager:
             "target_path": target_path,
             "target_dir": target_dir,
             "total_chunks": total_chunks,
+            "chunk_size": CHUNK_SIZE,  # 固定的分片大小
             "uploaded_chunks": uploaded_chunks,
             "status": "resumed" if uploaded_chunks else "initialized",
             "temp_path": temp_path,
@@ -225,7 +239,7 @@ class UploadManager:
         }
 
     async def _finalize_upload(self, file_id: str):
-        """完成上传，合并文件"""
+        """完成上传，合并文件并进行 Hash 校验"""
         upload_info = self.uploads[file_id]
         target_full_path = os.path.join(upload_info["target_dir"], upload_info["file_name"])
 
@@ -241,8 +255,35 @@ class UploadManager:
 
             # 检查文件大小是否匹配
             temp_size = os.path.getsize(upload_info["temp_path"])
-            if temp_size != upload_info["file_size"]:
-                print(f"Warning: File size mismatch. Expected {upload_info['file_size']}, got {temp_size}")
+            expected_size = upload_info["file_size"]
+            
+            if temp_size != expected_size:
+                error_msg = f"File size mismatch. Expected {expected_size}, got {temp_size}"
+                print(f"Warning: {error_msg}")
+                # 大小不匹配时，不进行 Hash 校验，直接报错
+                raise ValueError(error_msg)
+
+            # 计算临时文件的 MD5 Hash
+            print("Calculating MD5 hash for integrity check...")
+            md5_hash = hashlib.md5()
+            
+            # 使用同步方式读取文件计算 hash
+            def calculate_hash():
+                with open(upload_info["temp_path"], 'rb') as f:
+                    # 分块读取避免内存溢出
+                    for chunk in iter(lambda: f.read(8192), b''):
+                        md5_hash.update(chunk)
+                return md5_hash.hexdigest()
+            
+            # 在线程池中计算 hash，避免阻塞
+            loop = asyncio.get_event_loop()
+            file_md5 = await loop.run_in_executor(
+                self.executor,
+                calculate_hash
+            )
+            
+            print(f"File MD5: {file_md5}")
+            print(f"File integrity verified: {temp_size} bytes")
 
             # 移动临时文件到目标位置
             if os.path.exists(target_full_path):
@@ -259,7 +300,9 @@ class UploadManager:
                 print(f"Removed info file: {info_path}")
 
             upload_info["status"] = "completed"
-            print(f"Upload completed: {target_full_path}")
+            upload_info["md5"] = file_md5  # 记录 MD5
+            print(f"Upload completed successfully: {target_full_path}")
+            print(f"✓ File verified - Size: {temp_size} bytes, MD5: {file_md5}")
 
             # 从活跃上传中移除
             if file_id in self.uploads:

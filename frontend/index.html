@@ -712,6 +712,74 @@
     color: #60a5fa !important;
 }
 
+/* 重命名对话框样式 */
+.rename-item-type {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+/* 返回上一级按钮样式 */
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 拖拽上传提示样式 */
+.file-table.drag-over-table {
+    border: 2px dashed #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* 拖拽覆盖层样式 */
+.drag-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+}
+
+.dark-mode .drag-overlay {
+    background-color: rgba(31, 41, 55, 0.9);
+}
+
+.drag-overlay-content {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    animation: drag-overlay-pop 0.3s ease-out;
+}
+
+.dark-mode .drag-overlay-content {
+    background: #1f2937;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes drag-overlay-pop {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 文件区域相对定位 */
+.file-table {
+    position: relative;
+}
+
     </style>
 </head>
 <body>
@@ -764,6 +832,11 @@
             <!-- 左侧快捷操作 -->
             <div class="sidebar">
                 <div class="action-grid">
+                    <!-- 返回上一级按钮 -->
+                    <el-button class="action-btn" @click="goToParentDirectory" :disabled="!currentPath" title="返回上一级 (Backspace)">
+                        <i class="fas fa-level-up-alt" style="margin-right: 8px;"></i>返回上一级
+                    </el-button>
+                            
                     <el-button class="action-btn" @click="openSingleFileUpload">
                         <i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i>上传文件
                     </el-button>
@@ -777,7 +850,7 @@
                     <el-button class="action-btn" @click="batchDelete" :disabled="!selectedFiles.length">
                         <i class="fas fa-trash-alt" style="margin-right: 8px;"></i>批量删除 ({{ selectedFiles.length }})
                     </el-button>
-                    <!-- 在侧边栏的action-grid中添加 -->
+                    <!-- 在侧边栏的 action-grid 中添加 -->
                     <el-button class="action-btn" @click="batchDownload" :disabled="!selectedFiles.length">
                         <i class="fas fa-download" style="margin-right: 8px;"></i>批量下载 ({{ selectedFiles.length }})
                     </el-button>
@@ -787,8 +860,16 @@
                 </div>
 
                 <div style="margin-top: auto; padding-top: 20px; font-size: 12px; color: #9ca3af;">
-                    <div style="margin-bottom: 8px;"><i class="fas fa-info-circle"></i> 支持断点续传 · 大文件分片</div>
-                    <div style="margin-bottom: 8px;"><i class="fas fa-arrows-alt"></i> 拖拽文件/文件夹到目标目录移动</div>
+                    <div style="margin-bottom: 8px;">
+                        <i class="fas fa-info-circle"></i> 支持断点续传 · 大文件分片
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <i class="fas fa-cloud-upload-alt" style="color: #3b82f6;"></i> 
+                        <span style="color: #60a5fa; font-weight: 500;">拖拽文件到此处直接上传</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <i class="fas fa-arrows-alt"></i> 拖拽文件/文件夹到目标目录移动
+                    </div>
                 </div>
             </div>
 
@@ -811,7 +892,21 @@
                 </div>
 
                 <!-- 文件列表 -->
-                <div class="file-table" @dragover.prevent @drop="onDrop">
+                <div class="file-table" 
+                     @dragover.prevent="onDragOverTable"
+                     @dragleave="onDragLeaveTable"
+                     @drop="onDrop"
+                     :class="{'drag-over-table': isDragOverTable}">
+                     
+                    <!-- 拖拽提示层 -->
+                    <div v-if="isDragOverTable" class="drag-overlay">
+                        <div class="drag-overlay-content">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #3b82f6; margin-bottom: 16px;"></i>
+                            <h3 style="margin: 0 0 8px 0; color: #1f2937;">松开鼠标上传文件</h3>
+                            <p style="margin: 0; color: #6b7280; font-size: 14px;">支持拖拽多个文件或文件夹</p>
+                        </div>
+                    </div>
+                    
     <div v-if="loading" class="loading-container">
         <i class="fas fa-spinner fa-spin loading-icon"></i>
         <p>加载中...</p>
@@ -860,6 +955,10 @@
             <div class="file-modified">{{ formatDate(file.modified) }}</div>
 
             <div class="file-actions" @click.stop>
+                <!-- 重命名按钮 -->
+                <button class="action-icon-btn" @click="openRenameDialog(file)" title="重命名">
+                    <i class="fas fa-edit"></i>
+                </button>
                 <!-- 只有文件才显示预览按钮 -->
                 <button v-if="!file.is_dir" class="action-icon-btn" @click="previewFile(file)" title="预览">
                     <i class="fas fa-eye"></i>
@@ -1038,6 +1137,23 @@
             </span>
         </el-dialog>
 
+        <!-- 重命名对话框 -->
+        <el-dialog title="重命名" :visible.sync="renameDialogVisible" width="400px" append-to-body :close-on-click-modal="false">
+            <div style="margin-bottom: 12px;">
+                <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">{{ renameItemType }}</div>
+                <el-input 
+                    v-model="renameItemNewName" 
+                    placeholder="输入新名称" 
+                    @keyup.enter="confirmRename"
+                    prefix-icon="el-icon-edit">
+                </el-input>
+            </div>
+            <span slot="footer">
+                <el-button @click="renameDialogVisible = false" size="small">取消</el-button>
+                <el-button type="primary" @click="confirmRename" size="small">确定</el-button>
+            </span>
+        </el-dialog>
+
         <!-- 存储根目录设置 -->
         <el-dialog title="设置存储根目录" :visible.sync="storageDialog" width="450px">
             <el-input v-model="storageInput" placeholder="例如: D:\shared 或 /home/shared" @keyup.enter="setStorageRoot">
@@ -1080,6 +1196,9 @@
                     // 拖拽移动相关
                     dragSource: null,
                     dragOverTarget: null,
+                    
+                    // 拖拽上传相关
+                    isDragOverTable: false,
 
                     // 移动对话框
                     moveDialogVisible: false,
@@ -1116,6 +1235,12 @@
                     // 文件夹
                     folderDialog: false,
                     newFolderName: '',
+                    
+                    // 重命名相关
+                    renameDialogVisible: false,
+                    renameItemType: '',
+                    renameItemNewName: '',
+                    renamingItem: null,
 
                     // 存储设置
                     storageDialog: false,
@@ -1148,6 +1273,14 @@
                 this.$watch('searchQuery', (newVal, oldVal) => {
                     if (newVal !== oldVal) {
                         this.debouncedSearch();
+                    }
+                });
+                
+                // 添加键盘快捷键监听
+                document.addEventListener('keydown', (e) => {
+                    // Backspace - 返回上一级
+                    if (e.key === 'Backspace' && !this.isInputFocused()) {
+                        this.goToParentDirectory();
                     }
                 });
             },
@@ -1368,6 +1501,39 @@
                     }
                     this.refreshList();
                 },
+                
+                // 返回上一级目录
+                goToParentDirectory() {
+                    if (!this.currentPath) {
+                        // 已经在根目录
+                        this.$message.info('已在根目录');
+                        return;
+                    }
+                    
+                    // 清除搜索模式
+                    if (this.searchMode) {
+                        this.clearSearch();
+                        return;
+                    }
+                    
+                    const parts = this.currentPath.split('/');
+                    if (parts.length === 1) {
+                        // 当前在一级目录，返回根目录
+                        this.currentPath = '';
+                    } else {
+                        // 返回上一级
+                        parts.pop();
+                        this.currentPath = parts.join('/');
+                    }
+                    
+                    this.refreshList();
+                },
+                
+                // 检查是否在输入框中（避免快捷键冲突）
+                isInputFocused() {
+                    const activeElement = document.activeElement;
+                    return activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+                },
 
                 // 预览或进入
                 previewOrEnter(file) {
@@ -1452,6 +1618,57 @@
                             console.error('Delete failed:', error);
                             this.$message.error('删除失败');
                         }
+                    }
+                },
+                
+                // 打开重命名对话框
+                openRenameDialog(file) {
+                    this.renamingItem = file;
+                    this.renameItemType = file.is_dir ? '📁 文件夹' : '📄 文件';
+                    this.renameItemNewName = file.name;
+                    this.renameDialogVisible = true;
+                },
+                
+                // 确认重命名
+                async confirmRename() {
+                    if (!this.renameItemNewName || !this.renameItemNewName.trim()) {
+                        this.$message.warning('请输入名称');
+                        return;
+                    }
+                    
+                    const newName = this.renameItemNewName.trim();
+                    
+                    // 检查名称是否相同
+                    if (newName === this.renamingItem.name) {
+                        this.renameDialogVisible = false;
+                        return;
+                    }
+                    
+                    try {
+                        const response = await axios.post('/api/items/rename', null, {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            data: `path=${encodeURIComponent(this.renamingItem.path)}&new_name=${encodeURIComponent(newName)}`
+                        });
+                        
+                        if (response.data.success) {
+                            this.$message.success('重命名成功');
+                            this.renameDialogVisible = false;
+                            
+                            // 刷新列表
+                            if (this.searchMode) {
+                                await this.searchFiles();
+                            } else {
+                                this.refreshList();
+                            }
+                            
+                            // 刷新文件夹树
+                            this.loadFolderTree();
+                        } else {
+                            this.$message.error('重命名失败：' + (response.data.error || '未知错误'));
+                        }
+                    } catch (error) {
+                        console.error('Rename failed:', error);
+                        this.$message.error('重命名失败：' + (error.response?.data?.error || error.message));
                     }
                 },
 
@@ -1585,15 +1802,53 @@
                 // 文件区域整体放置（处理拖拽到空白区域）
                 async onDrop(event) {
                     event.preventDefault();
+                    this.isDragOverTable = false;
 
-                    if (!this.dragSource || this.searchMode) return;
+                    // 如果是从本应用拖拽的文件
+                    if (this.dragSource && !this.searchMode) {
+                        // 拖拽到空白区域 - 移动到根目录
+                        this.selectedFiles = [this.dragSource];
+                        await this.moveToTarget('');
 
-                    // 拖拽到空白区域 - 移动到根目录
-                    this.selectedFiles = [this.dragSource];
-                    await this.moveToTarget('');
-
-                    this.dragSource = null;
+                        this.dragSource = null;
+                        this.dragOverTarget = null;
+                        return;
+                    }
+                    
+                    // 处理外部文件拖拽上传
+                    const files = event.dataTransfer.files;
+                    if (files && files.length > 0) {
+                        // 有外部文件，执行上传
+                        this.handleExternalFiles(files);
+                    }
+                    
                     this.dragOverTarget = null;
+                },
+                
+                // 文件区域拖拽经过
+                onDragOverTable(event) {
+                    event.preventDefault();
+                    // 只有在非搜索模式且没有内部拖拽时才显示上传提示
+                    if (!this.dragSource && !this.searchMode) {
+                        this.isDragOverTable = true;
+                    }
+                },
+                
+                // 文件区域拖拽离开
+                onDragLeaveTable(event) {
+                    // 只有当鼠标真正离开文件区域时才隐藏
+                    const rect = event.target.getBoundingClientRect();
+                    const x = event.clientX;
+                    const y = event.clientY;
+                    
+                    if (
+                        x <= rect.left || 
+                        x >= rect.right || 
+                        y <= rect.top || 
+                        y >= rect.bottom
+                    ) {
+                        this.isDragOverTable = false;
+                    }
                 },
 
                 // 文件点击处理
@@ -1921,6 +2176,61 @@
                 },
 
                 // ========== 上传相关 - 优化版 ==========
+                // 处理外部文件拖拽上传
+                handleExternalFiles(files) {
+                    const fileList = Array.from(files);
+                    if (fileList.length === 0) return;
+                    
+                    console.log('=== 拖拽上传检测 ===');
+                    console.log('拖拽的文件/文件夹:', fileList);
+                    
+                    this.uploadMode = 'single';
+                    this.uploadQueue = [];
+                    
+                    fileList.forEach((file, index) => {
+                        console.log(`文件 ${index + 1}:`, {
+                            name: file.name,
+                            size: file.size,
+                            type: file.type || '未知',
+                            lastModified: new Date(file.lastModified).toLocaleString()
+                        });
+                        
+                        const totalChunks = Math.ceil(file.size / this.chunkSize);
+                        this.uploadQueue.push({
+                            file: file,
+                            name: file.name,
+                            displayName: file.name,
+                            size: file.size,
+                            folderPath: '',
+                            progress: 0,
+                            status: 'waiting',
+                            error: null,
+                            fileId: null,
+                            uploadedChunks: new Set(),
+                            totalChunks: totalChunks,
+                            completedChunks: 0
+                        });
+                    });
+                    
+                    this.uploadDialog = true;
+                    
+                    // 检查是否有空文件（可能是文件夹）
+                    const emptyFiles = fileList.filter(f => f.size === 0);
+                    if (emptyFiles.length > 0) {
+                        this.$message.warning(`检测到 ${emptyFiles.length} 个空文件或文件夹，已跳过`);
+                        console.warn('空文件/文件夹:', emptyFiles.map(f => f.name));
+                        // 过滤掉空文件
+                        this.uploadQueue = this.uploadQueue.filter(item => item.size > 0);
+                    }
+                    
+                    if (this.uploadQueue.length === 0) {
+                        this.$message.info('没有可上传的文件');
+                        this.uploadDialog = false;
+                    } else {
+                        this.$message.success(`已添加 ${this.uploadQueue.length} 个文件，准备上传`);
+                    }
+                },
+                
                 openSingleFileUpload() {
                     this.uploadMode = 'single';
                     this.$refs.singleFileInput.multiple = true;
