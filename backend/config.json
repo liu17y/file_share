@@ -1,3 +1,11 @@
 {
-    "base_dir": "D:\\file-share"
+  "base_dir": "D:\\file-share",
+  "port": 8000,
+  "port_range_start": 8000,
+  "port_range_end": 8010,
+  "host": "0.0.0.0",
+  "max_upload_size_mb": 1024,
+  "auto_open_browser": true,
+  "debug": false,
+  "version": "1.0.0"
 }

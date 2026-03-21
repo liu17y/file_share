@@ -18,7 +18,7 @@ import aiofiles
 
 from file_manager import file_manager
 from upload_manager import upload_manager
-from config import settings
+from backend.config import settings
 
 app = FastAPI(title="AuroraShare · 极光共享")
 
