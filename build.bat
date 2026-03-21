@@ -1,184 +1,229 @@
 @echo off
 chcp 65001 >nul
-cls
+title AuroraShare 打包工具
+color 0A
 
-echo ╔══════════════════════════════════════════════════════════╗
-echo ║                                                          ║
-echo ║      AuroraShare · 极光共享 - 一键打包工具              ║
-echo ║                                                          ║
-echo ╚══════════════════════════════════════════════════════════╝
-echo.
-echo 📦 正在准备打包环境...
+echo ========================================
+echo   AuroraShare 打包工具 v1.0
+echo ========================================
 echo.
 
-REM ==================== 检查 Python 环境 ====================
-echo [1/7] 检查 Python 环境...
+REM 检查 Python 环境
 python --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ❌ 错误：未检测到 Python 环境，请先安装 Python 3.8+
-    echo 💡 下载地址：https://www.python.org/downloads/
+if errorlevel 1 (
+    echo [错误] 未找到 Python，请先安装 Python
+    echo.
     pause
     exit /b 1
 )
-echo ✅ Python 环境检测通过
+
+echo [√] Python 环境检查通过
 python --version
 echo.
 
-REM ==================== 安装依赖 ====================
-echo [2/7] 安装项目依赖...
-if exist "backend\requirements.txt" (
-    pip install -r backend\requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-    if %errorlevel% neq 0 (
-        echo ❌ 依赖安装失败
-        pause
-        exit /b 1
-    )
-    echo ✅ 依赖安装完成
+REM 检查图标文件
+set ICON_FLAG=
+if exist "icon.ico" (
+    echo [√] 找到图标文件: icon.ico
+    set ICON_FLAG=--icon=icon.ico
 ) else (
-    echo ⚠️  未找到 requirements.txt，跳过依赖安装
+    echo [!] 未找到图标文件 icon.ico，将使用默认图标
+    echo     提示：将你的图标文件命名为 icon.ico 放在当前目录
+    echo.
 )
-echo.
 
-REM ==================== 安装 PyInstaller ====================
-echo [3/7] 安装打包工具 PyInstaller...
-pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
-if %errorlevel% neq 0 (
-    echo ❌ PyInstaller 安装失败
+echo.
+echo ========================================
+echo [1/5] 安装 PyInstaller...
+echo ========================================
+pip install --upgrade pyinstaller
+if errorlevel 1 (
+    echo [错误] PyInstaller 安装失败
     pause
     exit /b 1
 )
-echo ✅ PyInstaller 安装完成
+echo [√] PyInstaller 安装完成
 echo.
 
-REM ==================== 创建临时目录 ====================
-echo [4/7] 创建打包目录结构...
-if not exist "dist_build" mkdir dist_build
-if not exist "dist_build\backend" mkdir dist_build\backend
-if not exist "dist_build\frontend" mkdir dist_build\frontend
-echo ✅ 目录创建完成
+echo ========================================
+echo [2/5] 安装项目依赖...
+echo ========================================
+if exist "backend\requirements.txt" (
+    pip install -r backend\requirements.txt
+    if errorlevel 1 (
+        echo [警告] 部分依赖安装失败，继续打包...
+    )
+) else (
+    echo [!] 未找到 requirements.txt，跳过依赖安装
+)
+echo [√] 依赖检查完成
 echo.
 
-REM ==================== 复制项目文件 ====================
-echo [5/7] 复制项目文件到打包目录...
-
-REM 复制后端文件
-echo   📁 复制后端代码...
-xcopy /E /I /Y backend\*.py dist_build\backend\
-xcopy /E /I /Y backend\config.json dist_build\backend\ 2>nul
-xcopy /E /I /Y backend\requirements.txt dist_build\backend\
-
-REM 复制前端文件
-echo   📁 复制前端代码...
-xcopy /E /I /Y frontend\*.html dist_build\frontend\
-
-REM 复制其他必要文件
-echo   📁 复制启动脚本和文档...
-copy run.py dist_build\ 2>nul
-copy README.md dist_build\ 2>nul
-copy LICENSE dist_build\ 2>nul
-
-echo ✅ 文件复制完成
+echo ========================================
+echo [3/5] 清理旧打包文件...
+echo ========================================
+if exist "dist" (
+    echo 删除 dist 目录...
+    rmdir /s /q dist
+)
+if exist "build" (
+    echo 删除 build 目录...
+    rmdir /s /q build
+)
+if exist "*.spec" (
+    echo 删除 spec 文件...
+    del /q *.spec
+)
+echo [√] 清理完成
 echo.
 
-REM ==================== 创建启动器脚本 ====================
-echo [6/7] 创建 Windows 启动器...
-
-(
-echo import sys
-echo import os
-echo from pathlib import Path
+echo ========================================
+echo [4/5] 开始打包程序...
+echo ========================================
+echo 正在打包，请稍候...
 echo.
-echo # 获取可执行文件所在目录
-echo if getattr^(sys, 'frozen', False^):
-echo     BASE_DIR = Path^(sys.executable^).parent
-echo else:
-echo     BASE_DIR = Path^(__file__^).parent.parent
-echo.
-echo # 添加 backend 到路径
-echo backend_path = BASE_DIR / "backend"
-echo if str^(backend_path^) not in sys.path:
-echo     sys.path.insert^(0, str^(backend_path^)^)
-echo.
-echo # 切换工作目录
-echo os.chdir^(backend_path^)
-echo.
-echo # 导入并运行主程序
-echo from main import start_server
-echo.
-echo if __name__ == "__main__":
-echo     print^("=" * 60^)
-echo     print^("AuroraShare · 极光共享 启动中..."^)
-echo     print^("=" * 60^)
-echo     start_server^(^)
-) > dist_build\launcher.pyw
-
-echo ✅ 启动器创建完成
-echo.
-
-REM ==================== 开始打包 EXE ====================
-echo [7/7] 开始打包为 EXE 文件...
-echo.
-echo 🔨 使用 PyInstaller 打包...
-echo.
-
-cd dist_build
-
-REM 清理旧的打包文件
-if exist "build" rmdir /s /q build
-if exist "*.spec" del /q *.spec
 
 REM 执行打包命令
-pyinstaller ^
-    --name "AuroraShare-极光共享" ^
-    --onedir ^
-    --windowed ^
-    --icon=NONE ^
-    --add-data "backend;backend" ^
+pyinstaller --onefile ^
+    --name "AuroraShare" ^
+    %ICON_FLAG% ^
     --add-data "frontend;frontend" ^
-    --hidden-import fastapi ^
+    --add-data "backend;backend" ^
+    --add-data "backend\config.json;backend" ^
     --hidden-import uvicorn ^
+    --hidden-import uvicorn.loops ^
+    --hidden-import uvicorn.loops.auto ^
+    --hidden-import uvicorn.protocols ^
+    --hidden-import uvicorn.protocols.http ^
+    --hidden-import uvicorn.protocols.http.auto ^
+    --hidden-import uvicorn.protocols.websockets ^
+    --hidden-import uvicorn.protocols.websockets.auto ^
+    --hidden-import uvicorn.lifespan ^
+    --hidden-import uvicorn.lifespan.on ^
     --hidden-import aiofiles ^
-    --hidden-import asyncio ^
-    --add-data "README.md;." ^
-    --add-data "LICENSE;." ^
-    launcher.pyw
+    --hidden-import watchfiles ^
+    --hidden-import python_multipart ^
+    --hidden-import backend.logger ^
+    --collect-all fastapi ^
+    --collect-all starlette ^
+    --collect-all pydantic ^
+    --clean ^
+    --noconfirm ^
+    run.py
 
-if %errorlevel% neq 0 (
+if errorlevel 1 (
     echo.
-    echo ❌ 打包失败！请查看上方错误信息
-    cd ..
+    echo ========================================
+    echo   [错误] 打包失败！
+    echo ========================================
+    echo.
+    echo 请检查错误信息，常见问题：
+    echo 1. Python 版本过低（需要 3.7+）
+    echo 2. 缺少必要的依赖包
+    echo 3. 路径中包含中文字符
+    echo.
     pause
     exit /b 1
 )
 
-cd ..
+echo.
+echo ========================================
+echo [5/5] 打包完成，整理文件...
+echo ========================================
+
+REM 检查生成的文件
+if exist "dist\AuroraShare.exe" (
+    echo [√] 主程序生成成功
+    for %%A in ("dist\AuroraShare.exe") do (
+        set /a size=%%~zA / 1048576
+        echo     文件大小: !size! MB
+    )
+
+    REM 创建启动脚本
+    echo 创建启动脚本...
+    (
+        echo @echo off
+        echo chcp 65001 ^>nul
+        echo title AuroraShare
+        echo echo ========================================
+        echo echo   AuroraShare 文件共享系统
+        echo echo ========================================
+        echo echo.
+        echo echo 正在启动服务器...
+        echo echo.
+        echo AuroraShare.exe
+        echo pause
+    ) > "dist\启动AuroraShare.bat"
+
+    REM 创建快速访问链接
+    echo 创建快速访问链接...
+    (
+        echo [InternetShortcut]
+        echo URL=http://localhost:8000
+        echo IDList=
+        echo HotKey=0
+        echo IconFile=AuroraShare.exe
+        echo IconIndex=0
+    ) > "dist\AuroraShare.url"
+
+    REM 创建版本信息文件
+    echo 创建版本信息文件...
+    (
+        echo AuroraShare 版本信息
+        echo ========================================
+        echo.
+        echo 版本: 1.0.0
+        echo 构建日期: %date% %time%
+        echo.
+        echo 主要功能:
+        echo - 断点续传
+        echo - 文件夹上传
+        echo - 文件预览
+        echo - 日志记录
+        echo.
+        echo 使用说明:
+        echo 1. 双击运行 AuroraShare.exe
+        echo 2. 程序会自动打开浏览器
+        echo 3. 上传的文件保存在 data/uploads 目录
+        echo 4. 日志文件保存在 logs 目录
+        echo 5. 配置文件保存在 config 目录
+        echo.
+        echo 系统要求:
+        echo - Windows 7 及以上
+        echo - 建议 2GB 内存
+        echo - 建议 100MB 磁盘空间
+        echo.
+        echo 技术支持: https://github.com/yourname/AuroraShare
+    ) > "dist\README.txt"
+
+    echo [√] 辅助文件创建完成
+) else (
+    echo [错误] 未找到生成的可执行文件
+    pause
+    exit /b 1
+)
 
 echo.
-echo ✅ 打包成功完成！
+echo ========================================
+echo   打包成功！ ✨
+echo ========================================
 echo.
-
-REM ==================== 整理输出 ====================
-echo ╔══════════════════════════════════════════════════════════╗
-echo ║                    🎉 打包完成！                         ║
-echo ╚══════════════════════════════════════════════════════════╝
+echo 📦 输出目录: %cd%\dist
+echo 📄 主程序: dist\AuroraShare.exe
+echo 🚀 启动脚本: dist\启动AuroraShare.bat
+echo 🔗 快捷访问: dist\AuroraShare.url
+echo 📖 使用说明: dist\README.txt
 echo.
-echo 📦 可执行文件位置:
-echo   dist_build\dist\AuroraShare-极光共享\AuroraShare-极光共享.exe
+echo 📁 运行后会自动创建以下目录:
+echo    data\          - 上传文件存储
+echo    logs\          - 日志文件
+echo    config\        - 配置文件
 echo.
-echo 📁 建议的操作:
-echo   1. 测试运行：进入上述目录双击 EXE 运行
-echo   2. 分发应用：将整个文件夹复制给其他用户
-echo   3. 创建快捷方式：右键 EXE → 发送到 → 桌面快捷方式
+echo 💡 使用提示:
+echo    1. 双击运行 dist\AuroraShare.exe
+echo    2. 程序会自动打开浏览器访问 http://localhost:8000
+echo    3. 首次启动可能需要几秒钟初始化
+echo    4. 日志文件在 logs\aurorashare_*.log
 echo.
-echo 💡 使用说明:
-echo   - 首次启动会自动打开浏览器访问 http://localhost:8000
-echo   - 存储路径在 backend\config.json 中配置
-echo   - 关闭 EXE 窗口会停止服务
-echo.
-echo ⚠️  注意事项:
-echo   - 目标电脑需要安装 Python 运行时（可选）
-echo   - 或者使用 --onefile 模式打包成单个 EXE（体积更大）
-echo   - 防火墙可能会询问是否允许网络访问，请选择"允许"
-echo.
-
+echo ========================================
 pause

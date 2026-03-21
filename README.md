@@ -150,8 +150,9 @@ file-share-system/
 #### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourusername/file-share-system.git
-cd file-share-system
+git clone https://github.com/liu17y/file_share.git
+git clone https://gitee.com/Liuzongyi-liu/file-share.git
+cd file-share
 ```
 
 #### 2. 安装依赖
@@ -176,7 +177,7 @@ python main.py
 #### 4. 访问应用
 
 - **主页面**: http://localhost:8000
-- **管理页面**: http://localhost:8000/admin
+- **管理页面**: http://localhost:8000/docliu
 
 ---
 
@@ -442,7 +443,7 @@ maxConcurrentChunks: 6  // 修改最大并发数
 
 ```bash
 # 克隆项目
-git clone https://github.com/yourusername/file-share-system.git
+git clone https://github.com/liu17y/file_share.git
 
 # 安装依赖
 pip install -r backend/requirements.txt
@@ -512,7 +513,6 @@ python main.py
 ## 📞 联系方式
 
 - **项目地址**: https://gitee.com/Liuzongyi-liu/file-share.git
-- **Issues**: https://github.com/yourusername/file-share-system/issues
 - **邮箱**: your.email@example.com
 
 ---
