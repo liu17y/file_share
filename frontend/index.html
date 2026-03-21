@@ -1628,49 +1628,51 @@
                     this.renameItemNewName = file.name;
                     this.renameDialogVisible = true;
                 },
-                
+
                 // 确认重命名
                 async confirmRename() {
-                    if (!this.renameItemNewName || !this.renameItemNewName.trim()) {
-                        this.$message.warning('请输入名称');
-                        return;
-                    }
-                    
-                    const newName = this.renameItemNewName.trim();
-                    
-                    // 检查名称是否相同
-                    if (newName === this.renamingItem.name) {
-                        this.renameDialogVisible = false;
-                        return;
-                    }
-                    
-                    try {
-                        const response = await axios.post('/api/items/rename', null, {
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            data: `path=${encodeURIComponent(this.renamingItem.path)}&new_name=${encodeURIComponent(newName)}`
-                        });
-                        
-                        if (response.data.success) {
-                            this.$message.success('重命名成功');
-                            this.renameDialogVisible = false;
-                            
-                            // 刷新列表
-                            if (this.searchMode) {
-                                await this.searchFiles();
-                            } else {
-                                this.refreshList();
-                            }
-                            
-                            // 刷新文件夹树
-                            this.loadFolderTree();
-                        } else {
-                            this.$message.error('重命名失败：' + (response.data.error || '未知错误'));
-                        }
-                    } catch (error) {
-                        console.error('Rename failed:', error);
-                        this.$message.error('重命名失败：' + (error.response?.data?.error || error.message));
-                    }
-                },
+    if (!this.renameItemNewName || !this.renameItemNewName.trim()) {
+        this.$message.warning('请输入名称');
+        return;
+    }
+
+    const newName = this.renameItemNewName.trim();
+
+    // 检查名称是否相同
+    if (newName === this.renamingItem.name) {
+        this.renameDialogVisible = false;
+        return;
+    }
+
+    try {
+        // 使用 JSON 格式发送
+        const response = await axios.post('/api/items/rename', {
+            path: this.renamingItem.path,
+            new_name: newName
+        });
+
+        if (response.data.success) {
+            this.$message.success('重命名成功');
+            this.renameDialogVisible = false;
+
+            // 刷新列表
+            if (this.searchMode) {
+                await this.searchFiles();
+            } else {
+                await this.refreshList();
+            }
+
+            // 刷新文件夹树
+            this.loadFolderTree();
+        } else {
+            this.$message.error('重命名失败：' + (response.data.error || '未知错误'));
+        }
+    } catch (error) {
+        console.error('Rename failed:', error);
+        const errorMsg = error.response?.data?.error || error.message;
+        this.$message.error('重命名失败：' + errorMsg);
+    }
+},
 
                 // 批量删除
                 async batchDelete() {

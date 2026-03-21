@@ -344,6 +344,58 @@ async def download_folder(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# 重命名文件/文件夹
+@app.post("/api/items/rename")
+async def rename_item(request: Request):
+    """
+    重命名文件或文件夹
+    支持 JSON 和 FormData 两种格式
+    """
+    try:
+        # 尝试获取 JSON 数据
+        content_type = request.headers.get('content-type', '')
+        if 'application/json' in content_type:
+            data = await request.json()
+            path = data.get('path')
+            new_name = data.get('new_name')
+        else:
+            # 否则作为表单数据处理
+            form_data = await request.form()
+            path = form_data.get('path')
+            new_name = form_data.get('new_name')
+
+        if not path or not new_name:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "error": "Missing path or new_name"}
+            )
+
+        # 调用重命名方法
+        result = await file_manager.rename_item(path, new_name)
+
+        # 检查结果并返回前端期望的格式
+        if result.get('success') and len(result['success']) > 0:
+            return {"success": True, "data": result['success'][0]}
+        elif result.get('failed') and len(result['failed']) > 0:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "error": result['failed'][0].get('reason', 'Unknown error')}
+            )
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={"success": False, "error": "Rename failed"}
+            )
+
+    except Exception as e:
+        print(f"Rename error: {e}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
+
 # 批量下载
 @app.post("/api/download/batch")
 async def download_batch(request: Request):
