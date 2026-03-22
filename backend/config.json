@@ -1,6 +1,6 @@
 {
-  "base_dir": "D:\\file-share",
-  "port": 8001,
+  "base_dir": "D:\\shared_file",
+  "port": 8007,
   "port_range_start": 8000,
   "port_range_end": 8010,
   "host": "0.0.0.0",

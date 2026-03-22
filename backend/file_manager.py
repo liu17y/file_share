@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Any
 import mimetypes
 
-from backend.config import settings
+from config import settings
 
 
 class FileManager:

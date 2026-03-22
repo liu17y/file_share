@@ -241,7 +241,15 @@ class UploadManager:
     async def _finalize_upload(self, file_id: str):
         """完成上传，合并文件并进行 Hash 校验"""
         upload_info = self.uploads[file_id]
-        target_full_path = os.path.join(upload_info["target_dir"], upload_info["file_name"])
+        
+        # 处理文件名，确保即使包含路径也能正确处理
+        file_name = upload_info["file_name"]
+        
+        # 构建完整路径，包括目录结构
+        target_full_path = os.path.join(upload_info["target_dir"], file_name)
+        
+        # 确保目标目录存在（包括文件名中可能包含的子目录）
+        os.makedirs(os.path.dirname(target_full_path), exist_ok=True)
 
         try:
             print(f"Finalizing upload: {target_full_path}")
