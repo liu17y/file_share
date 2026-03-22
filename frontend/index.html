@@ -1231,6 +1231,10 @@
                     // SSE
                     sseConnected: false,
                     eventSource: null,
+                    refreshTimer: null, // SSE 自动刷新定时器
+
+                    // 删除操作状态
+                    deleting: false,
 
                     // 文件夹
                     folderDialog: false,
@@ -1293,6 +1297,9 @@
                 }
                 if (this.speedInterval) {
                     clearInterval(this.speedInterval);
+                }
+                if (this.refreshTimer) {
+                    clearTimeout(this.refreshTimer);
                 }
             },
             methods: {
@@ -1678,23 +1685,27 @@
                 async batchDelete() {
                     const selectedPaths = this.selectedFiles.map(s => s.path);
                     if (!selectedPaths.length) return;
-
+                
                     try {
-                        await this.$confirm(`批量删除 ${selectedPaths.length} 项?`, '警告', { type: 'warning' });
+                        await this.$confirm(`批量删除 ${selectedPaths.length} 项？`, '警告', { type: 'warning' });
+                                        
+                        // 设置删除中状态，避免 SSE 重复刷新
+                        this.deleting = true;
+                                        
                         const response = await axios.delete('/api/items', {
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             data: `paths=${encodeURIComponent(JSON.stringify(selectedPaths))}`
                         });
-
+                
                         if (response.data.success && response.data.success.length > 0) {
                             this.$message.success(`成功删除 ${response.data.success.length} 项`);
                             if (this.searchMode) {
                                 await this.searchFiles();
                             } else {
-                                this.refreshList();
+                                await this.refreshList();
                             }
                             // 刷新文件夹树
-                            this.loadFolderTree();
+                            await this.loadFolderTree();
                         } else {
                             this.$message.error('删除失败');
                         }
@@ -1703,6 +1714,11 @@
                             console.error('Batch delete failed:', error);
                             this.$message.error('删除失败');
                         }
+                    } finally {
+                        // 清除删除状态（延迟一点，确保刷新完成）
+                        setTimeout(() => {
+                            this.deleting = false;
+                        }, 1500);
                     }
                 },
 
@@ -2178,13 +2194,14 @@
                 },
 
                 // ========== 上传相关 - 优化版 ==========
-                // 处理外部文件拖拽上传
+                // 处理外部文件拖拽上传（上传到当前目录）
                 handleExternalFiles(files) {
                     const fileList = Array.from(files);
                     if (fileList.length === 0) return;
                     
                     console.log('=== 拖拽上传检测 ===');
                     console.log('拖拽的文件/文件夹:', fileList);
+                    console.log('当前目录路径:', this.currentPath || '根目录');
                     
                     this.uploadMode = 'single';
                     this.uploadQueue = [];
@@ -2203,7 +2220,8 @@
                             name: file.name,
                             displayName: file.name,
                             size: file.size,
-                            folderPath: '',
+                            folderPath: '', // 拖拽上传直接到当前目录，不需要子路径
+                            targetPath: this.currentPath || '', // 明确指定目标路径为当前目录
                             progress: 0,
                             status: 'waiting',
                             error: null,
@@ -2252,6 +2270,7 @@
                                 displayName: file.name,
                                 size: file.size,
                                 folderPath: '',
+                                targetPath: this.currentPath || '', // 上传到当前目录
                                 progress: 0,
                                 status: 'waiting',
                                 error: null,
@@ -2397,13 +2416,18 @@
                     if (allCompleted) {
                         this.$message.success('所有文件上传完成');
 
-                        if (this.searchMode) {
-                            await this.searchFiles();
-                        } else {
-                            this.refreshList();
-                        }
-
-                        this.loadFolderTree();
+                        // 延迟刷新，确保服务器已经处理完成
+                        setTimeout(async () => {
+                            if (this.searchMode) {
+                                await this.searchFiles();
+                            } else {
+                                await this.refreshList();
+                            }
+                            
+                            await this.loadFolderTree();
+                            
+                            console.log('✅ 上传完成，目录已刷新');
+                        }, 500);
 
                         setTimeout(() => {
                             if (this.uploadDialog) {
@@ -2424,9 +2448,13 @@
                     return new Promise(async (resolve, reject) => {
                         try {
                             // 1. 计算目标路径
-                            let targetPath = this.currentPath;
-
-                            if (this.uploadMode === 'folder') {
+                            let targetPath;
+                            
+                            // 如果是拖拽上传或普通文件上传，使用已保存的 targetPath（当前目录）
+                            if (this.uploadMode === 'single' && fileItem.targetPath !== undefined) {
+                                targetPath = fileItem.targetPath;
+                            } else if (this.uploadMode === 'folder') {
+                                // 文件夹上传，需要构建完整路径
                                 if (fileItem.folderPath) {
                                     targetPath = this.currentPath
                                         ? `${this.currentPath}/${fileItem.rootFolder}/${fileItem.folderPath}`
@@ -2437,6 +2465,9 @@
                                         : fileItem.rootFolder;
                                 }
                                 targetPath = targetPath.replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+                            } else {
+                                // 默认情况，使用当前路径
+                                targetPath = this.currentPath;
                             }
 
                             // 2. 初始化上传
@@ -2751,8 +2782,21 @@
                     this.eventSource.onmessage = (event) => {
                         try {
                             const data = JSON.parse(event.data);
+                            
+                            // 检测存储信息变化（用于判断是否有文件上传/删除）
+                            const hasFileChange = this.storageInfo && 
+                                (data.used !== this.storageInfo.used || 
+                                 data.free !== this.storageInfo.free);
+                            
                             this.storageInfo = data;
                             this.sseConnected = true;
+                            
+                            // 如果检测到文件变化（非用户主动操作），自动刷新目录
+                            // 排除上传中和删除中的情况，避免重复刷新
+                            if (hasFileChange && !this.uploading && !this.deleting) {
+                                console.log('📡 SSE 检测到文件变化，自动刷新目录');
+                                this.autoRefreshList();
+                            }
                         } catch (e) {
                             console.error('SSE parse error:', e);
                         }
@@ -2761,6 +2805,25 @@
                     this.eventSource.onerror = () => {
                         this.sseConnected = false;
                     };
+                },
+                
+                // 自动刷新目录（防抖）
+                autoRefreshList() {
+                    // 清除之前的定时器
+                    if (this.refreshTimer) {
+                        clearTimeout(this.refreshTimer);
+                    }
+                    
+                    // 延迟 1 秒刷新，避免频繁刷新
+                    this.refreshTimer = setTimeout(async () => {
+                        if (this.searchMode) {
+                            await this.searchFiles();
+                        } else {
+                            await this.refreshList();
+                        }
+                        await this.loadFolderTree();
+                        console.log('🔄 SSE 自动刷新完成');
+                    }, 1000);
                 }
             }
         });
