@@ -7,6 +7,7 @@ import asyncio
 import mimetypes
 import json
 import time
+from urllib.parse import quote, unquote
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,6 +23,14 @@ mimetypes.add_type('video/ogg', '.ogv')
 mimetypes.add_type('video/quicktime', '.mov')
 mimetypes.add_type('video/x-msvideo', '.avi')
 mimetypes.add_type('video/x-matroska', '.mkv')
+
+# 音频
+mimetypes.add_type('audio/mpeg', '.mp3')
+mimetypes.add_type('audio/wav', '.wav')
+mimetypes.add_type('audio/flac', '.flac')
+mimetypes.add_type('audio/ogg', '.ogg')
+mimetypes.add_type('audio/aac', '.aac')
+mimetypes.add_type('audio/x-m4a', '.m4a')
 
 app = FastAPI(title="AuroraShare · 极光共享")
 
@@ -193,8 +202,6 @@ async def cancel_upload(file_id: str):
 @app.get("/api/files/{file_path:path}")
 async def get_file(file_path: str, preview: bool = False):
     try:
-        from urllib.parse import unquote
-
         print(f"🔍 请求预览文件: {file_path}")
         print(f"📁 当前存储目录: {settings.base_dir}")
 
@@ -229,24 +236,26 @@ async def get_file(file_path: str, preview: bool = False):
         if preview:
             # 支持预览的文件类型
             previewable_types = [
-                'image/', 'video/', 'audio/', 'text/',
-                'application/pdf', 'application/json'
+                'image/',  # 图片
+                'video/',  # 视频
+                'audio/',  # 音频
+                'text/',  # 文本
+                'application/pdf',  # PDF
+                'application/json'  # JSON
             ]
 
             if mime_type and any(mime_type.startswith(t) for t in previewable_types):
                 print(f"✅ 支持预览，返回文件")
-                # 对于视频文件，添加额外的 headers 以支持播放
-                headers = {}
-                if mime_type and mime_type.startswith('video/'):
-                    headers = {
-                        "Accept-Ranges": "bytes",
-                        "Cache-Control": "no-cache"
-                    }
 
+                # 直接返回文件，不设置复杂的 Content-Disposition 头
+                # 避免编码问题
                 return FileResponse(
                     full_path,
                     media_type=mime_type,
-                    headers=headers
+                    headers={
+                        "Accept-Ranges": "bytes",
+                        "Cache-Control": "no-cache"
+                    }
                 )
             else:
                 print(f"❌ 不支持预览的文件类型: {mime_type}")
@@ -255,7 +264,7 @@ async def get_file(file_path: str, preview: bool = False):
                     detail=f"Preview not supported for this file type: {mime_type or 'unknown'}"
                 )
 
-        # 下载模式
+        # 下载模式 - 使用简单的 filename 参数
         return FileResponse(
             full_path,
             media_type='application/octet-stream',
