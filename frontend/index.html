@@ -1557,25 +1557,33 @@
                 },
 
                // 预览文件
+                // 预览文件
                 async previewFile(file) {
-                    if (file.is_dir) return;
+    if (file.is_dir) return;
 
-                    // 对于图片、PDF等，在新标签页打开预览
-                    const url = `/api/files/${encodeURIComponent(file.path)}?preview=true`;
+    // 获取文件扩展名
+    const ext = file.name.split('.').pop().toLowerCase();
 
-                    // 检查文件类型
-                    const ext = file.name.split('.').pop().toLowerCase();
-                    const previewableExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'pdf', 'txt', 'md', 'html', 'css', 'js'];
+    // 支持的预览类型
+    const previewableTypes = [
+        'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp',  // 图片
+        'mp4', 'webm', 'mov', 'avi', 'mkv',          // 视频
+        'mp3', 'wav', 'flac',                        // 音频
+        'pdf',                                        // PDF
+        'txt', 'md', 'json', 'xml',                   // 文本
+        'html', 'htm', 'css', 'js'                    // 网页文件
+    ];
 
-                    if (previewableExts.includes(ext)) {
-                        // 可预览文件，在新窗口打开
-                        window.open(url, '_blank');
-                    } else {
-                        // 不可预览文件，直接下载
-                        this.downloadFile(file);
-                        this.$message.info('该文件类型不支持预览，将自动下载');
-                    }
-                },
+    if (previewableTypes.includes(ext)) {
+        // 可预览文件，在新窗口打开
+        const url = `/api/files/${encodeURIComponent(file.path)}?preview=true`;
+        window.open(url, '_blank');
+    } else {
+        // 不可预览文件，直接下载
+        this.downloadFile(file);
+        this.$message.info('该文件类型不支持预览，将自动下载');
+    }
+},
 
                 // 下载文件
                 async downloadFile(file) {

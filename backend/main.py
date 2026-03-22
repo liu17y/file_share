@@ -1,25 +1,27 @@
 # backend/main.py - 修改以支持打包
-
 import os
 import sys
 import tempfile
 import zipfile
 import asyncio
-import socket
 import mimetypes
 import json
 import time
-from urllib.parse import quote
-from typing import List, Optional
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-import aiofiles
 
 from file_manager import file_manager
 from upload_manager import upload_manager
 from backend.config import settings
+
+mimetypes.add_type('video/mp4', '.mp4')
+mimetypes.add_type('video/webm', '.webm')
+mimetypes.add_type('video/ogg', '.ogv')
+mimetypes.add_type('video/quicktime', '.mov')
+mimetypes.add_type('video/x-msvideo', '.avi')
+mimetypes.add_type('video/x-matroska', '.mkv')
 
 app = FastAPI(title="AuroraShare · 极光共享")
 
@@ -204,15 +206,12 @@ async def get_file(file_path: str, preview: bool = False):
         if os.path.isabs(file_path):
             full_path = file_path
         else:
-            # 确保路径分隔符正确
             file_path = file_path.replace('\\', '/')
             full_path = os.path.join(settings.base_dir, file_path)
 
-        # 规范化路径
         full_path = os.path.normpath(full_path)
         print(f"📂 完整路径: {full_path}")
 
-        # 检查文件是否存在
         if not os.path.exists(full_path):
             print(f"❌ 文件不存在: {full_path}")
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
@@ -222,47 +221,45 @@ async def get_file(file_path: str, preview: bool = False):
 
         filename = os.path.basename(full_path)
 
+        # 获取 MIME 类型
+        mime_type, _ = mimetypes.guess_type(full_path)
+        print(f"🎨 MIME类型: {mime_type}")
+
         # 预览模式
         if preview:
-            mime_type, _ = mimetypes.guess_type(full_path)
-            print(f"🎨 MIME类型: {mime_type}")
-
             # 支持预览的文件类型
-            if mime_type:
-                if any(mime_type.startswith(t) for t in ['image/', 'video/', 'audio/', 'text/', 'application/pdf']):
-                    # 使用正确的编码方式处理中文文件名
-                    from urllib.parse import quote
+            previewable_types = [
+                'image/', 'video/', 'audio/', 'text/',
+                'application/pdf', 'application/json'
+            ]
 
-                    # 对于预览，使用 inline 并正确编码文件名
-                    encoded_filename = quote(filename, safe='')
-                    return FileResponse(
-                        full_path,
-                        media_type=mime_type,
-                        headers={
-                            "Content-Disposition": f"inline; filename*=UTF-8''{encoded_filename}"
-                        }
-                    )
+            if mime_type and any(mime_type.startswith(t) for t in previewable_types):
+                print(f"✅ 支持预览，返回文件")
+                # 对于视频文件，添加额外的 headers 以支持播放
+                headers = {}
+                if mime_type and mime_type.startswith('video/'):
+                    headers = {
+                        "Accept-Ranges": "bytes",
+                        "Cache-Control": "no-cache"
+                    }
 
-            # 不支持预览，返回文件供下载
-            from urllib.parse import quote
-            encoded_filename = quote(filename, safe='')
-            return FileResponse(
-                full_path,
-                media_type='application/octet-stream',
-                headers={
-                    "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"
-                }
-            )
+                return FileResponse(
+                    full_path,
+                    media_type=mime_type,
+                    headers=headers
+                )
+            else:
+                print(f"❌ 不支持预览的文件类型: {mime_type}")
+                raise HTTPException(
+                    status_code=415,
+                    detail=f"Preview not supported for this file type: {mime_type or 'unknown'}"
+                )
 
         # 下载模式
-        from urllib.parse import quote
-        encoded_filename = quote(filename, safe='')
         return FileResponse(
             full_path,
             media_type='application/octet-stream',
-            headers={
-                "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"
-            }
+            filename=filename
         )
 
     except HTTPException:
