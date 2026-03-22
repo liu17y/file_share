@@ -7,43 +7,52 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import List, Dict, Any
 import mimetypes
 
-from config import settings
+from backend.config import settings
 
 
 class FileManager:
     def __init__(self):
         self.executor = ThreadPoolExecutor(max_workers=4)
+        # 不在 __init__ 中固定 base_dir，改为在需要时动态获取
+
+    def _get_base_dir(self):
+        """获取当前基础目录（每次动态获取）"""
+        # 确保目录存在
         os.makedirs(settings.base_dir, exist_ok=True)
+        return settings.base_dir
 
     def _get_relative_path(self, full_path: str) -> str:
         """获取相对路径"""
         try:
+            base_dir = self._get_base_dir()
             # 如果完整路径不在基础目录下，返回完整路径本身
-            if not full_path.startswith(settings.base_dir):
+            if not full_path.startswith(base_dir):
                 return full_path
 
-            rel_path = os.path.relpath(full_path, settings.base_dir)
+            rel_path = os.path.relpath(full_path, base_dir)
             return rel_path.replace('\\', '/')
         except ValueError:
             return full_path
 
     def _get_full_path(self, relative_path: str) -> str:
         """获取完整路径"""
+        base_dir = self._get_base_dir()
+
         if not relative_path:
-            return settings.base_dir
+            return base_dir
 
         # 如果相对路径已经是绝对路径（比如其他盘符），直接返回
         if os.path.isabs(relative_path):
             return relative_path
 
         if relative_path == '/' or relative_path == '\\':
-            return settings.base_dir
+            return base_dir
 
         # 处理路径分隔符
         relative_path = relative_path.replace('\\', '/')
 
         # 安全地连接路径
-        full_path = os.path.join(settings.base_dir, relative_path)
+        full_path = os.path.join(base_dir, relative_path)
 
         # 规范化路径
         full_path = os.path.normpath(full_path)
@@ -68,7 +77,7 @@ class FileManager:
                 # 过滤掉隐藏文件和文件夹（以 . 开头）
                 if item.startswith('.'):
                     continue
-                    
+
                 item_path = os.path.join(full_path, item)
                 try:
                     rel_path = self._get_relative_path(item_path)
@@ -118,7 +127,7 @@ class FileManager:
             for root, dirs, files in os.walk(full_path):
                 # 过滤掉隐藏目录（以 . 开头）
                 dirs[:] = [d for d in dirs if not d.startswith('.')]
-                
+
                 # 检查当前目录名是否匹配
                 dir_name = os.path.basename(root)
                 if query_lower in dir_name.lower():
@@ -176,14 +185,15 @@ class FileManager:
     async def create_folder(self, path: str, folder_name: str) -> bool:
         """创建文件夹"""
         try:
+            base_dir = self._get_base_dir()
             print(f"Creating folder - path: '{path}', name: '{folder_name}'")
 
             # 处理路径
             if not path or path in ['/', '\\']:
-                full_path = os.path.join(settings.base_dir, folder_name)
+                full_path = os.path.join(base_dir, folder_name)
             else:
                 clean_path = path.lstrip('/\\')
-                full_path = os.path.join(settings.base_dir, clean_path, folder_name)
+                full_path = os.path.join(base_dir, clean_path, folder_name)
 
             print(f"Full path: {full_path}")
 
@@ -227,15 +237,17 @@ class FileManager:
     async def get_storage_info(self) -> Dict[str, Any]:
         """获取存储空间信息（真实磁盘空间）"""
         try:
+            base_dir = self._get_base_dir()
+
             # 获取磁盘总空间和可用空间
-            disk_info = settings.get_disk_usage(settings.base_dir)
+            disk_info = settings.get_disk_usage(base_dir)
 
             # 计算当前目录下文件的实际占用空间
             dir_used = 0
             file_count = 0
             folder_count = 0
 
-            for root, dirs, files in os.walk(settings.base_dir):
+            for root, dirs, files in os.walk(base_dir):
                 # 跳过临时目录
                 if '.temp_uploads' in root:
                     continue
@@ -271,7 +283,7 @@ class FileManager:
                 "used_gb": round(used / (1024 ** 3), 2),
                 "free_gb": round(free / (1024 ** 3), 2),
                 "percentage": round((used / total) * 100, 2) if total > 0 else 0,
-                "storage_path": settings.base_dir,
+                "storage_path": base_dir,
                 "file_count": file_count,
                 "folder_count": folder_count
             }
@@ -328,10 +340,7 @@ class FileManager:
                 upload_manager.temp_dir = os.path.join(abs_path, ".temp_uploads")
                 os.makedirs(upload_manager.temp_dir, exist_ok=True)
 
-                # 更新当前文件管理器的基本目录
                 print(f"Storage path successfully updated to: {abs_path}")
-
-                # 重新加载文件列表（回到根目录）
                 return True
             return False
 
@@ -346,6 +355,7 @@ class FileManager:
         destination: 目标文件夹路径（如果是移动到文件夹）
         """
         results = {"success": [], "failed": []}
+        base_dir = self._get_base_dir()
 
         for item in items:
             try:
@@ -376,7 +386,7 @@ class FileManager:
                     # 处理目标路径（允许空字符串表示根目录）
                     if destination == '':
                         # 目标为根目录
-                        dest_full = settings.base_dir
+                        dest_full = base_dir
                     else:
                         dest_full = self._get_full_path(destination)
 

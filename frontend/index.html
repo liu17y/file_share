@@ -1556,11 +1556,25 @@
                     }
                 },
 
-                // 预览文件
-                previewFile(file) {
+               // 预览文件
+                async previewFile(file) {
                     if (file.is_dir) return;
+
+                    // 对于图片、PDF等，在新标签页打开预览
                     const url = `/api/files/${encodeURIComponent(file.path)}?preview=true`;
-                    window.open(url, '_blank');
+
+                    // 检查文件类型
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const previewableExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'pdf', 'txt', 'md', 'html', 'css', 'js'];
+
+                    if (previewableExts.includes(ext)) {
+                        // 可预览文件，在新窗口打开
+                        window.open(url, '_blank');
+                    } else {
+                        // 不可预览文件，直接下载
+                        this.downloadFile(file);
+                        this.$message.info('该文件类型不支持预览，将自动下载');
+                    }
                 },
 
                 // 下载文件

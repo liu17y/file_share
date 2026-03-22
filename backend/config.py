@@ -3,6 +3,7 @@ import sys
 import json
 import socket
 from pathlib import Path
+from urllib.parse import unquote
 
 
 class Settings:
@@ -59,7 +60,7 @@ class Settings:
         print(f"[调试] 基础路径: {base_path}")
 
         if is_frozen:
-            # 打包模式：只从 config 文件夹查找 config.json
+            # 打包模式：优先从 config 文件夹查找
             config_paths = [
                 os.path.join(base_path, 'config', 'config.json'),  # 程序目录/config/config.json
                 os.path.join(base_path, 'config.json'),  # 程序目录/config.json（备用）
@@ -190,15 +191,16 @@ class Settings:
             os.makedirs(self.base_dir, exist_ok=True)
             print(f"[配置] 存储目录已准备: {self.base_dir}")
 
-            # 测试写入权限
+            # 验证目录是否可写
             test_file = os.path.join(self.base_dir, '.write_test')
             try:
                 with open(test_file, 'w') as f:
                     f.write('test')
                 os.remove(test_file)
-                print(f"[配置] 写入权限测试通过")
+                print(f"[配置] ✓ 写入权限测试通过")
             except Exception as e:
-                print(f"[警告] 写入权限测试失败: {e}")
+                print(f"[警告] ⚠ 写入权限测试失败: {e}")
+                print(f"[警告] 请检查目录权限: {self.base_dir}")
 
         except Exception as e:
             print(f"[错误] 无法创建存储目录: {e}")
@@ -345,7 +347,7 @@ class Settings:
                     # 打包模式：使用相对于程序目录的路径
                     rel_path = os.path.relpath(self.base_dir, base_path)
                     if not rel_path.startswith('..'):
-                        save_base_dir = rel_path
+                        save_base_dir = rel_path.replace('\\', '/')
                     else:
                         save_base_dir = self.base_dir
                 else:
@@ -353,7 +355,7 @@ class Settings:
                     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                     rel_path = os.path.relpath(self.base_dir, project_root)
                     if not rel_path.startswith('..'):
-                        save_base_dir = rel_path
+                        save_base_dir = rel_path.replace('\\', '/')
                     else:
                         save_base_dir = self.base_dir
             except:
@@ -425,14 +427,25 @@ class Settings:
     def get_disk_usage(self, path):
         """获取磁盘使用情况"""
         try:
+            # 确保路径存在
+            if not os.path.exists(path):
+                return {
+                    'total': 0,
+                    'used': 0,
+                    'free': 0
+                }
+
             if os.name == 'nt':  # Windows
                 import ctypes
                 free_bytes = ctypes.c_ulonglong(0)
                 total_bytes = ctypes.c_ulonglong(0)
 
-                drive = os.path.splitdrive(path)[0] + '\\'
-                if not drive or drive == '\\':
+                # 获取盘符
+                drive = os.path.splitdrive(path)[0]
+                if not drive:
                     drive = None
+                else:
+                    drive = drive + '\\'
 
                 if drive:
                     ctypes.windll.kernel32.GetDiskFreeSpaceExW(
@@ -442,6 +455,7 @@ class Settings:
                         ctypes.pointer(free_bytes)
                     )
                 else:
+                    # 尝试使用当前目录的盘符
                     ctypes.windll.kernel32.GetDiskFreeSpaceExW(
                         None,
                         None,
@@ -466,6 +480,8 @@ class Settings:
             }
         except Exception as e:
             print(f"Error getting disk usage: {e}")
+            import traceback
+            traceback.print_exc()
             return {
                 'total': 0,
                 'used': 0,
