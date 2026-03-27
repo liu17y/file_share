@@ -4,8 +4,8 @@
     <!-- 顶部导航栏 -->
     <div class="header">
       <div class="logo">
-        <var-icon name="flash" :size="28" color="#3f51b5" />
-        <span>AuroraShare</span>
+        <img src="../../icons/icon.ico" width="30">
+        <span>AuroraShare · 极光共享</span>
       </div>
       <div class="header-actions">
         <var-button class="custom-button custom-button--primary" @click="showUploadDialog = true">

@@ -61,7 +61,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { storageApi, systemApi } from '@/api'
-import { Snackbar } from '@varlet/ui'
 
 const storageChart = ref(null)
 const trendChart = ref(null)
@@ -86,32 +85,63 @@ const formatSize = (bytes) => {
 // 加载存储信息
 const loadStorageInfo = async () => {
   try {
+    console.log('[Dashboard] 开始加载存储信息...')
     const res = await storageApi.getStorageInfo()
+    console.log('[Dashboard] 存储信息原始响应:', res)
+
     if (res) {
-      renderStorageChart(res)
-      stats.value.totalSize = res.total || 0
-      // 使用 /api/storage 端点返回的正确文件数量和文件夹数量
+      // 更新统计数据
+      stats.value.totalSize = res.total || res.disk_total || 0
       stats.value.totalFiles = res.file_count || 0
       stats.value.totalFolders = res.folder_count || 0
+
+      console.log('[Dashboard] 更新后的统计数据:', {
+        totalFiles: stats.value.totalFiles,
+        totalFolders: stats.value.totalFolders,
+        totalSize: stats.value.totalSize
+      })
+
+      // 渲染存储图表
+      renderStorageChart(res)
+    } else {
+      console.warn('[Dashboard] 存储信息响应为空')
     }
   } catch (error) {
-    console.error('加载存储信息失败', error)
+    console.error('[Dashboard] 加载存储信息失败:', error)
+    console.error('[Dashboard] 错误详情:', error.response?.data || error.message)
   }
 }
 
 // 加载统计数据
 const loadStats = async () => {
   try {
+    console.log('[Dashboard] 开始加载统计数据...')
     const res = await systemApi.getStats()
-    if (res) {
-      stats.value.totalFiles = res.totalFiles || 0
-      stats.value.totalFolders = res.totalFolders || 0
-      stats.value.todayUploads = res.todayUploads || 0
-      renderTrendChart(res.trendData || generateMockTrendData())
+    console.log('[Dashboard] 统计数据原始响应:', res)
+
+    if (res && res.success !== false) {
+      // 处理不同的返回格式
+      const data = res.data || res
+      stats.value.totalFiles = data.total_files || data.totalFiles || stats.value.totalFiles
+      stats.value.totalFolders = data.total_folders || data.totalFolders || stats.value.totalFolders
+      stats.value.todayUploads = data.today_uploads || data.todayUploads || 0
+
+      console.log('[Dashboard] 更新后的统计数据:', {
+        totalFiles: stats.value.totalFiles,
+        totalFolders: stats.value.totalFolders,
+        todayUploads: stats.value.todayUploads
+      })
+
+      // 渲染趋势图表
+      const trendData = data.trend_data || data.trendData || generateMockTrendData()
+      renderTrendChart(trendData)
+    } else {
+      console.warn('[Dashboard] 统计数据响应无效:', res)
+      renderTrendChart(generateMockTrendData())
     }
   } catch (error) {
-    console.error('加载统计数据失败', error)
-    // 使用模拟数据
+    console.error('[Dashboard] 加载统计数据失败:', error)
+    console.error('[Dashboard] 错误详情:', error.response?.data || error.message)
     renderTrendChart(generateMockTrendData())
   }
 }
@@ -131,15 +161,25 @@ const generateMockTrendData = () => {
 
 // 渲染存储图表
 const renderStorageChart = (data) => {
-  if (!storageChart.value) return
+  if (!storageChart.value) {
+    console.warn('[Dashboard] storageChart ref 未就绪，等待DOM渲染')
+    setTimeout(() => renderStorageChart(data), 100)
+    return
+  }
 
   if (!storageChartInstance) {
     storageChartInstance = echarts.init(storageChart.value)
   }
 
   const total = data.disk_total || data.total || 100
-  const used = data.used || 0
+  const used = data.used || data.disk_used || 0
   const free = total - used
+
+  // 转换为 GB
+  const usedGB = (used / (1024 ** 3)).toFixed(2)
+  const freeGB = (free / (1024 ** 3)).toFixed(2)
+
+  console.log('[Dashboard] 存储图表数据:', { total, used, free, usedGB, freeGB })
 
   storageChartInstance.setOption({
     tooltip: {
@@ -158,16 +198,9 @@ const renderStorageChart = (data) => {
         radius: '55%',
         center: ['50%', '50%'],
         data: [
-          { value: (used / (1024 ** 3)).toFixed(2), name: '已使用', itemStyle: { color: '#3f51b5' } },
-          { value: (free / (1024 ** 3)).toFixed(2), name: '剩余', itemStyle: { color: '#4caf50' } }
-        ],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
+          { value: parseFloat(usedGB), name: '已使用', itemStyle: { color: '#3f51b5' } },
+          { value: parseFloat(freeGB), name: '剩余', itemStyle: { color: '#4caf50' } }
+        ]
       }
     ]
   })
@@ -175,11 +208,17 @@ const renderStorageChart = (data) => {
 
 // 渲染趋势图表
 const renderTrendChart = (data) => {
-  if (!trendChart.value) return
+  if (!trendChart.value) {
+    console.warn('[Dashboard] trendChart ref 未就绪，等待DOM渲染')
+    setTimeout(() => renderTrendChart(data), 100)
+    return
+  }
 
   if (!trendChartInstance) {
     trendChartInstance = echarts.init(trendChart.value)
   }
+
+  const chartData = data && data.length ? data : generateMockTrendData()
 
   trendChartInstance.setOption({
     tooltip: {
@@ -194,7 +233,7 @@ const renderTrendChart = (data) => {
     },
     xAxis: {
       type: 'category',
-      data: data.map(d => d.date),
+      data: chartData.map(d => d.date),
       axisLabel: { rotate: 45 }
     },
     yAxis: {
@@ -205,7 +244,7 @@ const renderTrendChart = (data) => {
       {
         name: '上传量',
         type: 'bar',
-        data: data.map(d => d.count),
+        data: chartData.map(d => d.count),
         itemStyle: {
           borderRadius: [4, 4, 0, 0],
           color: '#3f51b5'
@@ -222,6 +261,7 @@ const handleResize = () => {
 }
 
 onMounted(() => {
+  console.log('[Dashboard] 组件挂载，开始加载数据')
   loadStorageInfo()
   loadStats()
   window.addEventListener('resize', handleResize)

@@ -8,6 +8,7 @@ import time
 import hashlib  # 添加 hash 支持
 
 from config import settings
+from stats_manager import stats_manager
 
 
 class UploadManager:
@@ -241,13 +242,13 @@ class UploadManager:
     async def _finalize_upload(self, file_id: str):
         """完成上传，合并文件并进行 Hash 校验"""
         upload_info = self.uploads[file_id]
-        
+
         # 处理文件名，确保即使包含路径也能正确处理
         file_name = upload_info["file_name"]
-        
+
         # 构建完整路径，包括目录结构
         target_full_path = os.path.join(upload_info["target_dir"], file_name)
-        
+
         # 确保目标目录存在（包括文件名中可能包含的子目录）
         os.makedirs(os.path.dirname(target_full_path), exist_ok=True)
 
@@ -264,32 +265,30 @@ class UploadManager:
             # 检查文件大小是否匹配
             temp_size = os.path.getsize(upload_info["temp_path"])
             expected_size = upload_info["file_size"]
-            
+
             if temp_size != expected_size:
                 error_msg = f"File size mismatch. Expected {expected_size}, got {temp_size}"
                 print(f"Warning: {error_msg}")
-                # 大小不匹配时，不进行 Hash 校验，直接报错
                 raise ValueError(error_msg)
 
             # 计算临时文件的 MD5 Hash
             print("Calculating MD5 hash for integrity check...")
             md5_hash = hashlib.md5()
-            
+
             # 使用同步方式读取文件计算 hash
             def calculate_hash():
                 with open(upload_info["temp_path"], 'rb') as f:
-                    # 分块读取避免内存溢出
                     for chunk in iter(lambda: f.read(8192), b''):
                         md5_hash.update(chunk)
                 return md5_hash.hexdigest()
-            
+
             # 在线程池中计算 hash，避免阻塞
             loop = asyncio.get_event_loop()
             file_md5 = await loop.run_in_executor(
                 self.executor,
                 calculate_hash
             )
-            
+
             print(f"File MD5: {file_md5}")
             print(f"File integrity verified: {temp_size} bytes")
 
@@ -307,8 +306,21 @@ class UploadManager:
                 os.remove(info_path)
                 print(f"Removed info file: {info_path}")
 
+            # ========== 新增：记录上传统计 ==========
+            try:
+                if stats_manager:
+                    stats_manager.log_upload(
+                        file_name=file_name,
+                        file_size=expected_size,
+                        target_path=upload_info["target_path"]
+                    )
+                    print(f"📊 已记录上传统计: {file_name}")
+            except Exception as stats_error:
+                print(f"记录上传统计失败: {stats_error}")
+            # ======================================
+
             upload_info["status"] = "completed"
-            upload_info["md5"] = file_md5  # 记录 MD5
+            upload_info["md5"] = file_md5
             print(f"Upload completed successfully: {target_full_path}")
             print(f"✓ File verified - Size: {temp_size} bytes, MD5: {file_md5}")
 
