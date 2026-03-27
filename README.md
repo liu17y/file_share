@@ -740,6 +740,11 @@ python run.py
 </div>
 
 ## 完成(已完成)
+
+![文件夹树](https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img.png)
+![文件夹树](https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_7.png)
+![文件夹树](https://gitee.com/Liuzongyi-liu/file-share/raw/master/image/img_9.png)
+
 前端
 vue3 + Varlet + echarts
 文件共享
