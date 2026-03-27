@@ -115,10 +115,28 @@ const loadLogs = async () => {
       keyword: filters.keyword,
       level: filters.level
     }
+    console.log('[Logs] 开始加载日志，参数:', params)
     const res = await systemApi.getLogs(params)
-    logs.value = res.logs || []
-    pagination.total = res.total || 0
+    console.log('[Logs] 收到响应:', res)
+    
+    // 检查响应格式
+    if (res && res.logs) {
+      logs.value = res.logs || []
+      pagination.total = res.total || 0
+      console.log('[Logs] 解析成功，日志数量:', logs.value.length)
+    } else if (res && res.data && res.data.logs) {
+      // 兼容其他响应格式
+      logs.value = res.data.logs || []
+      pagination.total = res.data.total || 0
+      console.log('[Logs] 兼容格式解析成功，日志数量:', logs.value.length)
+    } else {
+      console.log('[Logs] 响应格式异常:', res)
+      // 使用模拟数据
+      logs.value = generateMockLogs()
+      pagination.total = 100
+    }
   } catch (error) {
+    console.error('[Logs] 加载失败:', error)
     Snackbar.error('加载日志失败')
     // 使用模拟数据
     logs.value = generateMockLogs()

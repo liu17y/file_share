@@ -64,7 +64,7 @@
           </div>
           <div class="tooltip-container">
             <var-tooltip :content="file.name" placement="top">
-              <span class="filename" :class="{ 'folder-name': file.is_dir }">{{ file.name }}</span>
+              <span class="filename" :class="{ 'folder-name': file.is_dir }">{{ truncateFilename(file.name, file.is_dir) }}</span>
             </var-tooltip>
           </div>
         </div>
@@ -182,6 +182,23 @@ const formatDate = (dateStr) => {
   if (!dateStr) return '-'
   const date = new Date(dateStr)
   return date.toLocaleString('zh-CN')
+}
+
+const truncateFilename = (filename, isDir = false, maxLength = 30) => {
+  if (filename.length <= maxLength) {
+    return filename
+  }
+  
+  // 目录名称直接截断，不需要考虑扩展名
+  if (isDir) {
+    return filename.substring(0, maxLength - 3) + '...'
+  }
+  
+  // 文件名称保留扩展名
+  const extension = filename.lastIndexOf('.') > -1 ? filename.substring(filename.lastIndexOf('.')) : ''
+  const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'))
+  const availableLength = maxLength - extension.length - 3 // 3 for ellipsis
+  return nameWithoutExt.substring(0, availableLength) + '...' + extension
 }
 
 const getFileIcon = (filename) => {

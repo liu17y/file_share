@@ -8,8 +8,8 @@ import mimetypes
 import json
 import time
 
-from docutils.nodes import status
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Depends
+from fastapi import status
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -275,8 +275,10 @@ async def get_admin_stats():
         today_uploads = stats_manager.get_today_uploads_count() if stats_manager else 0
         today_uploads_size = stats_manager.get_today_uploads_size() if stats_manager else 0
         trend_data = stats_manager.get_upload_trend(7) if stats_manager else []
-        total_uploads = stats_manager.get_total_uploads_count() if stats_manager else 0
-        total_uploads_size = stats_manager.get_total_uploads_size() if stats_manager else 0
+        # 获取总上传数和总大小
+        user_stats = stats_manager.get_user_stats() if stats_manager else {}
+        total_uploads = user_stats.get('total_uploads', 0)
+        total_uploads_size = user_stats.get('total_size', 0)
 
         return {
             "success": True,
@@ -361,23 +363,74 @@ async def clean_old_logs(days: int = 30, auth: dict = Depends(require_admin)):
 
 
 @app.get("/api/admin/logs")
-async def admin_logs(auth: dict = Depends(require_admin)):
+async def admin_logs(
+    page: int = 1,
+    page_size: int = 20,
+    keyword: str = "",
+    level: str = "",
+    auth: dict = Depends(require_admin)
+):
     """
     获取系统日志（需要登录）
     """
     try:
-        # 这里可以实现日志读取逻辑
-        # 简化示例，返回一些示例数据
+        import os
+        import re
+        from backend.logger import get_log_dir
+        
+        # 获取日志目录
+        log_dir = get_log_dir()
+        
+        # 读取所有日志文件
+        log_files = []
+        for filename in os.listdir(log_dir):
+            if filename.startswith('aurorashare_') and filename.endswith('.log'):
+                log_files.append(os.path.join(log_dir, filename))
+        
+        # 按日期排序，最新的在前
+        log_files.sort(reverse=True)
+        
+        # 解析日志文件
+        logs = []
+        log_pattern = re.compile(r'^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[(INFO|WARNING|ERROR|DEBUG)\] \[(.*?)\] (.*?):(\d+) - (.*)$')
+        
+        for log_file in log_files:
+            try:
+                with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    for line in f:
+                        match = log_pattern.match(line.strip())
+                        if match:
+                            log_time, log_level, log_name, log_file, log_line, log_content = match.groups()
+                            
+                            # 过滤条件
+                            if keyword and keyword not in log_content:
+                                continue
+                            if level and log_level != level:
+                                continue
+                            
+                            logs.append({
+                                "time": log_time,
+                                "level": log_level,
+                                "content": log_content
+                            })
+            except Exception as e:
+                print(f"Error reading log file {log_file}: {e}")
+        
+        # 分页
+        total = len(logs)
+        start = (page - 1) * page_size
+        end = start + page_size
+        paginated_logs = logs[start:end]
+        
         return {
             "success": True,
-            "data": {
-                "logs": [
-                    {"time": datetime.now().isoformat(), "level": "INFO", "message": "系统运行正常"},
-                    {"time": datetime.now().isoformat(), "level": "INFO", "message": f"管理员 {auth['username']} 访问了日志"}
-                ]
-            }
+            "logs": paginated_logs,
+            "total": total
         }
     except Exception as e:
+        print(f"Error getting logs: {e}")
+        import traceback
+        traceback.print_exc()
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": str(e)}

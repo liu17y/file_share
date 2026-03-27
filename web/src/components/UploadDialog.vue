@@ -198,37 +198,49 @@ const selectFolder = () => {
   folderInput.value.click()
 }
 
-const handleFolderSelect = (e) => {
+const handleFolderSelect = async (e) => {
   const files = Array.from(e.target.files)
   // 保留相对路径信息
-  addFiles(files, true)
+  await addFiles(files, true)
   folderInput.value.value = ''
 }
 
-const handleFileSelect = (e) => {
+const handleFileSelect = async (e) => {
   const files = Array.from(e.target.files)
-  addFiles(files, true)
+  await addFiles(files, true)
   fileInput.value.value = ''
 }
 
-const handleDrop = (e) => {
+const handleDrop = async (e) => {
   const files = Array.from(e.dataTransfer.files)
-  addFiles(files, true)
+  await addFiles(files, true)
 }
 
-const addFiles = (files, keepPath = false) => {
-  for (const file of files) {
-    const task = {
-      id: `${Date.now()}-${Math.random()}`,
-      file: file,
-      status: 'pending',
-      progress: 0,
-      uploadedChunks: [],
-      totalChunks: Math.ceil(file.size / CHUNK_SIZE),
-      abortController: null,
-      relativePath: keepPath ? file.webkitRelativePath || file.name : file.name
+const addFiles = async (files, keepPath = false) => {
+  // 限制同时添加的文件数量，避免UI阻塞
+  const batchSize = 50
+  
+  for (let i = 0; i < files.length; i += batchSize) {
+    const batch = files.slice(i, i + batchSize)
+    
+    for (const file of batch) {
+      const task = {
+        id: `${Date.now()}-${Math.random()}`,
+        file: file,
+        status: 'pending',
+        progress: 0,
+        uploadedChunks: [],
+        totalChunks: Math.ceil(file.size / CHUNK_SIZE),
+        abortController: null,
+        relativePath: keepPath ? file.webkitRelativePath || file.name : file.name
+      }
+      uploadTasks.value.push(task)
     }
-    uploadTasks.value.push(task)
+    
+    // 每处理一批文件，让浏览器有时间渲染
+    if (i + batchSize < files.length) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
   }
 }
 
@@ -553,8 +565,8 @@ const close = () => {
 }
 
 // 暴露方法给父组件
-const addFilesFromDrop = (files) => {
-  addFiles(files, true)
+const addFilesFromDrop = async (files) => {
+  await addFiles(files, true)
 }
 
 defineExpose({
