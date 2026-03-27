@@ -739,7 +739,7 @@ python run.py
 
 </div>
 
-## ? 待完成
+## 完成(已完成)
 前端
 vue3 + Varlet + echarts
 文件共享
