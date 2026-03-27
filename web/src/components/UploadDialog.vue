@@ -3,7 +3,7 @@
   <var-popup
     v-model:show="visible"
     position="center"
-    :style="{ width: '600px', maxWidth: '90vw' }"
+    :style="{ width: '600px', maxWidth: '60vw' }"
   >
     <div class="upload-dialog">
       <div class="dialog-header">
@@ -51,16 +51,6 @@
         />
       </div>
 
-      <div v-if="uploading" class="upload-controls">
-        <var-button v-if="!paused" size="small" @click="pauseUpload">
-          <var-icon name="pause" />
-          暂停
-        </var-button>
-        <var-button v-else size="small" @click="resumeUpload">
-          <var-icon name="play" />
-          继续
-        </var-button>
-      </div>
 
       <div class="upload-list">
         <div
@@ -113,6 +103,17 @@
       </div>
 
       <div class="dialog-footer">
+        <div v-if="uploading" class="">
+        <var-button v-if="!paused" color="#66bb6a" text-color="#fff" @click="pauseUpload">
+          <var-icon name="pause" />
+          暂停
+        </var-button>
+        <var-button v-else color="linear-gradient(to right bottom, #6750A4, #D0BCFF)"
+      text-color="#fff"  @click="resumeUpload">
+          <var-icon name="play" />
+          继续
+        </var-button>
+      </div>
         <var-button @click="close">关闭</var-button>
         <var-button
           v-if="uploadTasks.length > 0"

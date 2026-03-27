@@ -17,7 +17,7 @@
         <span>根目录</span>
       </div>
       <div v-if="loading" class="loading">
-        <var-loading type="circle" size="small" />
+        <var-loading type="disappear" size="small" />
       </div>
       <div v-else class="tree-nodes">
         <TreeNode

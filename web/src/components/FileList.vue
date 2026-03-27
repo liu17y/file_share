@@ -188,12 +188,12 @@ const truncateFilename = (filename, isDir = false, maxLength = 30) => {
   if (filename.length <= maxLength) {
     return filename
   }
-  
+
   // 目录名称直接截断，不需要考虑扩展名
   if (isDir) {
     return filename.substring(0, maxLength - 3) + '...'
   }
-  
+
   // 文件名称保留扩展名
   const extension = filename.lastIndexOf('.') > -1 ? filename.substring(filename.lastIndexOf('.')) : ''
   const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'))
@@ -245,20 +245,20 @@ const handleDragLeave = () => {
 const handleDrop = (targetFile, event) => {
   event.preventDefault()
   dragOverFile.value = null
-  
+
   if (!draggedFile.value || draggedFile.value.path === targetFile.path) {
     return
   }
-  
+
   if (!targetFile.is_dir) {
     return
   }
-  
+
   emit('move', {
     sources: [draggedFile.value.path],
     destination: targetFile.path
   })
-  
+
   isDragging.value = false
   draggedFile.value = null
 }

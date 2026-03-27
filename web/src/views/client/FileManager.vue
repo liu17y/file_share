@@ -8,27 +8,47 @@
         <span>AuroraShare · 极光共享</span>
       </div>
       <div class="header-actions">
-        <var-button class="custom-button custom-button--primary" @click="showUploadDialog = true">
-          <var-icon name="upload" /> 上传文件
+        <!-- 移动端折叠按钮 -->
+        <var-button
+          class="mobile-actions-toggle"
+          @click="toggleMobileActions"
+          round
+          text
+        >
+          <var-icon :name="mobileActionsVisible ? 'close' : 'menu'" />
         </var-button>
-        <var-button class="custom-button" @click="showFolderDialog = true">
-          <var-icon name="folder-add" /> 新建文件夹
-        </var-button>
-        <var-button v-if="selectedItems.length" class="custom-button custom-button--danger" @click="handleBatchDelete">
-          <var-icon name="delete" /> 删除 ({{ selectedItems.length }})
-        </var-button>
-        <var-button v-if="selectedItems.length" class="custom-button" @click="showMoveDialog = true">
-          <var-icon name="folder-move" /> 移动
-        </var-button>
-        <var-button class="theme-toggle" @click="toggleDarkMode" :class="{ 'dark': isDarkMode }" round>
-          <img v-if="!isDarkMode" src="/src/icons/sun.svg" alt="Sun" style="width: 20px; height: 20px; filter: invert(0%);" />
-          <img v-else src="/src/icons/moon.svg" alt="Moon" style="width: 20px; height: 20px; filter: invert(100%);" />
-        </var-button>
-        <var-button class="custom-button custom-button--text" @click="goToAdmin">
-          <var-icon name="settings" /> 管理
-        </var-button>
+
+        <!-- 操作按钮组 - 可折叠 -->
+        <div class="actions-group" :class="{ 'mobile-visible': mobileActionsVisible }">
+          <var-button class="custom-button custom-button--primary" @click="showUploadDialog = true">
+            <var-icon name="upload" /> 上传文件
+          </var-button>
+          <var-button class="custom-button" @click="showFolderDialog = true">
+            <var-icon name="folder-add" /> 新建文件夹
+          </var-button>
+          <var-button v-if="selectedItems.length" class="custom-button custom-button--danger" @click="handleBatchDelete">
+            <var-icon name="delete" /> 删除 ({{ selectedItems.length }})
+          </var-button>
+          <var-button v-if="selectedItems.length" class="custom-button" @click="showMoveDialog = true">
+            <var-icon name="folder-move" /> 移动
+          </var-button>
+          <var-button class="theme-toggle" @click="toggleDarkMode" :class="{ 'dark': isDarkMode }" round>
+            <img v-if="!isDarkMode" src="/src/icons/sun.svg" alt="Sun" style="width: 20px; height: 20px; filter: invert(0%);" />
+            <img v-else src="/src/icons/moon.svg" alt="Moon" style="width: 20px; height: 20px; filter: invert(100%);" />
+          </var-button>
+          <var-button class="custom-button custom-button--text" @click="goToAdmin">
+            <var-icon name="settings" /> 管理
+          </var-button>
+        </div>
       </div>
     </div>
+
+    <!-- 移动端遮罩层 -->
+    <div
+      v-if="mobileActionsVisible"
+      class="mobile-actions-overlay"
+      @click="toggleMobileActions"
+    ></div>
 
     <!-- 搜索栏 -->
     <SearchBar @search="handleSearch" @clear="clearSearch" />
@@ -50,11 +70,32 @@
     <!-- 主要内容区 -->
     <div
       class="main-content"
+      :class="{ 'sidebar-collapsed': sidebarCollapsed }"
       @dragenter.prevent="handleDragEnter"
     >
-      <!-- 侧边栏 - 文件夹树 -->
-      <div class="sidebar">
-        <FolderTree ref="folderTreeRef" @select="handleFolderSelect" />
+      <!-- 侧边栏 - 文件夹树（可折叠） -->
+      <div class="sidebar" :class="{ 'collapsed': sidebarCollapsed }">
+        <div class="sidebar-header" v-if="!sidebarCollapsed">
+          <span class="sidebar-title">文件夹</span>
+          <var-button class="collapse-btn" @click="toggleSidebar" text round size="small">
+            <var-icon name="chevron-left" />
+          </var-button>
+        </div>
+        <div class="sidebar-content" v-show="!sidebarCollapsed">
+          <FolderTree ref="folderTreeRef" @select="handleFolderSelect" />
+        </div>
+        <!-- 折叠状态下的快捷按钮 -->
+        <div class="sidebar-collapsed-actions" v-if="sidebarCollapsed">
+          <div class="collapsed-item" @click="toggleSidebar" title="展开文件夹">
+            <var-icon name="chevron-right" :size="20" />
+          </div>
+          <div class="collapsed-item" @click="refreshFileList" title="刷新">
+            <var-icon name="refresh" :size="20" />
+          </div>
+          <div class="collapsed-item" @click="handleNavigate('')" title="根目录">
+            <var-icon name="home" :size="20" />
+          </div>
+        </div>
       </div>
 
       <!-- 文件列表区域 -->
@@ -62,7 +103,7 @@
         <!-- 面包屑导航 -->
         <Breadcrumb :path="currentPath" @navigate="handleNavigate" />
 
-               <!-- 文件列表 -->
+        <!-- 文件列表 -->
         <FileList
           :files="displayFiles"
           :loading="loading"
@@ -137,10 +178,10 @@
       <div class="custom-popup move-dialog">
         <h3>移动到</h3>
         <div class="folder-tree-container">
-          <FolderTree 
-            ref="moveFolderTreeRef" 
-            :selected-path="moveToPath" 
-            @select="handleMoveFolderSelect" 
+          <FolderTree
+            ref="moveFolderTreeRef"
+            :selected-path="moveToPath"
+            @select="handleMoveFolderSelect"
           />
         </div>
         <div class="dialog-actions">
@@ -161,7 +202,6 @@ import FileList from '@/components/FileList.vue'
 import Breadcrumb from '@/components/Breadcrumb.vue'
 import FolderTree from '@/components/FolderTree.vue'
 import SearchBar from '@/components/SearchBar.vue'
-import StorageInfo from '@/components/StorageInfo.vue'
 import UploadDialog from '@/components/UploadDialog.vue'
 
 const router = useRouter()
@@ -191,6 +231,12 @@ const showMoveDialog = ref(false)
 const moveToPath = ref(undefined)
 const folders = ref([])
 
+// 侧边栏折叠状态
+const sidebarCollapsed = ref(localStorage.getItem('sidebar_collapsed') === 'true')
+
+// 移动端操作按钮折叠状态
+const mobileActionsVisible = ref(false)
+
 // 暗色模式
 const isDarkMode = ref(localStorage.getItem('dark_mode') === 'true')
 
@@ -199,6 +245,17 @@ if (isDarkMode.value) {
   document.documentElement.classList.add('dark')
 } else {
   document.documentElement.classList.remove('dark')
+}
+
+// 切换移动端操作按钮显示
+const toggleMobileActions = () => {
+  mobileActionsVisible.value = !mobileActionsVisible.value
+}
+
+// 侧边栏折叠切换
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value
+  localStorage.setItem('sidebar_collapsed', sidebarCollapsed.value)
 }
 
 // 计算属性
@@ -648,11 +705,19 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
+  position: relative;
 }
 
-.theme-switch {
+/* 移动端操作按钮折叠按钮 */
+.mobile-actions-toggle {
+  display: none;
+}
+
+/* 操作按钮组 */
+.actions-group {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .theme-toggle {
@@ -736,16 +801,240 @@ onUnmounted(() => {
   display: flex;
   padding: 24px;
   gap: 24px;
+  transition: all 0.3s ease;
 }
 
+/* 侧边栏样式 */
 .sidebar {
   width: 280px;
   flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dark .sidebar {
+  background-color: #2a2a3a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.dark .sidebar-header {
+  border-bottom-color: #3a3a4a;
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .sidebar-title {
+  color: #fff;
+}
+
+.collapse-btn {
+  padding: 4px;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+/* 折叠状态下的快捷操作栏 */
+.sidebar-collapsed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.collapsed-item {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.dark .collapsed-item {
+  color: #aaa;
+}
+
+.collapsed-item:hover {
+  background-color: #f0f0f0;
+  color: #3f51b5;
+}
+
+.dark .collapsed-item:hover {
+  background-color: #3a3a4a;
+  color: #7986cb;
 }
 
 .file-area {
   flex: 1;
   min-width: 0;
+}
+
+/* 移动端遮罩层 */
+.mobile-actions-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  display: none;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 16px;
+  }
+
+  .logo span {
+    display: none;
+  }
+
+  .mobile-actions-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .dark .mobile-actions-toggle {
+    background-color: #3a3a4a;
+    color: #fff;
+  }
+
+  .actions-group {
+    position: fixed;
+    top: 60px;
+    right: -100%;
+    width: 280px;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: right 0.3s ease;
+    z-index: 100;
+  }
+
+  .dark .actions-group {
+    background-color: #2a2a3a;
+    border: 1px solid #3a3a4a;
+  }
+
+  .actions-group.mobile-visible {
+    right: 16px;
+  }
+
+  .mobile-actions-overlay {
+    display: block;
+  }
+
+  .custom-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .theme-toggle {
+    width: 100%;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+  }
+
+  .dark .theme-toggle {
+    background-color: #3a3a4a;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    bottom: 0;
+    z-index: 99;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+
+  .main-content {
+    padding: 12px;
+  }
+
+  .main-content.sidebar-collapsed .file-area {
+    width: 100%;
+  }
+}
+
+/* 平板适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .custom-button span {
+    display: inline-block;
+  }
+
+  .custom-button {
+    padding: 8px 12px;
+  }
+
+  .sidebar {
+    width: 240px;
+  }
+
+  .main-content.sidebar-collapsed .sidebar {
+    width: 60px;
+  }
+
+  .main-content.sidebar-collapsed .file-area {
+    width: calc(100% - 84px);
+  }
+}
+
+/* 桌面端折叠时调整布局 */
+@media (min-width: 1025px) {
+  .main-content.sidebar-collapsed .sidebar {
+    width: 60px;
+  }
+
+  .main-content.sidebar-collapsed .file-area {
+    width: calc(100% - 84px);
+  }
 }
 
 .storage-card {
@@ -850,12 +1139,6 @@ onUnmounted(() => {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-}
-
-.preview-content iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
 }
 
 .text-preview {
@@ -968,23 +1251,5 @@ onUnmounted(() => {
 
 .dark .folder-tree-container {
   border-color: #4a4a5a;
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    display: none;
-  }
-
-  .header-actions {
-    gap: 8px;
-  }
-
-  .main-content {
-    padding: 12px;
-  }
-
-  .custom-button span {
-    display: none;
-  }
 }
 </style>
