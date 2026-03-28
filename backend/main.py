@@ -10,7 +10,7 @@ import time
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Depends
 from fastapi import status
-from fastapi.responses import JSONResponse, FileResponse, StreamingResponse, HTMLResponse
+from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,6 +18,10 @@ from file_manager import file_manager
 from upload_manager import upload_manager
 from backend.config import settings
 from stats_manager import stats_manager, init_stats_manager
+from fastapi.responses import FileResponse
+import secrets
+from datetime import datetime, timedelta
+from pydantic import BaseModel
 
 mimetypes.add_type('video/mp4', '.mp4')
 mimetypes.add_type('video/webm', '.webm')
@@ -25,6 +29,9 @@ mimetypes.add_type('video/ogg', '.ogv')
 mimetypes.add_type('video/quicktime', '.mov')
 mimetypes.add_type('video/x-msvideo', '.avi')
 mimetypes.add_type('video/x-matroska', '.mkv')
+# 确保 JavaScript 模块文件有正确的 MIME 类型
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/javascript', '.js')
 
 app = FastAPI(title="AuroraShare · 极光共享")
 
@@ -70,10 +77,6 @@ async def startup_event():
     print("✅ 统计管理器已初始化")
 
 
-import secrets
-from datetime import datetime, timedelta
-from pydantic import BaseModel
-
 
 # 添加数据模型
 class LoginRequest(BaseModel):
@@ -110,6 +113,34 @@ def cleanup_expired_sessions():
         del admin_sessions[token]
 
 
+@app.get("/debug/paths")
+async def debug_paths():
+    """调试路由：查看所有路径"""
+    debug_info = {
+        "frozen": getattr(sys, 'frozen', False),
+        "meipass": getattr(sys, '_MEIPASS', None),
+        "cwd": os.getcwd(),
+        "frontend_paths": {}
+    }
+
+    # 检查各种可能的前端路径
+    possible_paths = [
+        get_resource_path('frontend'),
+        os.path.join(os.getcwd(), 'frontend'),
+        os.path.join(sys._MEIPASS, 'frontend') if getattr(sys, 'frozen', False) else None,
+        os.path.join(os.path.dirname(sys.executable), 'frontend') if getattr(sys, 'frozen', False) else None,
+    ]
+
+    for path in possible_paths:
+        if path and os.path.exists(path):
+            debug_info["frontend_paths"][path] = {
+                "exists": True,
+                "contents": os.listdir(path)[:10]  # 只显示前10个文件
+            }
+        elif path:
+            debug_info["frontend_paths"][path] = {"exists": False}
+
+    return debug_info
 # ==================== 管理员 API ====================
 
 @app.post("/api/admin/login")
@@ -871,6 +902,30 @@ async def rename_item(request: Request):
             content={"success": False, "error": str(e)}
         )
 
+
+# 自定义静态文件处理，支持SPA路由回退
+class SPAStaticFiles(StaticFiles):
+    """支持SPA的静态文件处理，所有未匹配的路由都返回index.html"""
+    async def get_response(self, path: str, scope):
+        try:
+            # 先尝试正常获取文件
+            response = await super().get_response(path, scope)
+            # 添加缓存控制头，防止浏览器缓存问题
+            if path.endswith('.js') or path.endswith('.css'):
+                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                response.headers["Pragma"] = "no-cache"
+                response.headers["Expires"] = "0"
+            return response
+        except HTTPException as ex:
+            # 如果是404错误，且请求的不是API路径，返回index.html
+            if ex.status_code == 404:
+                # 检查是否是API请求或文件请求
+                if path.startswith('api/') or path.startswith('assets/'):
+                    raise ex
+                # 返回index.html让前端路由处理
+                return await super().get_response("index.html", scope)
+            raise ex
+
 # 批量下载
 @app.post("/api/download/batch")
 async def download_batch(request: Request):
@@ -915,20 +970,12 @@ async def download_batch(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# 管理页面
-@app.get("/docliu", response_class=HTMLResponse)
-async def admin_page():
-    frontend_path = get_resource_path('frontend')
-    admin_path = os.path.join(frontend_path, "admin.html")
-    try:
-        with open(admin_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            return HTMLResponse(content=content)
-    except Exception as e:
-        return HTMLResponse(content=f"<h1>Error: {str(e)}</h1>")
-
-
-# 挂载前端静态文件
-frontend_path = get_resource_path('frontend')
+# 挂载前端静态文件（必须在API路由之后挂载）
+frontend_path = get_resource_path("frontend")
 if os.path.exists(frontend_path):
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+    print(f"[调试] 前端路径: {frontend_path}")
+    # 使用自定义的SPAStaticFiles，支持前端路由
+    app.mount("/", SPAStaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    print(f"[错误] 前端路径不存在: {frontend_path}")
+
