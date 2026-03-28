@@ -969,6 +969,19 @@ async def download_batch(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# 管理页面
+@app.get("/docliu", response_class=HTMLResponse)
+async def admin_page():
+    frontend_path = get_resource_path('frontend')
+    admin_path = os.path.join(frontend_path, "admin.html")
+    try:
+        with open(admin_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            return HTMLResponse(content=content)
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Error: {str(e)}</h1>")
+
+
 
 # 挂载前端静态文件（必须在API路由之后挂载）
 frontend_path = get_resource_path("frontend")

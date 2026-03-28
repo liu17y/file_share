@@ -578,7 +578,7 @@ defineExpose({
 <style scoped>
 .upload-dialog {
   background-color: #fff;
-  border-radius: 16px;
+  /*border-radius: 16px;*/
   overflow: hidden;
 }
 

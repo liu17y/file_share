@@ -731,12 +731,13 @@ python run.py
 - **GitHub 仓库**: https://github.com/liu17y/file_share.git
 - **问题反馈**: 通过 Gitee/GitHub Issues 提交
 - **邮箱**: your.email@example.com
+- **支持**: 目前支持Windows
 
 ---
 
 <div align="center">
 
-**AuroraShare · 极光共享 - 让文件传输如极光般绚丽流畅！** 🚀
+**AuroraShare · 极光共享 - 让文件传输如极光般绚丽流畅！** 🚀  
 
 ### 📸 界面预览
 
