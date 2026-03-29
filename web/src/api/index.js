@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://192.168.133.89:8000/api',
+  baseURL: 'http://127.0.0.1:8000/api',
   timeout: 30000
 })
 
@@ -10,13 +10,13 @@ const api = axios.create({
 api.interceptors.request.use(
   config => {
     const token = localStorage.getItem('admin_token')
-    console.log('[API] 请求URL:', config.url)
-    console.log('[API] 读取token:', token)
+    // console.log('[API] 请求URL:', config.url)
+    // console.log('[API] 读取token:', token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
-      console.log('[API] 添加token到请求头')
+      // console.log('[API] 添加token到请求头')
     } else {
-      console.log('[API] 没有token，不添加到请求头')
+      // console.log('[API] 没有token，不添加到请求头')
     }
     return config
   },
@@ -27,17 +27,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   response => response.data,
   error => {
-    console.log('[API] 响应错误:', error.response?.status, error.response?.data)
+    // console.log('[API] 响应错误:', error.response?.status, error.response?.data)
 
     if (error.response?.status === 401) {
-      console.log('[API] 收到 401 未授权，清除 token')
+      // console.log('[API] 收到 401 未授权，清除 token')
       localStorage.removeItem('admin_token')
       localStorage.removeItem('admin_info')
 
       // 如果当前在管理后台且不是登录页，跳转到登录页
       if (window.location.pathname.startsWith('/admin') &&
           window.location.pathname !== '/admin/login') {
-        console.log('[API] 跳转到登录页')
+        // console.log('[API] 跳转到登录页')
         window.location.href = '/admin/login'
       }
     }

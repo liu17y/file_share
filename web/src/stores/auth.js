@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
       const storedToken = localStorage.getItem('admin_token')
       return storedToken && storedToken !== 'undefined' ? storedToken : null
     } catch (error) {
-      console.error('[Auth] 读取token失败:', error)
+      // console.error('[Auth] 读取token失败:', error)
       return null
     }
   }
@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return null
     } catch (error) {
-      console.error('[Auth] 解析admin_info失败:', error)
+      // console.error('[Auth] 解析admin_info失败:', error)
       return null
     }
   }
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (username, password) => {
     try {
-      console.log('[Auth] 发送登录请求:', username)
+      // console.log('[Auth] 发送登录请求:', username)
 
       const response = await fetch('/api/admin/login', {
         method: 'POST',
@@ -42,10 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
         body: JSON.stringify({ username, password })
       })
 
-      console.log('[Auth] 响应状态:', response.status)
+      // console.log('[Auth] 响应状态:', response.status)
 
       const data = await response.json()
-      console.log('[Auth] 响应数据:', data)
+      // console.log('[Auth] 响应数据:', data)
 
       if (!response.ok) {
         // 处理不同的错误响应格式
@@ -69,7 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('admin_token', data.token)
         localStorage.setItem('admin_info', JSON.stringify(adminData))
 
-        console.log('[Auth] 登录成功，token已保存')
+        // console.log('[Auth] 登录成功，token已保存')
         return { success: true }
       } else {
         // 如果后端没有返回 success 字段，但返回了 token
@@ -86,20 +86,20 @@ export const useAuthStore = defineStore('auth', () => {
           localStorage.setItem('admin_token', data.token)
           localStorage.setItem('admin_info', JSON.stringify(adminData))
 
-          console.log('[Auth] 登录成功（兼容模式），token已保存')
+          // console.log('[Auth] 登录成功（兼容模式），token已保存')
           return { success: true }
         }
 
         throw new Error(data.message || data.error || '登录失败')
       }
     } catch (error) {
-      console.error('[Auth] 登录错误:', error)
+      // console.error('[Auth] 登录错误:', error)
       return { success: false, error: error.message }
     }
   }
 
   const logout = () => {
-    console.log('[Auth] 执行登出，清除本地数据')
+    // console.log('[Auth] 执行登出，清除本地数据')
 
     // 清除所有本地存储
     token.value = null
@@ -137,9 +137,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 添加一个初始化函数，可以在应用启动时调用
   const initAuth = () => {
-    console.log('[Auth] 初始化认证状态')
-    console.log('[Auth] Token存在:', !!token.value)
-    console.log('[Auth] AdminInfo存在:', !!adminInfo.value)
+    // console.log('[Auth] 初始化认证状态')
+    // console.log('[Auth] Token存在:', !!token.value)
+    // console.log('[Auth] AdminInfo存在:', !!adminInfo.value)
 
     // 如果 token 存在但 adminInfo 不存在，尝试修复
     if (token.value && !adminInfo.value) {

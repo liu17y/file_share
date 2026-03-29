@@ -75,20 +75,20 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const requiresAuth = to.meta.requiresAuth
 
-  console.log('[路由] 目标:', to.path, '需要登录:', requiresAuth, '已登录:', authStore.isAuthenticated)
+  // console.log('[路由] 目标:', to.path, '需要登录:', requiresAuth, '已登录:', authStore.isAuthenticated)
 
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} · AuroraShare` : 'AuroraShare · 极光共享'
 
   if (requiresAuth && !authStore.isAuthenticated) {
-    console.log('[路由] 未登录，跳转到登录页')
+    // console.log('[路由] 未登录，跳转到登录页')
     next('/admin/login')
   } else if (to.path === '/admin/login' && authStore.isAuthenticated) {
-    console.log('[路由] 已登录，跳转到仪表盘')
+    // console.log('[路由] 已登录，跳转到仪表盘')
     next('/admin/dashboard')
   } else {
     next()
-  }
+  }installed
 })
 
 export default router
