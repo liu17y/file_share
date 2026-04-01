@@ -129,6 +129,7 @@ pyinstaller --onefile ^
     --name "AuroraShare" ^
     %ICON_FLAG% ^
     --add-data "frontend;frontend" ^
+    --add-data "frontend_dist;frontend_dist" ^
     --add-data "backend;backend" ^
     --add-data "config.json.template;." ^
     --hidden-import uvicorn ^

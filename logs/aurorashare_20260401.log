@@ -1,0 +1,1194 @@
+2026-04-01 09:21:33 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:21:33 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:21:33 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:21:34 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 09:21:34 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:21:35 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:23:29 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:23:29 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:23:29 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:23:29 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 09:23:29 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:23:31 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:26:32 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:26:32 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:26:32 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:26:32 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8001)...
+2026-04-01 09:26:32 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:26:33 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:29:12 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 承诺/尚.pdf
+2026-04-01 09:30:44 [INFO] [AuroraShare] main.py:867 - Folder download requested from 127.0.0.1 - Path: 接口改造文件
+2026-04-01 09:30:46 [INFO] [AuroraShare] main.py:891 - Folder download completed for 127.0.0.1 - Path: 接口改造文件 - Name: 接口改造文件.zip
+2026-04-01 09:31:26 [INFO] [AuroraShare] main.py:867 - Folder download requested from 127.0.0.1 - Path: 接口改造文件
+2026-04-01 09:31:28 [INFO] [AuroraShare] main.py:891 - Folder download completed for 127.0.0.1 - Path: 接口改造文件 - Name: 接口改造文件.zip
+2026-04-01 09:31:44 [INFO] [AuroraShare] main.py:674 - File download requested from 127.0.0.1 - Path: 接口改造文件/（4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf
+2026-04-01 09:31:44 [INFO] [AuroraShare] main.py:729 - File download completed for 127.0.0.1 - Path: 接口改造文件/（4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf - Name: （4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf
+2026-04-01 09:32:41 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:32:41 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:32:41 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:32:42 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8001)...
+2026-04-01 09:32:42 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:32:43 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:33:21 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:33:21 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:33:21 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:33:22 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8001)...
+2026-04-01 09:33:22 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:33:22 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:37:28 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:37:28 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:37:28 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:37:28 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8001)...
+2026-04-01 09:37:28 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:37:30 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 09:56:25 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/附件_贵州医保保障信息平台定点医疗机构地方扩展接口规范V2.1.pdf
+2026-04-01 09:56:34 [INFO] [AuroraShare] main.py:674 - File download requested from 127.0.0.1 - Path: 接口改造文件/（4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf
+2026-04-01 09:56:34 [INFO] [AuroraShare] main.py:729 - File download completed for 127.0.0.1 - Path: 接口改造文件/（4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf - Name: （4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf
+2026-04-01 09:57:33 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 09:57:33 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 09:57:33 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 09:57:33 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8001)...
+2026-04-01 09:57:33 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 09:57:34 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:09:13 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:09:13 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:09:13 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:09:13 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8002)...
+2026-04-01 10:09:13 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:09:14 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:09:23 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/（4.1）州医保中心关于新增追溯码相关字段的工作提示.pdf
+2026-04-01 10:27:24 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:27:24 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:27:24 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:27:24 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8002)...
+2026-04-01 10:27:24 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:27:25 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:27:39 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:27:39 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:27:39 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:27:39 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8002)...
+2026-04-01 10:27:39 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:27:40 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:29:57 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.13 - Path: 接口改造文件/附件5.全省定点医疗机构超量开药医保系统接口改造文档.pdf
+2026-04-01 10:30:06 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.13 - Path: 接口改造文件/QQ图片20250506082615.jpg
+2026-04-01 10:30:22 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.13 - Path: 接口改造文件/医疗保障信息平台定点医药机构接口规范V1.1.83_20250317091305(2).pdf
+2026-04-01 10:34:08 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:34:08 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:34:08 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:34:08 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8003)...
+2026-04-01 10:34:08 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:34:09 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:40:26 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:40:26 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:40:26 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:40:26 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8003)...
+2026-04-01 10:40:26 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:41:00 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:41:00 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:41:00 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:41:00 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 10:41:00 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:41:01 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:41:28 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/医疗保障信息平台定点医药机构接口规范V1.1.83_20250317091305(2).pdf
+2026-04-01 10:41:51 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.4 - Path: 接口改造文件/附件_贵州医保保障信息平台定点医疗机构地方扩展接口规范V2.1.pdf
+2026-04-01 10:41:55 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.4 - Path: 接口改造文件/附件_贵州医保保障信息平台定点医疗机构地方扩展接口规范V2.1.pdf
+2026-04-01 10:41:57 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.4 - Path: 接口改造文件/附件_贵州医保保障信息平台定点医疗机构地方扩展接口规范V2.1.pdf
+2026-04-01 10:42:21 [INFO] [AuroraShare] main.py:674 - File preview requested from 192.168.1.4 - Path: 接口改造文件/QQ图片20250506082615.jpg
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:217]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[221:258]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[302:321]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[323:350]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[354:361]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[405:424]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[426:455]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[459:477]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[521:540]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[542:572]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[576:577]
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:18 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:9231]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[9232:32768]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1565]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[1566:74611]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[74612:83380]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:89226]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[89227:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:67031]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[67032:72929]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[72930:80460]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:32599]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[32600:32810]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[32811:49152]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16804]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[16805:81595]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81596:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:9404]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:93311]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[93312:100884]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[100885:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16136]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[16137:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:25803]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[25804:69144]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[69145:71375]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71376:86112]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[86113:86955]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[86956:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:5817]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[5818:62449]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[62450:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:64006]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[64007:73150]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[73151:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:85789]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[85790:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:51952]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[51953:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:67881]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[67882:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:18533]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[18534:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:39771]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[39772:131061]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[131062:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:9230]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[9231:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:71352]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71353:82298]
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:19 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:217]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[221:284]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[328:347]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[349:376]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[380:388]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[432:451]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[453:482]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[486:504]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[548:567]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[569:599]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[603:605]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:58988]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[58989:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:27345]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[27346:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:49152]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:30686]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[30687:32768]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:55444]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[55445:60832]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:86300]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:12047]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[12048:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:65860]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:18360]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[18361:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:67292]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[67293:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:67820]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[67821:87421]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[87422:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:92596]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92597:105619]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[105620:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:82616]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[82617:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:8384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[8385:26634]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[26635:70391]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[70392:71025]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71026:99208]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[99209:101530]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[101531:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:27111]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[27112:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:23537]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[23538:26152]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[26153:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16762]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:7462]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[7463:32768]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:81893]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81894:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:47616]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[47617:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:73399]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[73400:75340]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[75341:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:14950]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[14951:29771]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[29772:91074]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[91075:94735]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[94736:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:94035]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[94036:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:56197]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[56198:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:759]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[760:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:80931]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[80932:90925]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[90926:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:114049]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[114050:127779]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[127780:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:43230]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[43231:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:29297]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[29298:69080]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[69081:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:112530]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[112531:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:47828]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[47829:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:43354]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[43355:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:98682]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:31662]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[31663:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:21771]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[21772:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:51865]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[51866:121988]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:112331]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[112332:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:18030]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[18031:49244]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[49245:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:24559]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[24560:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:74645]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[74646:104476]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[104477:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:49991]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[49992:97473]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[97474:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:17356]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[17357:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:42795]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[42796:85444]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[85445:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:2694]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[2695:54935]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[54936:90501]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[90502:128893]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[128894:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:54969]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[54970:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:74998]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:16360]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[16361:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:16384]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:25039]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[25040:32768]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:887]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[888:32768]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:31217]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[31218:49170]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[49171:75877]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[75878:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:71446]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71447:75282]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[75283:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:114688]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:54778]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[54779:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:3365]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[3366:30306]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[30307:78345]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[78346:92582]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92583:100171]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[100172:106375]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[106376:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:7164]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[7165:20404]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[20405:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:60429]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[60430:112809]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[112810:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:6108]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[6109:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:19595]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[19596:124595]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[124596:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:6740]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[6741:42855]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[42856:73778]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[73779:83124]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[83125:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:83187]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[83188:104052]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[104053:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:33146]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:114688]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:113084]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[113085:115446]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[115447:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:40051]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[40052:74858]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[74859:123165]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[123166:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:129315]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[129316:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:44387]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[44388:61815]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[61816:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:70654]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[70655:93315]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[93316:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:58255]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[58256:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:72134]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[72135:94387]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[94388:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:7167]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[7168:89446]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[89447:95305]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[95306:96526]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[96527:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:65813]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[65814:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:45123]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[45124:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:59948]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[59949:77487]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[77488:110859]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[110860:129499]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[129500:131071]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:22043]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[22044:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:9403]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[9404:64539]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[64540:82298]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:8180]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[8181:32680]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[32681:78676]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:23835]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[23836:81920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:48526]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[48527:83380]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:27464]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[27465:41740]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[41741:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:49035]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[49036:131063]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[131064:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:50585]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[50586:109689]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[109690:116642]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[116643:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:41207]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[41208:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:79135]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[79136:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:81427]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81428:90269]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[90270:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:632]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[633:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:42701]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[42702:56104]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[56105:63777]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[63778:110439]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[110440:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:106554]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[106555:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:36896]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[36897:65515]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[65516:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:88]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[92:125]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[169:188]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[190:219]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[223:224]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[268:287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[289:334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[336:348]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[350:374]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[378:65536]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:83072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[83073:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:15811]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[15812:102500]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[102501:103679]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[103680:109952]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[109953:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:40808]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[40809:121415]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[121416:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131052]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[131053:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:47050]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[47051:79755]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:32195]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[32196:32701]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[32702:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:24053]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[24054:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:60447]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[60448:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:71334]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71335:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:30195]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[30196:48396]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[48397:77746]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[77747:82926]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[82927:121484]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[121485:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:55936]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[55937:71282]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71283:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:19880]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[19881:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:4838]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[4839:13136]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[13137:109997]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[109998:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:65220]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[65221:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:59999]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[60000:83167]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[83168:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:15207]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[15208:79848]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[79849:129478]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[129479:131039]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[131040:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:2062]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[2063:45960]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[45961:90992]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[90993:122168]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[122169:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:67354]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[67355:81805]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81806:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:35543]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[35544:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:3580]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[3581:43318]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[43319:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:82979]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[82980:130698]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[130699:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:71993]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[71994:108322]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[108323:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:6317]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[6318:27057]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[27058:66547]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[66548:89351]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[89352:111203]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[111204:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:46052]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[46053:83750]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[83751:85015]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[85016:96433]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[96434:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:8593]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[8594:78089]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[78090:81287]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81288:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:75350]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[75351:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:81980]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[81981:127508]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[127509:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1014]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[1015:30800]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[30801:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:110317]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[110318:131043]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[131044:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:103892]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[103893:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:13100]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[13101:59104]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[59105:78146]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[78147:93308]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[93309:94404]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[94405:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:123197]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[123198:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:15217]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[15218:122730]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[122731:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:69159]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[69160:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:100179]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[100180:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:63687]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[63688:96585]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[96586:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:65914]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:17525]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[17526:96484]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[96485:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:51423]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[51424:75938]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[75939:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:105985]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[105986:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:111944]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[111945:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:43738]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[43739:72205]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[72206:121080]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[121081:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:31147]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[31148:100466]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:22920]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[22921:106913]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[106914:131072]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1051]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[1052:49530]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:55885]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[0:1]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[55886:65914]
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 10:46:49 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 10:47:20 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/Record_2026-03-22-10-28-38_149003a2d400f6adb210d7e357a3a646.mp4
+2026-04-01 10:47:20 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/Record_2026-03-22-10-28-38_149003a2d400f6adb210d7e357a3a646.mp4
+2026-04-01 10:47:20 [INFO] [AuroraShare] main.py:674 - File preview requested from 127.0.0.1 - Path: 接口改造文件/Record_2026-03-22-10-28-38_149003a2d400f6adb210d7e357a3a646.mp4
+2026-04-01 10:47:21 [ERROR] [asyncio] base_events.py:1879 - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "D:\WindowsPC\python13\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\WindowsPC\python13\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+2026-04-01 10:50:01 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:50:01 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:50:01 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:50:01 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 10:50:01 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:50:02 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 10:53:39 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 10:53:39 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-01 10:53:39 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 10:53:40 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 10:53:40 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 10:53:41 [INFO] [__main__] run.py:126 - 浏览器已自动打开

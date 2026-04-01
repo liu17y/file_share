@@ -87,7 +87,6 @@
             <var-icon name="eye" />
           </var-button>
           <var-button
-            v-if="!file.is_dir"
             size="small"
             text
             @click.stop="$emit('download', file)"

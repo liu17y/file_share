@@ -95,7 +95,7 @@ def main():
         os.environ['AURORA_PORT'] = str(settings.port)
 
         # 获取前端路径
-        external_frontend = os.path.join(base_path, 'frontend')
+        external_frontend = os.path.join(base_path, 'frontend_dist')
         if os.path.exists(external_frontend):
             frontend_path = external_frontend
             logger.info(f"使用外部前端: {frontend_path}")

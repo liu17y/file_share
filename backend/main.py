@@ -20,20 +20,59 @@ from backend.config import settings
 from stats_manager import stats_manager, init_stats_manager
 from fastapi.responses import FileResponse
 import secrets
+from backend.logger import get_logger
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 
+# 视频 MIME 类型
 mimetypes.add_type('video/mp4', '.mp4')
 mimetypes.add_type('video/webm', '.webm')
 mimetypes.add_type('video/ogg', '.ogv')
 mimetypes.add_type('video/quicktime', '.mov')
 mimetypes.add_type('video/x-msvideo', '.avi')
 mimetypes.add_type('video/x-matroska', '.mkv')
-# 确保 JavaScript 模块文件有正确的 MIME 类型
+mimetypes.add_type('video/mpeg', '.mpeg')
+mimetypes.add_type('video/mpeg', '.mpg')
+mimetypes.add_type('video/3gpp', '.3gp')
+mimetypes.add_type('video/3gpp2', '.3g2')
+mimetypes.add_type('video/x-flv', '.flv')
+mimetypes.add_type('video/x-ms-wmv', '.wmv')
+
+# 音频 MIME 类型
+mimetypes.add_type('audio/mpeg', '.mp3')
+mimetypes.add_type('audio/mp4', '.m4a')
+mimetypes.add_type('audio/x-m4a', '.m4a')
+mimetypes.add_type('audio/ogg', '.ogg')
+mimetypes.add_type('audio/opus', '.opus')
+mimetypes.add_type('audio/webm', '.webm')
+mimetypes.add_type('audio/wav', '.wav')
+mimetypes.add_type('audio/x-wav', '.wav')
+mimetypes.add_type('audio/flac', '.flac')
+mimetypes.add_type('audio/aac', '.aac')
+mimetypes.add_type('audio/x-aac', '.aac')
+mimetypes.add_type('audio/vorbis', '.vorbis')
+mimetypes.add_type('audio/3gpp', '.3gp')
+mimetypes.add_type('audio/3gpp2', '.3g2')
+mimetypes.add_type('audio/midi', '.mid')
+mimetypes.add_type('audio/x-midi', '.midi')
+
+# JavaScript MIME 类型
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/javascript', '.js')
 
+# 其他常见的 Web 文件类型
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('image/svg+xml', '.svg')
+mimetypes.add_type('application/json', '.json')
+mimetypes.add_type('font/woff', '.woff')
+mimetypes.add_type('font/woff2', '.woff2')
+mimetypes.add_type('font/ttf', '.ttf')
+mimetypes.add_type('application/vnd.ms-fontobject', '.eot')
+
 app = FastAPI(title="AuroraShare · 极光共享")
+
+# 日志实例
+logger = get_logger()
 
 # 配置CORS
 app.add_middleware(
@@ -543,13 +582,32 @@ async def create_folder(request: Request):
 
 # 批量删除
 @app.delete("/api/items")
-async def delete_items(paths: str = Form(...)):
+async def delete_items(request: Request, paths: str = Form(...)):
     try:
-        paths_list = json.loads(paths)
-    except json.JSONDecodeError:
-        paths_list = [paths]
-    results = await file_manager.delete_items(paths_list)
-    return results
+        # 获取客户端信息
+        client_host = request.client.host if request.client else 'unknown'
+        client_ip = client_host
+        
+        # 解析路径列表
+        try:
+            paths_list = json.loads(paths)
+        except json.JSONDecodeError:
+            paths_list = [paths]
+        
+        # 记录删除操作
+        logger.info(f"Delete operation requested from {client_ip} - Paths: {paths_list}")
+        
+        results = await file_manager.delete_items(paths_list)
+        
+        # 记录删除完成
+        logger.info(f"Delete operation completed for {client_ip} - Success: {len(results.get('success', []))}, Failed: {len(results.get('failed', []))}")
+        
+        return results
+    except Exception as e:
+        # 记录错误
+        client_host = request.client.host if request.client else 'unknown'
+        logger.error(f"Delete operation error from {client_host} - Paths: {paths} - Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # 获取存储信息
@@ -639,16 +697,19 @@ async def cancel_upload(file_id: str):
 
 # 下载/预览文件
 @app.get("/api/files/{file_path:path}")
-async def get_file(file_path: str, preview: bool = False):
+async def get_file(request: Request, file_path: str, preview: bool = False):
     try:
         from urllib.parse import unquote
 
-        print(f"🔍 请求预览文件: {file_path}")
-        print(f"📁 当前存储目录: {settings.base_dir}")
+        # 获取客户端信息
+        client_host = request.client.host if request.client else 'unknown'
+        client_ip = client_host
+        
+        # 记录下载/预览操作
+        logger.info(f"File {'preview' if preview else 'download'} requested from {client_ip} - Path: {file_path}")
 
         # 解码URL编码的路径
         file_path = unquote(file_path)
-        print(f"📄 解码后路径: {file_path}")
 
         # 构建完整路径
         if os.path.isabs(file_path):
@@ -658,10 +719,8 @@ async def get_file(file_path: str, preview: bool = False):
             full_path = os.path.join(settings.base_dir, file_path)
 
         full_path = os.path.normpath(full_path)
-        print(f"📂 完整路径: {full_path}")
 
         if not os.path.exists(full_path):
-            print(f"❌ 文件不存在: {full_path}")
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
 
         if os.path.isdir(full_path):
@@ -671,7 +730,6 @@ async def get_file(file_path: str, preview: bool = False):
 
         # 获取 MIME 类型
         mime_type, _ = mimetypes.guess_type(full_path)
-        print(f"🎨 MIME类型: {mime_type}")
 
         # 预览模式
         if preview:
@@ -682,7 +740,6 @@ async def get_file(file_path: str, preview: bool = False):
             ]
 
             if mime_type and any(mime_type.startswith(t) for t in previewable_types):
-                print(f"✅ 支持预览，返回文件")
                 # 对于视频文件，添加额外的 headers 以支持播放
                 headers = {}
                 if mime_type and mime_type.startswith('video/'):
@@ -703,6 +760,9 @@ async def get_file(file_path: str, preview: bool = False):
                     detail=f"Preview not supported for this file type: {mime_type or 'unknown'}"
                 )
 
+        # 记录下载完成
+        logger.info(f"File download completed for {client_ip} - Path: {file_path} - Name: {filename}")
+
         # 下载模式
         return FileResponse(
             full_path,
@@ -713,7 +773,9 @@ async def get_file(file_path: str, preview: bool = False):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ 文件访问错误: {e}")
+        # 记录错误
+        client_host = request.client.host if request.client else 'unknown'
+        logger.error(f"File {'preview' if preview else 'download'} error from {client_host} - Path: {file_path} - Error: {str(e)}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
@@ -759,16 +821,25 @@ async def search_files(query: str = "", path: str = ""):
 @app.post("/api/items/move")
 async def move_items(request: Request):
     try:
+        # 获取客户端信息
+        client_host = request.client.host if request.client else 'unknown'
+        client_ip = client_host
+        
         data = await request.json()
 
+        # 记录移动操作
         if 'source' in data and 'target' in data:
+            logger.info(f"Move operation requested from {client_ip} - Source: {data['source']}, Target: {data['target']}")
             result = await file_manager.move_items(
                 [{"source": data['source'], "target": data['target']}], ""
             )
+            logger.info(f"Move operation completed for {client_ip} - Success: {len(result.get('success', []))}, Failed: {len(result.get('failed', []))}")
             return result
         elif 'sources' in data and 'destination' in data:
+            logger.info(f"Batch move operation requested from {client_ip} - Sources: {data['sources']}, Destination: {data['destination']}")
             items = [{"source": s} for s in data['sources']]
             result = await file_manager.move_items(items, data['destination'])
+            logger.info(f"Batch move operation completed for {client_ip} - Success: {len(result.get('success', []))}, Failed: {len(result.get('failed', []))}")
             return result
         else:
             return JSONResponse(
@@ -776,6 +847,9 @@ async def move_items(request: Request):
                 content={"error": "Invalid request format"}
             )
     except Exception as e:
+        # 记录错误
+        client_host = request.client.host if request.client else 'unknown'
+        logger.error(f"Move operation error from {client_host} - Error: {str(e)}")
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
@@ -820,6 +894,13 @@ async def download_folder(request: Request):
         if not folder_path:
             raise HTTPException(status_code=400, detail="Folder path is required")
 
+        # 获取客户端信息
+        client_host = request.client.host
+        client_ip = client_host
+        
+        # 记录下载操作
+        logger.info(f"Folder download requested from {client_ip} - Path: {folder_path}")
+
         if os.path.isabs(folder_path):
             full_path = folder_path
         else:
@@ -841,12 +922,18 @@ async def download_folder(request: Request):
                     rel_path = os.path.relpath(file_path, os.path.dirname(full_path))
                     zipf.write(file_path, rel_path)
 
+        # 记录下载完成
+        logger.info(f"Folder download completed for {client_ip} - Path: {folder_path} - Name: {folder_name}.zip")
+
         return FileResponse(
             temp_zip.name,
             media_type='application/zip',
             filename=f"{folder_name}.zip"
         )
     except Exception as e:
+        # 记录错误
+        client_host = request.client.host if request.client else 'unknown'
+        logger.error(f"Folder download error from {client_host} - Path: {data.get('path', 'unknown')} - Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -858,6 +945,10 @@ async def rename_item(request: Request):
     支持 JSON 和 FormData 两种格式
     """
     try:
+        # 获取客户端信息
+        client_host = request.client.host if request.client else 'unknown'
+        client_ip = client_host
+        
         # 尝试获取 JSON 数据
         content_type = request.headers.get('content-type', '')
         if 'application/json' in content_type:
@@ -876,25 +967,33 @@ async def rename_item(request: Request):
                 content={"success": False, "error": "Missing path or new_name"}
             )
 
+        # 记录重命名操作
+        logger.info(f"Rename operation requested from {client_ip} - Path: {path}, New name: {new_name}")
+
         # 调用重命名方法
         result = await file_manager.rename_item(path, new_name)
 
-        # 检查结果并返回前端期望的格式
+        # 记录重命名完成
         if result.get('success') and len(result['success']) > 0:
+            logger.info(f"Rename operation completed for {client_ip} - Path: {path}, New name: {new_name}")
             return {"success": True, "data": result['success'][0]}
         elif result.get('failed') and len(result['failed']) > 0:
+            error_msg = result['failed'][0].get('reason', 'Unknown error')
+            logger.warning(f"Rename operation failed for {client_ip} - Path: {path}, New name: {new_name} - Error: {error_msg}")
             return JSONResponse(
                 status_code=400,
-                content={"success": False, "error": result['failed'][0].get('reason', 'Unknown error')}
+                content={"success": False, "error": error_msg}
             )
         else:
+            logger.warning(f"Rename operation failed for {client_ip} - Path: {path}, New name: {new_name}")
             return JSONResponse(
                 status_code=400,
                 content={"success": False, "error": "Rename failed"}
             )
 
     except Exception as e:
-        print(f"Rename error: {e}")
+        # 记录错误
+        logger.error(f"Rename operation error from {client_ip} - Path: {path}, New name: {new_name} - Error: {str(e)}")
         import traceback
         traceback.print_exc()
         return JSONResponse(
@@ -984,7 +1083,15 @@ async def admin_page():
 
 
 # 挂载前端静态文件（必须在API路由之后挂载）
-frontend_path = get_resource_path("frontend")
+# 优先使用环境变量中的前端路径
+frontend_path = os.environ.get('AURORA_FRONTEND_PATH')
+if not frontend_path or not os.path.exists(frontend_path):
+    # 如果环境变量中没有或路径不存在，使用默认路径
+    frontend_path = get_resource_path("frontend_dist")
+    # 如果 frontend_dist 不存在，尝试使用 frontend
+    if not os.path.exists(frontend_path):
+        frontend_path = get_resource_path("frontend")
+
 if os.path.exists(frontend_path):
     print(f"[调试] 前端路径: {frontend_path}")
     # 使用自定义的SPAStaticFiles，支持前端路由
@@ -992,3 +1099,4 @@ if os.path.exists(frontend_path):
 else:
     print(f"[错误] 前端路径不存在: {frontend_path}")
 
+  
