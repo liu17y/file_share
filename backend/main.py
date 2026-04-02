@@ -8,19 +8,20 @@ import mimetypes
 import json
 import time
 
+from urllib.parse import quote
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Depends
 from fastapi import status
-from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse
+from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from file_manager import file_manager
 from upload_manager import upload_manager
-from backend.config import settings
+from config import settings
 from stats_manager import stats_manager, init_stats_manager
 from fastapi.responses import FileResponse
 import secrets
-from backend.logger import get_logger
+from logger import get_logger
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 
@@ -699,8 +700,9 @@ async def cancel_upload(file_id: str):
 @app.get("/api/files/{file_path:path}")
 async def get_file(request: Request, file_path: str, preview: bool = False):
     try:
-        from urllib.parse import unquote
+        from urllib.parse import unquote, quote
         import os
+        import mimetypes
 
         # 获取客户端信息
         client_host = request.client.host if request.client else 'unknown'
@@ -712,39 +714,24 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
         # 解码URL编码的路径
         file_path = unquote(file_path)
 
-        # 调试信息
-        print(f"[DEBUG] Original file_path: {file_path}")
-        print(f"[DEBUG] base_dir: {settings.base_dir}")
-
-        # 规范化路径 - 关键修复
-        # 将路径分隔符统一为正斜杠
+        # 规范化路径
         file_path = file_path.replace('\\', '/')
-
-        # 去除开头的斜杠
         if file_path.startswith('/'):
             file_path = file_path[1:]
 
-        # 构建完整路径 - 使用 os.path.join 并规范化
+        # 构建完整路径
         full_path = os.path.join(settings.base_dir, file_path)
-
-        # 规范化路径（处理 .. 和 . 等）
         full_path = os.path.normpath(full_path)
 
-        print(f"[DEBUG] full_path: {full_path}")
-
-        # 安全检查：确保路径在 base_dir 内
+        # 安全检查
         base_dir_abs = os.path.abspath(settings.base_dir)
         full_path_abs = os.path.abspath(full_path)
-
-        print(f"[DEBUG] base_dir_abs: {base_dir_abs}")
-        print(f"[DEBUG] full_path_abs: {full_path_abs}")
 
         if not full_path_abs.startswith(base_dir_abs):
             raise HTTPException(status_code=403, detail="Access denied")
 
         # 检查文件是否存在
         if not os.path.exists(full_path_abs):
-            print(f"[ERROR] File not found: {full_path_abs}")
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
 
         if os.path.isdir(full_path_abs):
@@ -763,6 +750,10 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
                 '.webm': 'video/webm',
                 '.ogg': 'audio/ogg',
                 '.mp3': 'audio/mpeg',
+                '.m4a': 'audio/mp4',
+                '.wav': 'audio/wav',
+                '.flac': 'audio/flac',
+                '.aac': 'audio/aac',
                 '.jpg': 'image/jpeg',
                 '.jpeg': 'image/jpeg',
                 '.png': 'image/png',
@@ -773,75 +764,98 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
                 '.js': 'application/javascript',
                 '.css': 'text/css',
                 '.html': 'text/html',
+                # Office 文档类型
+                '.doc': 'application/msword',
+                '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '.xls': 'application/vnd.ms-excel',
+                '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                '.ppt': 'application/vnd.ms-powerpoint',
+                '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                # 其他常见类型
+                '.zip': 'application/zip',
+                '.rar': 'application/x-rar-compressed',
+                '.7z': 'application/x-7z-compressed',
+                '.xml': 'application/xml',
+                '.md': 'text/markdown',
             }
             if ext in mime_types_map:
                 mime_type = mime_types_map[ext]
             else:
                 mime_type = 'application/octet-stream'
 
-        print(f"[DEBUG] mime_type: {mime_type}")
+        # 定义支持预览的文件类型
+        previewable_types = [
+            'image/',           # 图片
+            'video/',           # 视频
+            'audio/',           # 音频
+            'text/',            # 文本文件
+            'application/pdf',  # PDF
+            'application/json', # JSON
+            'application/xml',  # XML
+            'text/markdown',    # Markdown
+            'application/javascript',  # JS
+            'text/css',         # CSS
+            'text/html',        # HTML
+        ]
 
         # 预览模式
         if preview:
-            # 支持预览的文件类型
-            previewable_types = [
-                'image/', 'video/', 'audio/', 'text/',
-                'application/pdf', 'application/json'
-            ]
+            # 检查是否支持预览
+            is_previewable = False
+            if mime_type:
+                for preview_type in previewable_types:
+                    if mime_type.startswith(preview_type):
+                        is_previewable = True
+                        break
 
-            if mime_type and any(mime_type.startswith(t) for t in previewable_types):
-                # 对于视频和音频文件，添加额外的 headers 以支持播放
-                headers = {
-                    "Accept-Ranges": "bytes",
-                    "Cache-Control": "no-cache",
-                    "Access-Control-Allow-Origin": "*"
-                }
-
-                # 对于音频文件，确保正确的 Content-Type
-                if mime_type.startswith('audio/'):
-                    headers["Content-Type"] = mime_type
-                    # 添加额外的音频支持头
-                    headers["Content-Disposition"] = f'inline; filename="{filename}"'
-
-                # 对于视频文件
-                if mime_type.startswith('video/'):
-                    headers["Content-Type"] = mime_type
-                    headers["Content-Disposition"] = f'inline; filename="{filename}"'
-
-                print(f"[DEBUG] Previewing file with headers: {headers}")
-
-                return FileResponse(
+            if is_previewable:
+                # 支持预览，使用 inline 方式返回
+                logger.info(f"File preview (inline) for {client_ip} - Path: {file_path} - Type: {mime_type}")
+                response = FileResponse(
                     full_path_abs,
                     media_type=mime_type,
-                    headers=headers
+                    filename=filename,
+                    headers={
+                        "Content-Disposition": f"inline; filename*=UTF-8''{quote(filename)}",
+                        "Accept-Ranges": "bytes",
+                        "Cache-Control": "no-cache",
+                        "Access-Control-Allow-Origin": "*"
+                    }
                 )
+                return response
             else:
-                print(f"❌ 不支持预览的文件类型: {mime_type}")
-                raise HTTPException(
-                    status_code=415,
-                    detail=f"Preview not supported for this file type: {mime_type or 'unknown'}"
+                # 不支持预览，自动切换到下载模式
+                logger.info(f"File preview not supported, switching to download for {client_ip} - Path: {file_path} - Type: {mime_type}")
+                response = FileResponse(
+                    full_path_abs,
+                    media_type='application/octet-stream',
+                    filename=filename,
+                    headers={
+                        "Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"
+                    }
                 )
+                return response
 
-        # 记录下载完成
-        logger.info(f"File download completed for {client_ip} - Path: {file_path} - Name: {filename}")
-
-        # 下载模式
-        return FileResponse(
+        # 下载模式 - 使用 attachment 强制下载
+        logger.info(f"File download (attachment) for {client_ip} - Path: {file_path} - Name: {filename}")
+        response = FileResponse(
             full_path_abs,
             media_type='application/octet-stream',
-            filename=filename
+            filename=filename,
+            headers={
+                "Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"
+            }
         )
+        return response
 
     except HTTPException:
         raise
     except Exception as e:
-        # 记录错误
         import traceback
         traceback.print_exc()
         client_host = request.client.host if request.client else 'unknown'
         logger.error(f"File {'preview' if preview else 'download'} error from {client_host} - Path: {file_path} - Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 # SSE 推送存储信息更新
 @app.get("/api/storage/stream")
 async def storage_stream(request: Request):

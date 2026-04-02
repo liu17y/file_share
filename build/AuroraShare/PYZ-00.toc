@@ -557,7 +557,6 @@
    'D:\\WindowsPC\\python13\\Lib\\asyncio\\windows_utils.py',
    'PYMODULE'),
   ('backend', 'D:\\py\\file-share\\backend\\__init__.py', 'PYMODULE'),
-  ('backend.config', 'D:\\py\\file-share\\backend\\config.py', 'PYMODULE'),
   ('backend.logger', 'D:\\py\\file-share\\backend\\logger.py', 'PYMODULE'),
   ('backend.main', 'D:\\py\\file-share\\backend\\main.py', 'PYMODULE'),
   ('base64', 'D:\\WindowsPC\\python13\\Lib\\base64.py', 'PYMODULE'),

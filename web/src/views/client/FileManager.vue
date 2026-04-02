@@ -1,4 +1,3 @@
-<!-- src/views/client/FileManager.vue -->
 <template>
   <div class="file-manager">
     <!-- 顶部导航栏 -->
@@ -151,84 +150,6 @@
       </div>
     </div>
 
-    <!-- 现代化预览对话框 - 优化音乐播放器界面 -->
-   <div v-if="showPreviewDialog" class="custom-popup-overlay" @click.self="closePreview">
-  <div class="custom-popup preview-popup modern-preview">
-    <div class="preview-header">
-      <div class="preview-title">
-        <var-icon :name="getPreviewIcon()" :size="24" />
-        <span>{{ previewFile?.name }}</span>
-      </div>
-      <var-icon name="close" class="close-icon" @click="closePreview" :size="24" />
-    </div>
-    <div class="preview-content">
-      <!-- 图片预览 -->
-      <img v-if="isImage" :src="previewUrl" alt="preview" class="preview-media" />
-
-      <!-- 视频预览 -->
-      <video v-else-if="isVideo" :src="previewUrl" controls autoplay class="preview-media" />
-
-      <!-- 音频预览 - 现代化音乐播放器 -->
-      <div v-else-if="isAudio" class="audio-preview-modern">
-        <div class="audio-artwork">
-          <div class="album-art">
-            <var-icon name="music" :size="80" class="music-icon" />
-            <div class="wave-animation" v-if="isPlaying">
-              <span></span><span></span><span></span><span></span>
-            </div>
-          </div>
-        </div>
-        <div class="audio-info">
-          <h3 class="audio-title">{{ previewFile?.name }}</h3>
-          <p class="audio-meta">{{ formatFileSize(previewFile?.size) }} · 音频文件</p>
-        </div>
-        <div class="audio-player-controls">
-          <div class="time-display">
-            <span>{{ formatTime(currentTime) }}</span>
-            <span>{{ formatTime(duration) }}</span>
-          </div>
-          <input
-            type="range"
-            class="audio-progress"
-            v-model="progressPercent"
-            @input="seekAudio"
-            :style="{ backgroundSize: progressPercent + '% 100%' }"
-          />
-          <div class="control-buttons">
-            <!-- 播放/暂停按钮 - 根据状态显示不同图标 -->
-            <button class="control-btn" @click="togglePlayPause">
-              <var-icon :name="isPlaying ? 'pause-circle' : 'play-circle'" :size="48" />
-            </button>
-          </div>
-        </div>
-        <audio
-          ref="audioElement"
-          :src="previewUrl"
-          @timeupdate="updateTime"
-          @loadedmetadata="onLoadedMetadata"
-          @ended="onAudioEnded"
-          @play="handlePlay"
-          @pause="handlePause"
-          @error="handleAudioError"
-        ></audio>
-      </div>
-
-      <!-- PDF预览 -->
-      <iframe v-else-if="isPdf" :src="previewUrl" frameborder="0" class="preview-media" />
-
-      <!-- 文本预览 -->
-      <pre v-else-if="isText" class="text-preview">{{ textContent }}</pre>
-
-      <!-- 不支持的类型 -->
-      <div v-else class="unsupported">
-        <var-icon name="file" :size="64" />
-        <p>该文件类型不支持预览，请下载后查看</p>
-        <button class="custom-button custom-button--primary" @click="downloadCurrent">下载文件</button>
-      </div>
-    </div>
-  </div>
-</div>
-
     <!-- 移动对话框 -->
     <div v-if="showMoveDialog" class="custom-popup-overlay" @click.self="showMoveDialog = false">
       <div class="custom-popup move-dialog">
@@ -274,23 +195,10 @@ const folderTreeRef = ref(null)
 const moveFolderTreeRef = ref(null)
 const showFolderDialog = ref(false)
 const showRenameDialog = ref(false)
-const showPreviewDialog = ref(false)
+const showMoveDialog = ref(false)
 const newFolderName = ref('')
 const renameItem = ref(null)
 const renameName = ref('')
-const previewFile = ref(null)
-const previewUrl = ref('')
-const textContent = ref('')
-
-// 音频播放器状态
-const audioElement = ref(null)
-const isPlaying = ref(false)
-const currentTime = ref(0)
-const duration = ref(0)
-const progressPercent = ref(0)
-
-// 移动相关状态
-const showMoveDialog = ref(false)
 const moveToPath = ref(undefined)
 const folders = ref([])
 
@@ -329,22 +237,6 @@ const displayFiles = computed(() => {
   )
 })
 
-const isImage = computed(() => previewFile.value?.mime_type?.startsWith('image/'))
-const isVideo = computed(() => previewFile.value?.mime_type?.startsWith('video/'))
-const isAudio = computed(() => previewFile.value?.mime_type?.startsWith('audio/'))
-const isPdf = computed(() => previewFile.value?.mime_type === 'application/pdf')
-const isText = computed(() => previewFile.value?.mime_type?.startsWith('text/'))
-
-// 获取预览图标
-const getPreviewIcon = () => {
-  if (isImage.value) return 'image'
-  if (isVideo.value) return 'video'
-  if (isAudio.value) return 'music'
-  if (isPdf.value) return 'file-pdf'
-  if (isText.value) return 'file-text'
-  return 'file'
-}
-
 // 格式化文件大小
 const formatFileSize = (size) => {
   if (!size) return '未知大小'
@@ -354,75 +246,184 @@ const formatFileSize = (size) => {
   return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
-// 格式化时间
-const formatTime = (seconds) => {
-  if (!seconds || isNaN(seconds)) return '00:00'
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-}
+// 预览文件 - 支持预览的在新窗口打开，不支持的自动下载
+const handlePreview = async (item) => {
+  const previewUrl = fileApi.preview(item.path)
 
-// 音频播放控制
-const togglePlayPause = () => {
-  if (!audioElement.value) return
-  if (isPlaying.value) {
-    audioElement.value.pause()
+  // 定义不支持预览的文件类型
+  const unsupportedPreviewTypes = [
+    'application/vnd.openxmlformats-officedocument',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint',
+    'application/zip',
+    'application/x-rar',
+    'application/x-7z',
+    'application/x-rar-compressed',
+    'application/x-zip-compressed',
+    'application/octet-stream'
+  ]
+
+  const mimeType = item.mime_type || ''
+  const isUnsupportedPreview = unsupportedPreviewTypes.some(type => mimeType.includes(type))
+
+  // 对于 Office 文档、压缩包等不支持预览的文件类型
+  if (isUnsupportedPreview || (!mimeType.startsWith('image/') &&
+      !mimeType.startsWith('video/') &&
+      !mimeType.startsWith('audio/') &&
+      !mimeType.startsWith('text/') &&
+      mimeType !== 'application/pdf')) {
+    // 不支持预览，直接下载
+    const a = document.createElement('a')
+    a.href = previewUrl
+    a.download = item.name
+    a.click()
+    Snackbar.info(`${item.name} 不支持预览，已开始下载`)
   } else {
-    audioElement.value.play()
+    // 支持预览的文件在新窗口打开
+    window.open(previewUrl, '_blank')
+    Snackbar.info(`正在新窗口打开: ${item.name}`)
   }
 }
 
-const handlePlay = () => {
-  isPlaying.value = true
-}
-
-const handlePause = () => {
-  isPlaying.value = false
-}
-
-const handleAudioError = (e) => {
-  console.error('音频播放错误:', e)
-  Snackbar.error('音频加载失败，请检查文件格式')
-  isPlaying.value = false
-}
-
-const updateTime = () => {
-  if (audioElement.value) {
-    currentTime.value = audioElement.value.currentTime
-    progressPercent.value = (currentTime.value / duration.value) * 100
+// 下载文件或文件夹
+const handleDownload = async (item) => {
+  if (item.is_dir) {
+    try {
+      const response = await fileApi.downloadFolder(item.path)
+      const blob = new Blob([response], { type: 'application/zip' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${item.name}.zip`
+      a.click()
+      URL.revokeObjectURL(url)
+      Snackbar.success('文件夹下载已开始')
+    } catch (error) {
+      console.error('下载文件夹失败:', error)
+      Snackbar.error('下载文件夹失败')
+    }
+  } else {
+    const url = fileApi.download(item.path)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = item.name
+    a.click()
+    Snackbar.success('文件下载已开始')
   }
 }
 
-const onLoadedMetadata = () => {
-  if (audioElement.value) {
-    duration.value = audioElement.value.duration
+// 选择文件
+const toggleSelect = (item) => {
+  if (item === null) {
+    selectedItems.value = []
+  } else if (item.type === 'select-all') {
+    selectedItems.value = [...item.files]
+  } else {
+    const index = selectedItems.value.findIndex(i => i.path === item.path)
+    if (index > -1) {
+      selectedItems.value.splice(index, 1)
+    } else {
+      selectedItems.value.push(item)
+    }
   }
 }
 
-const onAudioEnded = () => {
-  isPlaying.value = false
-  currentTime.value = 0
-  progressPercent.value = 0
-  if (audioElement.value) {
-    audioElement.value.currentTime = 0
+// 文件夹点击
+const handleFolderClick = (item) => {
+  if (item.is_dir) {
+    currentPath.value = item.path
+    refreshFileList()
   }
 }
 
-const seekAudio = () => {
-  if (audioElement.value && duration.value) {
-    const newTime = (progressPercent.value / 100) * duration.value
-    audioElement.value.currentTime = newTime
-    currentTime.value = newTime
+// 面包屑导航
+const handleNavigate = (path) => {
+  currentPath.value = path
+  refreshFileList()
+}
+
+// 文件夹树选择
+const handleFolderSelect = (path) => {
+  currentPath.value = path
+  refreshFileList()
+}
+
+// 搜索
+const handleSearch = (query) => {
+  searchQuery.value = query
+  if (query) {
+    fileApi.search(query, currentPath.value).then(res => {
+      files.value = res.files || []
+    })
+  } else {
+    refreshFileList()
   }
 }
 
-// 关闭预览并停止音频
-const closePreview = () => {
-  if (audioElement.value) {
-    audioElement.value.pause()
-    isPlaying.value = false
+const clearSearch = () => {
+  searchQuery.value = ''
+  refreshFileList()
+}
+
+// 移动相关函数
+const loadFolders = async () => {
+  try {
+    const res = await fileApi.getFolderTree('')
+    folders.value = res.folders || []
+  } catch (error) {
+    console.error('加载文件夹列表失败:', error)
   }
-  showPreviewDialog.value = false
+}
+
+const handleMoveFolderSelect = (path) => {
+  moveToPath.value = path
+}
+
+const handleMove = async (moveData) => {
+  try {
+    const res = await fileApi.moveItems(moveData.sources, moveData.destination)
+    if (res.success && res.success.length > 0) {
+      Snackbar.success('移动成功')
+      refreshFileList()
+    } else if (res.failed && res.failed.length > 0) {
+      Snackbar.error(res.failed[0].reason || '移动失败')
+    } else {
+      Snackbar.success('移动成功')
+      refreshFileList()
+    }
+  } catch (error) {
+    console.error('移动失败:', error)
+    Snackbar.error('移动失败')
+  }
+}
+
+const confirmMove = async () => {
+  if (moveToPath.value === undefined || moveToPath.value === null) {
+    Snackbar.warning('请选择目标文件夹')
+    return
+  }
+
+  const paths = selectedItems.value.map(i => i.path)
+  try {
+    const res = await fileApi.moveItems(paths, moveToPath.value)
+    if (res.success && res.success.length > 0) {
+      Snackbar.success('移动成功')
+      showMoveDialog.value = false
+      selectedItems.value = []
+      refreshFileList()
+    } else if (res.failed && res.failed.length > 0) {
+      Snackbar.error(res.failed[0].reason || '移动失败')
+    } else {
+      Snackbar.success('移动成功')
+      showMoveDialog.value = false
+      selectedItems.value = []
+      refreshFileList()
+    }
+  } catch (error) {
+    console.error('移动失败:', error)
+    Snackbar.error('移动失败')
+  }
 }
 
 // 加载文件列表
@@ -550,187 +551,6 @@ const confirmRename = async () => {
   }
 }
 
-// 预览文件
-const handlePreview = async (item) => {
-  // 关闭之前的音频播放
-  if (audioElement.value) {
-    audioElement.value.pause()
-    isPlaying.value = false
-  }
-
-  previewFile.value = item
-  previewUrl.value = fileApi.preview(item.path)
-  textContent.value = ''
-
-  // 重置音频状态
-  currentTime.value = 0
-  duration.value = 0
-  progressPercent.value = 0
-
-  const mime_type = item.mime_type || 'application/octet-stream'
-  const isTextFile = mime_type.startsWith('text/') || mime_type === 'application/json'
-
-  if (isTextFile) {
-    try {
-      const response = await fetch(previewUrl.value)
-      if (response.ok) {
-        textContent.value = await response.text()
-      } else {
-        textContent.value = '无法加载文件内容'
-      }
-    } catch (error) {
-      console.error('预览文本文件失败:', error)
-      textContent.value = '无法加载文件内容'
-    }
-  }
-
-  showPreviewDialog.value = true
-}
-
-// 下载文件或文件夹
-const handleDownload = async (item) => {
-  if (item.is_dir) {
-    try {
-      const response = await fileApi.downloadFolder(item.path)
-      const blob = new Blob([response], { type: 'application/zip' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${item.name}.zip`
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error('下载文件夹失败:', error)
-      Snackbar.error('下载文件夹失败')
-    }
-  } else {
-    const url = fileApi.download(item.path)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = item.name
-    a.click()
-  }
-}
-
-const downloadCurrent = () => {
-  if (previewFile.value) {
-    handleDownload(previewFile.value)
-  }
-}
-
-// 选择文件
-const toggleSelect = (item) => {
-  if (item === null) {
-    selectedItems.value = []
-  } else if (item.type === 'select-all') {
-    selectedItems.value = [...item.files]
-  } else {
-    const index = selectedItems.value.findIndex(i => i.path === item.path)
-    if (index > -1) {
-      selectedItems.value.splice(index, 1)
-    } else {
-      selectedItems.value.push(item)
-    }
-  }
-}
-
-// 文件夹点击
-const handleFolderClick = (item) => {
-  if (item.is_dir) {
-    currentPath.value = item.path
-    refreshFileList()
-  }
-}
-
-// 面包屑导航
-const handleNavigate = (path) => {
-  currentPath.value = path
-  refreshFileList()
-}
-
-// 文件夹树选择
-const handleFolderSelect = (path) => {
-  currentPath.value = path
-  refreshFileList()
-}
-
-// 搜索
-const handleSearch = (query) => {
-  searchQuery.value = query
-  if (query) {
-    fileApi.search(query, currentPath.value).then(res => {
-      files.value = res.files || []
-    })
-  } else {
-    refreshFileList()
-  }
-}
-
-const clearSearch = () => {
-  searchQuery.value = ''
-  refreshFileList()
-}
-
-// 移动相关函数
-const loadFolders = async () => {
-  try {
-    const res = await fileApi.getFolderTree('')
-    folders.value = res.folders || []
-  } catch (error) {
-    console.error('加载文件夹列表失败:', error)
-  }
-}
-
-const handleMoveFolderSelect = (path) => {
-  moveToPath.value = path
-}
-
-const handleMove = async (moveData) => {
-  try {
-    const res = await fileApi.moveItems(moveData.sources, moveData.destination)
-    if (res.success && res.success.length > 0) {
-      Snackbar.success('移动成功')
-      refreshFileList()
-    } else if (res.failed && res.failed.length > 0) {
-      Snackbar.error(res.failed[0].reason || '移动失败')
-    } else {
-      Snackbar.success('移动成功')
-      refreshFileList()
-    }
-  } catch (error) {
-    console.error('移动失败:', error)
-    Snackbar.error('移动失败')
-  }
-}
-
-const confirmMove = async () => {
-  if (moveToPath.value === undefined || moveToPath.value === null) {
-    Snackbar.warning('请选择目标文件夹')
-    return
-  }
-
-  const paths = selectedItems.value.map(i => i.path)
-  try {
-    const res = await fileApi.moveItems(paths, moveToPath.value)
-    if (res.success && res.success.length > 0) {
-      Snackbar.success('移动成功')
-      showMoveDialog.value = false
-      selectedItems.value = []
-      refreshFileList()
-    } else if (res.failed && res.failed.length > 0) {
-      Snackbar.error(res.failed[0].reason || '移动失败')
-    } else {
-      Snackbar.success('移动成功')
-      showMoveDialog.value = false
-      selectedItems.value = []
-      refreshFileList()
-    }
-  } catch (error) {
-    console.error('移动失败:', error)
-    Snackbar.error('移动失败')
-  }
-}
-
 // 暗色模式
 const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value
@@ -830,248 +650,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
-  if (audioElement.value) {
-    audioElement.value.pause()
-  }
 })
 </script>
 
 <style scoped>
-/* 保持原有样式，并添加音频播放器现代化样式 */
-
-/* 现代化音乐播放器样式 */
-.audio-preview-modern {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 32px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24px;
-  color: white;
-  text-align: center;
-  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.3);
-}
-
-.dark .audio-preview-modern {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-}
-
-.audio-artwork {
-  margin-bottom: 24px;
-}
-
-.album-art {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.music-icon {
-  color: white;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-.wave-animation {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 4px;
-}
-
-.wave-animation span {
-  width: 4px;
-  height: 20px;
-  background: white;
-  border-radius: 2px;
-  animation: wave 1s ease-in-out infinite;
-}
-
-.wave-animation span:nth-child(2) { animation-delay: 0.1s; }
-.wave-animation span:nth-child(3) { animation-delay: 0.2s; }
-.wave-animation span:nth-child(4) { animation-delay: 0.3s; }
-
-@keyframes wave {
-  0%, 100% { height: 8px; }
-  50% { height: 24px; }
-}
-
-.audio-info {
-  margin-bottom: 24px;
-}
-
-.audio-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  word-break: break-all;
-}
-
-.audio-meta {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-.audio-player-controls {
-  width: 100%;
-}
-
-.time-display {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 8px;
-  opacity: 0.8;
-}
-
-.audio-progress {
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.3);
-  -webkit-appearance: none;
-  appearance: none;
-  margin-bottom: 20px;
-}
-
-.audio-progress::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: white;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.audio-progress::-webkit-slider-runnable-track {
-  height: 4px;
-  background: linear-gradient(to right, white var(--progress, 0%), rgba(255, 255, 255, 0.3) var(--progress, 0%));
-  border-radius: 2px;
-}
-
-.control-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.control-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: white;
-}
-
-.control-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
-}
-
-/* 现代化预览对话框 */
-.modern-preview {
-  border-radius: 32px !important;
-  overflow: hidden;
-  padding: 0 !important;
-  width: 90vw;
-  max-width: 800px;
-  background: #fff !important;
-}
-
-.dark .modern-preview {
-  background: #1e1e2a !important;
-}
-
-.preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.dark .preview-header {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-.preview-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.close-icon {
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.close-icon:hover {
-  opacity: 0.7;
-}
-
-.preview-content {
-  padding: 24px;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-}
-
-.dark .preview-content {
-  background: #1a1a2e;
-}
-
-.preview-media {
-  max-width: 100%;
-  max-height: 60vh;
-  border-radius: 12px;
-}
-
-.text-preview {
-  width: 100%;
-  max-height: 60vh;
-  overflow: auto;
-  padding: 16px;
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 13px;
-  background: #1e1e2e;
-  color: #e0e0e0;
-  border-radius: 12px;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.unsupported {
-  text-align: center;
-  color: #94a3b8;
-}
-
-.unsupported var-icon {
-  margin-bottom: 16px;
-}
-
-/* 其他样式保持原有 */
+/* 所有样式保持不变，但移除了预览对话框相关的样式 */
 .file-manager {
   min-height: 100vh;
   background-color: #f5f7fa;
@@ -1472,14 +1055,6 @@ onUnmounted(() => {
   background-color: #2a2a3a;
 }
 
-.preview-popup {
-  width: 80vw;
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-}
-
 .custom-popup h3 {
   margin-bottom: 20px;
   text-align: center;
@@ -1509,61 +1084,6 @@ onUnmounted(() => {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
-}
-
-.preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.preview-header var-icon {
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.preview-content {
-  flex: 1;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5f5;
-}
-
-.preview-content iframe {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-.preview-content img,
-.preview-content video,
-.preview-content iframe {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.text-preview {
-  width: 100%;
-  height: 100%;
-  padding: 16px;
-  overflow: auto;
-  white-space: pre-wrap;
-  font-family: monospace;
-  background-color: #fff;
-}
-
-.unsupported {
-  text-align: center;
-  color: #999;
-}
-
-.unsupported var-icon {
-  margin-bottom: 16px;
 }
 
 .drag-overlay {

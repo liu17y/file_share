@@ -1,0 +1,5 @@
+2026-04-02 09:50:32 [ERROR] [AuroraShare] main.py:842 - File preview error from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg - Error: 'latin-1' codec can't encode characters in position 18-20: ordinal not in range(256)
+2026-04-02 09:51:21 [ERROR] [AuroraShare] main.py:842 - File preview error from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg - Error: 'latin-1' codec can't encode characters in position 18-20: ordinal not in range(256)
+2026-04-02 09:56:55 [ERROR] [AuroraShare] main.py:842 - File preview error from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg - Error: 'latin-1' codec can't encode characters in position 18-20: ordinal not in range(256)
+2026-04-02 09:57:29 [ERROR] [AuroraShare] main.py:839 - File preview error from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg - Error: 'latin-1' codec can't encode characters in position 18-20: ordinal not in range(256)
+2026-04-02 09:58:36 [ERROR] [AuroraShare] main.py:839 - File preview error from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg - Error: 'latin-1' codec can't encode characters in position 18-20: ordinal not in range(256)
