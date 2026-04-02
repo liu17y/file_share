@@ -700,36 +700,86 @@ async def cancel_upload(file_id: str):
 async def get_file(request: Request, file_path: str, preview: bool = False):
     try:
         from urllib.parse import unquote
+        import os
 
         # 获取客户端信息
         client_host = request.client.host if request.client else 'unknown'
         client_ip = client_host
-        
+
         # 记录下载/预览操作
         logger.info(f"File {'preview' if preview else 'download'} requested from {client_ip} - Path: {file_path}")
 
         # 解码URL编码的路径
         file_path = unquote(file_path)
 
-        # 构建完整路径
-        if os.path.isabs(file_path):
-            full_path = file_path
-        else:
-            file_path = file_path.replace('\\', '/')
-            full_path = os.path.join(settings.base_dir, file_path)
+        # 调试信息
+        print(f"[DEBUG] Original file_path: {file_path}")
+        print(f"[DEBUG] base_dir: {settings.base_dir}")
 
+        # 规范化路径 - 关键修复
+        # 将路径分隔符统一为正斜杠
+        file_path = file_path.replace('\\', '/')
+
+        # 去除开头的斜杠
+        if file_path.startswith('/'):
+            file_path = file_path[1:]
+
+        # 构建完整路径 - 使用 os.path.join 并规范化
+        full_path = os.path.join(settings.base_dir, file_path)
+
+        # 规范化路径（处理 .. 和 . 等）
         full_path = os.path.normpath(full_path)
 
-        if not os.path.exists(full_path):
+        print(f"[DEBUG] full_path: {full_path}")
+
+        # 安全检查：确保路径在 base_dir 内
+        base_dir_abs = os.path.abspath(settings.base_dir)
+        full_path_abs = os.path.abspath(full_path)
+
+        print(f"[DEBUG] base_dir_abs: {base_dir_abs}")
+        print(f"[DEBUG] full_path_abs: {full_path_abs}")
+
+        if not full_path_abs.startswith(base_dir_abs):
+            raise HTTPException(status_code=403, detail="Access denied")
+
+        # 检查文件是否存在
+        if not os.path.exists(full_path_abs):
+            print(f"[ERROR] File not found: {full_path_abs}")
             raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
 
-        if os.path.isdir(full_path):
+        if os.path.isdir(full_path_abs):
             raise HTTPException(status_code=400, detail="Cannot access directory")
 
-        filename = os.path.basename(full_path)
+        filename = os.path.basename(full_path_abs)
 
         # 获取 MIME 类型
-        mime_type, _ = mimetypes.guess_type(full_path)
+        mime_type, _ = mimetypes.guess_type(full_path_abs)
+
+        # 如果无法识别 MIME 类型，根据扩展名设置
+        if not mime_type:
+            ext = os.path.splitext(filename)[1].lower()
+            mime_types_map = {
+                '.mp4': 'video/mp4',
+                '.webm': 'video/webm',
+                '.ogg': 'audio/ogg',
+                '.mp3': 'audio/mpeg',
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.pdf': 'application/pdf',
+                '.txt': 'text/plain',
+                '.json': 'application/json',
+                '.js': 'application/javascript',
+                '.css': 'text/css',
+                '.html': 'text/html',
+            }
+            if ext in mime_types_map:
+                mime_type = mime_types_map[ext]
+            else:
+                mime_type = 'application/octet-stream'
+
+        print(f"[DEBUG] mime_type: {mime_type}")
 
         # 预览模式
         if preview:
@@ -740,16 +790,28 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
             ]
 
             if mime_type and any(mime_type.startswith(t) for t in previewable_types):
-                # 对于视频文件，添加额外的 headers 以支持播放
-                headers = {}
-                if mime_type and mime_type.startswith('video/'):
-                    headers = {
-                        "Accept-Ranges": "bytes",
-                        "Cache-Control": "no-cache"
-                    }
+                # 对于视频和音频文件，添加额外的 headers 以支持播放
+                headers = {
+                    "Accept-Ranges": "bytes",
+                    "Cache-Control": "no-cache",
+                    "Access-Control-Allow-Origin": "*"
+                }
+
+                # 对于音频文件，确保正确的 Content-Type
+                if mime_type.startswith('audio/'):
+                    headers["Content-Type"] = mime_type
+                    # 添加额外的音频支持头
+                    headers["Content-Disposition"] = f'inline; filename="{filename}"'
+
+                # 对于视频文件
+                if mime_type.startswith('video/'):
+                    headers["Content-Type"] = mime_type
+                    headers["Content-Disposition"] = f'inline; filename="{filename}"'
+
+                print(f"[DEBUG] Previewing file with headers: {headers}")
 
                 return FileResponse(
-                    full_path,
+                    full_path_abs,
                     media_type=mime_type,
                     headers=headers
                 )
@@ -765,7 +827,7 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
 
         # 下载模式
         return FileResponse(
-            full_path,
+            full_path_abs,
             media_type='application/octet-stream',
             filename=filename
         )
@@ -774,12 +836,11 @@ async def get_file(request: Request, file_path: str, preview: bool = False):
         raise
     except Exception as e:
         # 记录错误
-        client_host = request.client.host if request.client else 'unknown'
-        logger.error(f"File {'preview' if preview else 'download'} error from {client_host} - Path: {file_path} - Error: {str(e)}")
         import traceback
         traceback.print_exc()
+        client_host = request.client.host if request.client else 'unknown'
+        logger.error(f"File {'preview' if preview else 'download'} error from {client_host} - Path: {file_path} - Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # SSE 推送存储信息更新
 @app.get("/api/storage/stream")

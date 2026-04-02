@@ -1,0 +1,5 @@
+2026-04-02 09:46:04 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-02 09:46:04 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\logs
+2026-04-02 09:46:04 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-02 09:46:05 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-02 09:46:05 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor

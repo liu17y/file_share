@@ -1,5 +1,5 @@
 {
-  "base_dir": "data/uploads",
+  "base_dir": "D:\\shared_file",
   "port": 8000,
   "port_range_start": 8000,
   "port_range_end": 8010,

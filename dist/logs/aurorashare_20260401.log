@@ -1,0 +1,17 @@
+2026-04-01 11:31:15 [INFO] [AuroraShare] logger.py:83 - ============================================================
+2026-04-01 11:31:15 [INFO] [AuroraShare] logger.py:84 - 日志系统初始化完成，日志目录: D:\py\file-share\dist\logs
+2026-04-01 11:31:15 [INFO] [AuroraShare] logger.py:85 - ============================================================
+2026-04-01 11:31:15 [INFO] [__main__] run.py:138 - 启动 uvicorn 服务器 (端口: 8000)...
+2026-04-01 11:31:15 [DEBUG] [asyncio] proactor_events.py:633 - Using proactor: IocpProactor
+2026-04-01 11:31:16 [INFO] [__main__] run.py:126 - 浏览器已自动打开
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_begin with no data
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_field with data[42:61]
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_header_value with data[63:89]
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_header_end with no data
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_headers_finished with no data
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:583 - Calling on_part_data with data[93:107]
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_part_end with no data
+2026-04-01 11:32:05 [DEBUG] [multipart.multipart] multipart.py:586 - Calling on_end with no data
+2026-04-01 11:32:24 [INFO] [AuroraShare] main.py:709 - File preview requested from 127.0.0.1 - Path: 接口改造文件/Record_2026-03-22-10-28-38_149003a2d400f6adb210d7e357a3a646.mp4
+2026-04-01 11:32:40 [INFO] [AuroraShare] main.py:709 - File preview requested from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg
+2026-04-01 11:33:10 [INFO] [AuroraShare] main.py:709 - File preview requested from 127.0.0.1 - Path: 接口改造文件/周华健 - 爱相随 [mqms2] (2).ogg

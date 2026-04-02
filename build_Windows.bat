@@ -128,7 +128,6 @@ REM 执行打包命令（修复了 --add-data 语法）
 pyinstaller --onefile ^
     --name "AuroraShare" ^
     %ICON_FLAG% ^
-    --add-data "frontend;frontend" ^
     --add-data "frontend_dist;frontend_dist" ^
     --add-data "backend;backend" ^
     --add-data "config.json.template;." ^

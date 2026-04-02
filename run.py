@@ -100,7 +100,7 @@ def main():
             frontend_path = external_frontend
             logger.info(f"使用外部前端: {frontend_path}")
         else:
-            frontend_path = get_resource_path('frontend')
+            frontend_path = get_resource_path('frontend_dist')
             logger.info(f"使用内置前端: {frontend_path}")
 
         os.environ['AURORA_FRONTEND_PATH'] = frontend_path
