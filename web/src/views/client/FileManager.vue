@@ -107,6 +107,7 @@
           :files="displayFiles"
           :loading="loading"
           :selected="selectedItems"
+          :search-keyword="searchQuery"
           @select="toggleSelect"
           @preview="handlePreview"
           @download="handleDownload"

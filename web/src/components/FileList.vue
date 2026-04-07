@@ -64,7 +64,8 @@
           </div>
           <div class="tooltip-container">
             <var-tooltip :content="file.name" placement="top">
-              <span class="filename" :class="{ 'folder-name': file.is_dir }">{{ truncateFilename(file.name, file.is_dir) }}</span>
+              <!-- 修改：使用 v-html 显示高亮文件名 -->
+              <span class="filename" :class="{ 'folder-name': file.is_dir }" v-html="highlightText(file.name)"></span>
             </var-tooltip>
           </div>
         </div>
@@ -130,6 +131,11 @@ const props = defineProps({
   selected: {
     type: Array,
     default: () => []
+  },
+  // 新增：搜索关键词 prop
+  searchKeyword: {
+    type: String,
+    default: ''
   }
 })
 
@@ -198,6 +204,35 @@ const truncateFilename = (filename, isDir = false, maxLength = 30) => {
   const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'))
   const availableLength = maxLength - extension.length - 3 // 3 for ellipsis
   return nameWithoutExt.substring(0, availableLength) + '...' + extension
+}
+
+// 新增：高亮文本函数
+const highlightText = (text) => {
+  // 如果没有搜索关键词，返回原文本
+  if (!props.searchKeyword || !props.searchKeyword.trim() || !text) {
+    return escapeHtml(text)
+  }
+
+  const keyword = props.searchKeyword.trim()
+  // 转义正则表达式特殊字符
+  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  // 创建不区分大小写的正则表达式
+  const regex = new RegExp(`(${escapedKeyword})`, 'gi')
+
+  // 先转义 HTML，再替换高亮
+  const escapedText = escapeHtml(text)
+  return escapedText.replace(regex, '<mark class="search-highlight">$1</mark>')
+}
+
+// 新增：HTML 转义函数，防止 XSS 攻击
+const escapeHtml = (str) => {
+  if (!str) return ''
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 const getFileIcon = (filename) => {
@@ -427,6 +462,20 @@ const handleDragEnd = () => {
 
 .dark .filename {
   color: #eee;
+}
+
+/* ========== 搜索高亮样式 ========== */
+.search-highlight {
+  background-color: #ffeb3b;
+  color: #333;
+  padding: 0 2px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.dark .search-highlight {
+  background-color: #ffc107;
+  color: #1a1a2e;
 }
 
 .size-col {
